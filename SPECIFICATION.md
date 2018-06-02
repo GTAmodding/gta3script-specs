@@ -1,4 +1,4 @@
-**Note:** This is a draft. It may be wrong and subject to change.
+**Note:** This is a draft. It may be wrong, incomplete and subject to change.
 
 ## Introduction
 
@@ -96,7 +96,7 @@ An integer literal is a sequence of digits and minus signs.
 
 ```
 integer_digit := '0'..'9'
-integer_literal := { '-' } integer_digit { (integer_digit | '-') }
+integer_literal := ['-'] integer_digit { (integer_digit | '-') }
 ```
 
 If the literal begins with a minus `-`, the integer number following it should be negated. If the `-` character happens anywhere but in the first character, all characters following and including the minus should be ignored.
@@ -117,7 +117,7 @@ A floating-point literal is a nonempty sequence of digits which must contain at 
 ```
 floating_form1 := '.' integer_digit { integer_digit | '.' | 'f' | 'F' }
 floating_form2 := integer_digit { integer_digit } ('.' | 'f' | 'F') { integer_digit | '.' | 'f' | 'F' }
-floating_literal := { '-' } (floating_form1 | floating_form2)
+floating_literal := ['-'] (floating_form1 | floating_form2)
 ```
 
 The following are examples of valid and invalid literals:
@@ -147,7 +147,7 @@ A **text label literal** is a text literal which expands to an internal game val
 A **label literal** is a reference to a script label.
 
 ```
-text_literal := ('A'..'Z' | 'a'..'z') { {atom_char} (atom_char - ':') }
+text_literal := ('A'..'Z' | 'a'..'z') [ {atom_char} (atom_char - ':') ]
 string_constant := text_literal
 text_label_literal := text_literal
 label_literal := text_literal
@@ -175,14 +175,14 @@ The name of a variable is a sequence of characters similar to the one in `text_l
 
 ```
 variable_char := atom_char - ('[' | ']')
-variable_name := ('A'..'Z' | 'a'..'z') { {variable_char} (variable_char - ':') }
+variable_name := ('A'..'Z' | 'a'..'z') [ {variable_char} (variable_char - ':') ]
 ```
 
 A reference to a variable is a variable name optionally followed by an array subscript. The subscript may either use a variable name or an integer for indexing. Any character following the subscript should be ignored. Do note a subscript cannot happen twice.
 
 ```
 subscript := '[' (variable_name | integer_literal) ']' 
-variable := variable_name { subscript {variable_char} }
+variable := variable_name [ subscript {variable_char} ]
 ```
 
 ### Variable Declaration
@@ -203,54 +203,44 @@ A array is declared if a subscript happens on the `variable` argument. The subsc
 
 A local variable should only be declared inside a [scope].
 
-### Scopes
-
-There is also a pair of commands named `{` and `}`.
-
-The command `{` creates a lexical scope for local variables. The command `}` leaves the lexical scope.
-
-Lexical scopes cannot be nested.
-
-The scope commands can be described more formally as:
-
-```
-scope_block := '{' eol
-               command_list
-               '}' eol
-```
-
 ### Expressions
 
 A script is built not only of commands, but of expressions as weel. Those expressions are also mapped to commands in later compilation phrases. Meaning, when we say *command*, we may also be talking about expressions.
 
-An expression may be an assignment to a variable:
+An expression may be an assignment to a variable, an equality test, a relational operation, a binary operation or an unary operation.
+
+```
+expr := expr_assignment | expr_equality | expr_relational | expr_binary | expr_unary
+```
+
+#### Assignment Expression
 
 ```
 asop := '=' | '+=' | '-+' | '*=' | '/=' | '+=@' | '-=@' | '=#'
 expr_assignment := variable {whitespace} asop {whitespace} argument eol
 ```
 
-May be an equality test operation:
+#### Equality Expression
 
 ```
 expr_equality := argument {whitespace} '=' {whitespace} argument eol
 ```
 
-May be an relational operation:
+#### Relational Operation
 
 ```
 relop := '<' | '>' | '>=' | '<='
 expr_relational := argument {whitespace} relop {whitespace} argument eol
 ```
 
-May be an binary operation:
+#### Binary Operation
 
 ```
 binop := '+' | '-' | '*' | '/' | '+@' | '-@'
 expr_binary := variable {whitespace} '=' {whitespace} argument {whitespace} binop argument eol
 ```
 
-Or may be an unary operation:
+#### Unary Operation
 
 ```
 unaryop := '--' | '++'
@@ -260,9 +250,125 @@ expr_unary := (unaryop {whitespace} variable eol)
 
 TODO use limited arguments (no string literal)
 
-### Control-Flow Commands
+### Statements
 
-TODO
+```
+statement := label_statement | unlabeled_statement
+
+label_name := {atom_char}
+label_statement := label_name ':' [whitespace unlabeled_statement] eol
+
+unlabeled_statement := primary_statement
+                     | scope_statement
+                     | if_statement
+                     | ifnot_statement
+                     | while_statement
+                     | whilenot_statement
+                     | repeat_statement
+```
+
+TODO label name can be empty yes
+TODO label name may not match label literal
+
+#### Primary Statement
+
+```
+primary_statement := {whitespace} (command | expr)
+```
+
+#### Labeled Statements
+
+
+### Scope Statement
+
+There is also a pair of commands named `{` and `}`.
+
+The command `{` creates a lexical scope for local variables. The command `}` leaves the lexical scope.
+
+Lexical scopes cannot be nested.
+
+```
+command_scope_begin = '{' eol
+command_scope_end = '}' eol
+
+scope_statement := command_scope_begin
+                   command_list
+                   command_scope_end
+```
+
+
+#### Conditional Statement
+
+```
+conditional_statement := {whitespace} ['NOT' whitespaces] primary_statement
+```
+
+#### IF Statement
+
+```
+command_if := 'IF' whitespaces conditional_statement
+command_and := 'AND' whitespaces conditional_statement
+command_or := 'OR' whitespaces conditional_statement
+command_else := 'ELSE' eol
+command_endif := 'ENDIF' eol
+
+if_statement := command_if
+                ({ command_and } | { command_or })
+                command_list
+                [command_else
+                command_list]
+                command_endif
+```
+
+#### IFNOT Statement
+
+```
+command_ifnot := 'IFNOT' whitespaces conditional_statement
+
+ifnot_statement := command_ifnot
+                   ({ command_and } | { command_or })
+                   command_list
+                   [command_else
+                   command_list]
+                   command_endif
+```
+
+#### WHILE Statement
+
+```
+command_while := 'WHILE' whitespaces conditional_statement
+command_endwhile := 'ENDWHILE' eol
+
+while_statement := command_while
+                   ({ command_and } | { command_or })
+                   command_list
+                   command_endwhile
+```
+
+#### WHILENOT Statement
+
+```
+command_whilenot := 'WHILENOT' whitespaces conditional_statement
+
+whilenot_statement := command_whilenot
+                      ({ command_and } | { command_or })
+                      command_list
+                      command_endwhile
+```
+
+#### REPEAT Statement
+
+```
+command_repeat := 'REPEAT' whitespaces argument whitespaces variable eol
+command_endrepeat = 'ENDREPEAT'
+
+repeat_statement := command_repeat
+                    command_list
+                    command_endrepeat
+```
+
+TODO describe args, note that variable must be global variable, and string constants only the global ones (right?), and argument is not all arg kinds
+
 
 
 
@@ -276,7 +382,6 @@ TODO
 TODO exclude string from arguments?
 TODO do note arguments are ambigous
 TODO alternators
-TODO control flow
 TODO mission directives
 TODO SAN ANDREAS ALLOWS VARIABLES AND STRING CONSTANTS TO BEGIN WITH UNDERSCORES 
 TODO commands such as var decl can be implemented at compiler or command def level
