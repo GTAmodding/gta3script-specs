@@ -279,7 +279,7 @@ primary_statement := {whitespace} (command | expr)
 #### Labeled Statements
 
 
-### Scope Statement
+#### Scope Statement
 
 There is also a pair of commands named `{` and `}`.
 
@@ -292,89 +292,124 @@ command_scope_begin = '{' eol
 command_scope_end = '}' eol
 
 scope_statement := command_scope_begin
-                   command_list
+                   statement_list
                    command_scope_end
 ```
 
 
-#### Conditional Statement
+#### Conditional Statements
+
+A conditional statement is a primary statement which produces a boolean result. The boolean result can be negated by prepending the primary statement with a `NOT` token.
 
 ```
 conditional_statement := {whitespace} ['NOT' whitespaces] primary_statement
 ```
 
-#### IF Statement
+A conditional list is either a single conditional statement or multiple conditional statements concatenated by `AND` or `OR` tokens. Those tokens cannot be combined.
 
 ```
-command_if := 'IF' whitespaces conditional_statement
-command_and := 'AND' whitespaces conditional_statement
-command_or := 'OR' whitespaces conditional_statement
+and_conditional_stmt := 'AND' whitespaces conditional_statement
+or_conditional_stmt := 'OR' whitespaces conditional_statement
+
+conditional_list := conditional_statement
+                    ({and_conditional_stmt} | {or_conditional_stmt})
+```
+
+In case of a single conditional, the list boolean result is the same as its conditional statement.
+
+In case of multiple conditionals, all statements are executed and the boolean result of the list is:
+
+ + If `AND` was used and all conditional statements give a true boolean result, the list boolean result is true.
+ + If `OR` was used and at least one conditional statement gives a true boolean result, the list boolean result is true.
+ + In any other case, the boolean result is false.
+
+#### IF Statement
+
+An IF statement is an `IF` command followed by a list of statements to be executed in case its boolean result is true. The statements are executed until a matching `ELSE` or `ENDIF` command are found.
+
+If a matching `ELSE` exists and the `IF` boolean result is false, all statements from the `ELSE` until the matching `ENDIF` are executed.
+
+The boolean result of an `IF` command is the same as the conditional list it holds.
+
+```
+command_if := 'IF' whitespaces conditional_list
 command_else := 'ELSE' eol
 command_endif := 'ENDIF' eol
 
 if_statement := command_if
-                ({ command_and } | { command_or })
-                command_list
+                statement_list
                 [command_else
-                command_list]
+                statement_list]
                 command_endif
 ```
 
 #### IFNOT Statement
 
+The `IFNOT` statement is specified the same way as the `IF` statement, except the `IFNOT` command boolean result is the complement of `IF` boolean result.
+
 ```
-command_ifnot := 'IFNOT' whitespaces conditional_statement
+command_ifnot := 'IFNOT' whitespaces conditional_list
 
 ifnot_statement := command_ifnot
-                   ({ command_and } | { command_or })
-                   command_list
+                   statement_list
                    [command_else
-                   command_list]
+                   statement_list]
                    command_endif
 ```
 
 #### WHILE Statement
 
+A `WHILE` statement is a `WHILE` command followed by a list of statements to be executed. The list of such commands ends when an matching `ENDWHILE` is found.
+
+This statement executes by executing its conditional list, checking its boolean result and making a choice:
+ 
+  + In case it is true, execute the list of statements given, then re-execute the conditional list and make a choice again.
+  + In case it is false, skip to its matching `ENDWHILE`.
+
+The boolean result of the `WHILE` command is the same as the conditional list it holds.
+
 ```
-command_while := 'WHILE' whitespaces conditional_statement
+command_while := 'WHILE' whitespaces conditional_list
 command_endwhile := 'ENDWHILE' eol
 
 while_statement := command_while
-                   ({ command_and } | { command_or })
-                   command_list
+                   statement_list
                    command_endwhile
 ```
 
 #### WHILENOT Statement
 
+The `WHILENOT` statement is specified the same way as the `WHILE` statement, except the `WHILENOT` command boolean result is the complement of the boolean result of the `WHILE` command.
+
 ```
-command_whilenot := 'WHILENOT' whitespaces conditional_statement
+command_whilenot := 'WHILENOT' whitespaces conditional_list
 
 whilenot_statement := command_whilenot
-                      ({ command_and } | { command_or })
-                      command_list
+                      statement_list
                       command_endwhile
 ```
 
 #### REPEAT Statement
+
+TODO describe repeat
+
+TODO describe args, note that variable must be global variable, and string constants only the global ones (right?), and argument is not all arg kinds
 
 ```
 command_repeat := 'REPEAT' whitespaces argument whitespaces variable eol
 command_endrepeat = 'ENDREPEAT'
 
 repeat_statement := command_repeat
-                    command_list
+                    statement_list
                     command_endrepeat
 ```
 
-TODO describe args, note that variable must be global variable, and string constants only the global ones (right?), and argument is not all arg kinds
 
+### Remarks
 
-
-
-
-
-
+ + The lexical grammar is not regular because of the nestable *multi-line comments*.
+ + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category.
+ + NO SHORTCIRCUIT IN CONDITIONAL LIST
 
 
 
@@ -385,16 +420,6 @@ TODO alternators
 TODO mission directives
 TODO SAN ANDREAS ALLOWS VARIABLES AND STRING CONSTANTS TO BEGIN WITH UNDERSCORES 
 TODO commands such as var decl can be implemented at compiler or command def level
-
-
-### Remarks
-
- + The lexical grammar is not regular because of the nestable *multi-line comments*.
- + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category.
-
-
-
-
 
 
 
