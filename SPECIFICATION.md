@@ -1,6 +1,7 @@
 **Note:** This is a draft. It may be wrong, incomplete and subject to change.
 
-## Introduction
+Introduction
+---------------------
 
 This is an attempt to produce a somewhat formal language specification for the GTA3script programming language.
 
@@ -8,11 +9,31 @@ Previous work has been done by [Wesser]. However it's not (nor meant to be) stru
 
 GTA3script is a rather simple scripting language built by Rockstar North to design the mission scripts of its Grand Theft Auto games. It's so simple that it has a huge amount of quirks uncommon to other languages. This document will attempt to pull together all those tricks in a coherent way.
 
-## Notation
+Terms and Definitions
+---------------------
 
 TODO
 
-## Source Code Representation
+a multi-file is a bunch of script files
+
+internal command
+
+jump
+
+subrountine
+
+compare flag
+
+global string constant
+
+
+Notation
+---------------------
+
+TODO
+
+Source Code Representation
+---------------------
 
 The source code is described as an stream of ASCII characters.
 
@@ -28,7 +49,8 @@ TODO atom char
 atom_char := ascii_char - (whitespace | newline | '"')
 ```
 
-## Elements
+Elements
+---------------------
 
 The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements will be presented together.
 
@@ -64,6 +86,8 @@ Comments serve as program documentation. There are two forms:
  + *Multi-line comments* starts with the character sequence `/*` and stop with its matching `*/` character sequence. Those comments can be nested inside each other.
 
 The contents of comments must be interpreted as if it were whitespaces in the source code. Comments cannot start inside [string literals].
+
+TODO give a grammar
 
 ### Command
 
@@ -185,7 +209,8 @@ subscript := '[' (variable_name | integer_literal) ']'
 variable := variable_name [ subscript {variable_char} ]
 ```
 
-### Variable Declaration
+Variable Declaration
+---------------------------
 
 A variable declaration happens by placing a declaration command followed by the variable names to be declared.
 
@@ -203,44 +228,45 @@ A array is declared if a subscript happens on the `variable` argument. The subsc
 
 A local variable should only be declared inside a [scope].
 
-### Expressions
+Expressions
+-------------------------
 
 A script is built not only of commands, but of expressions as weel. Those expressions are also mapped to commands in later compilation phrases. Meaning, when we say *command*, we may also be talking about expressions.
 
 An expression may be an assignment to a variable, an equality test, a relational operation, a binary operation or an unary operation.
 
 ```
-expr := expr_assignment | expr_equality | expr_relational | expr_binary | expr_unary
+expression := expr_assignment | expr_equality | expr_relational | expr_binary | expr_unary
 ```
 
-#### Assignment Expression
+### Assignment Expression
 
 ```
 asop := '=' | '+=' | '-+' | '*=' | '/=' | '+=@' | '-=@' | '=#'
 expr_assignment := variable {whitespace} asop {whitespace} argument eol
 ```
 
-#### Equality Expression
+### Equality Expression
 
 ```
 expr_equality := argument {whitespace} '=' {whitespace} argument eol
 ```
 
-#### Relational Operation
+### Relational Operation
 
 ```
 relop := '<' | '>' | '>=' | '<='
 expr_relational := argument {whitespace} relop {whitespace} argument eol
 ```
 
-#### Binary Operation
+### Binary Operation
 
 ```
 binop := '+' | '-' | '*' | '/' | '+@' | '-@'
 expr_binary := variable {whitespace} '=' {whitespace} argument {whitespace} binop argument eol
 ```
 
-#### Unary Operation
+### Unary Operation
 
 ```
 unaryop := '--' | '++'
@@ -250,64 +276,107 @@ expr_unary := (unaryop {whitespace} variable eol)
 
 TODO use limited arguments (no string literal)
 
-### Statements
+Statements
+--------------------------------
+
+A statement specifies an action to be executed.
 
 ```
-statement := label_statement | unlabeled_statement
+statement := labeled_statement 
+           | embedded_statement
+```
 
+### Labeled Statements
+
+Statements may be prefixed with a label.
+
+```
 label_name := {atom_char}
-label_statement := label_name ':' [whitespace unlabeled_statement] eol
+labeled_statement := label_name ':' (whitespaces embedded_statement | empty_statement)
+```
 
-unlabeled_statement := primary_statement
+**Constraints**
+
+The name of a label must be unique across the multi-file.
+
+**Semantics**
+
+This label may be referenced in certain commands to transfer (or start) control-flow of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it enbodies.
+
+The name of a label may be empty. The name of a label may contain characters that do not match the `text_literal` production. In such cases, the label cannot be used as arguments to commands.
+
+### Empty Statements
+
+An empty statement does nothing.
+
+```
+empty_statement := eol
+```
+
+### Embedded Statements
+
+Embedded statements are statements not prefixed by a label.
+
+```
+embedded_statement := empty_statement
+                     | primary_statement
                      | scope_statement
                      | if_statement
                      | ifnot_statement
                      | while_statement
                      | whilenot_statement
                      | repeat_statement
-```
-
-TODO label name can be empty yes
-TODO label name may not match label literal
-
-#### Primary Statement
 
 ```
-primary_statement := {whitespace} (command | expr)
+
+### Primary Statement
+
+```
+primary_statement := (command | expression)
 ```
 
-#### Labeled Statements
+**Constraints**
 
+The command it enbodies cannot be any of the internal commands.
 
-#### Scope Statement
+**Semantics**
 
-There is also a pair of commands named `{` and `}`.
+The execution of a primary statement takes place by executing the command or expression it embodies.
 
-The command `{` creates a lexical scope for local variables. The command `}` leaves the lexical scope.
+### Scope Statement
+
+```
+command_scope_activate = '{' eol
+command_scope_finish = '}' eol
+
+scope_statement := command_scope_activate
+                   {statement}
+                   command_scope_finish
+```
+
+**Constraints**
 
 Lexical scopes cannot be nested.
 
-```
-command_scope_begin = '{' eol
-command_scope_end = '}' eol
+**Semantics**
 
-scope_statement := command_scope_begin
-                   statement_list
-                   command_scope_end
-```
+The command `{` activates a lexical scope where local variables can be declared or used.
 
+The command `}` finishes such a lexical scope.
 
-#### Conditional Statements
+The active scope is finished when control-flow of a script is transfered to outside the active lexical scope by a jump.
 
-A conditional statement is a primary statement which produces a boolean result. The boolean result can be negated by prepending the primary statement with a `NOT` token.
+The transfer of control to the middle of a inactive lexical scope activates it.
 
-```
-conditional_statement := {whitespace} ['NOT' whitespaces] primary_statement
-```
+Transfer of control to a subroutine shall not deactivate the active scope. The behaviour of the script is unspecified if such a subroutine activates another lexical scope.
 
-A conditional list is either a single conditional statement or multiple conditional statements concatenated by `AND` or `OR` tokens. Those tokens cannot be combined.
+### Conditional Statements
+
+Conditional statements produce changes in the script compare flag.
 
 ```
+conditional_statement := ['NOT' whitespaces] primary_statement
+
 and_conditional_stmt := 'AND' whitespaces conditional_statement
 or_conditional_stmt := 'OR' whitespaces conditional_statement
 
@@ -315,21 +384,27 @@ conditional_list := conditional_statement
                     ({and_conditional_stmt} | {or_conditional_stmt})
 ```
 
-In case of a single conditional, the list boolean result is the same as its conditional statement.
+**Semantics**
 
-In case of multiple conditionals, all statements are executed and the boolean result of the list is:
+The compare flag of a conditional statement is the same as the primary statement it enbodies.
 
- + If `AND` was used and all conditional statements give a true boolean result, the list boolean result is true.
- + If `OR` was used and at least one conditional statement gives a true boolean result, the list boolean result is true.
- + In any other case, the boolean result is false.
+The compare flag is negated by prepending the statement by a `NOT`. 
+
+A conditional list is either a conditional statement or a combination of these by the use of either `AND` or `OR` tokens.
+
+The compare flag is set to true if the compare flag of all conditional statements in a `AND` list holds true.
+
+The compare flag is set to true if the compare flag of at least one conditional statement in a `OR` list holds true.
+
+In any other case, the compare flag is set to false.
+
+There is no short-circuit evaluation. All conditional statements in a conditional list are executed. They are also executed in order.
+
+### Selection Statements
+
+Selection statements selects statements to execute from a set of statements depending on a list of conditions.
 
 #### IF Statement
-
-An IF statement is an `IF` command followed by a list of statements to be executed in case its boolean result is true. The statements are executed until a matching `ELSE` or `ENDIF` command are found.
-
-If a matching `ELSE` exists and the `IF` boolean result is false, all statements from the `ELSE` until the matching `ENDIF` are executed.
-
-The boolean result of an `IF` command is the same as the conditional list it holds.
 
 ```
 command_if := 'IF' whitespaces conditional_list
@@ -337,79 +412,108 @@ command_else := 'ELSE' eol
 command_endif := 'ENDIF' eol
 
 if_statement := command_if
-                statement_list
+                {statement}
                 [command_else
-                statement_list]
+                {statement}]
                 command_endif
 ```
 
-#### IFNOT Statement
+**Semantics**
 
-The `IFNOT` statement is specified the same way as the `IF` statement, except the `IFNOT` command boolean result is the complement of `IF` boolean result.
+The `IF` command executes a conditional list, grabs its compare flag and chooses between two set of statements to execute.
+
+If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set (if an `ELSE` exists) or to the end of the construct.
+
+#### IFNOT Statement
 
 ```
 command_ifnot := 'IFNOT' whitespaces conditional_list
 
 ifnot_statement := command_ifnot
-                   statement_list
+                   {statement}
                    [command_else
-                   statement_list]
+                   {statement}]
                    command_endif
 ```
 
+**Semantics**
+
+The behaviour of this statement is the same as of the IF statement, except the `IFNOT` command acts differently.
+
+The `IFNOT` command executes a conditional list, grabs the complement of its compare flag, then chooses between the two sets of statements to execute.
+
+### Iteration Statements
+
 #### WHILE Statement
-
-A `WHILE` statement is a `WHILE` command followed by a list of statements to be executed. The list of such commands ends when an matching `ENDWHILE` is found.
-
-This statement executes by executing its conditional list, checking its boolean result and making a choice:
- 
-  + In case it is true, execute the list of statements given, then re-execute the conditional list and make a choice again.
-  + In case it is false, skip to its matching `ENDWHILE`.
-
-The boolean result of the `WHILE` command is the same as the conditional list it holds.
 
 ```
 command_while := 'WHILE' whitespaces conditional_list
 command_endwhile := 'ENDWHILE' eol
 
 while_statement := command_while
-                   statement_list
+                   {statement}
                    command_endwhile
 ```
 
-#### WHILENOT Statement
+**Semantics**
 
-The `WHILENOT` statement is specified the same way as the `WHILE` statement, except the `WHILENOT` command boolean result is the complement of the boolean result of the `WHILE` command.
+The while statement executes a set of statements while the conditional list holds true.
+
+The `WHILE` command executes a conditional list, grabs its compare flag, and transfers control to after the `ENDWHILE` if it's false. Otherwise, it executes the set of statements given, and then transfers control back again to the `WHILE` command.
+
+#### WHILENOT Statement
 
 ```
 command_whilenot := 'WHILENOT' whitespaces conditional_list
 
 whilenot_statement := command_whilenot
-                      statement_list
+                      {statement}
                       command_endwhile
 ```
 
+**Semantics**
+
+This is the analogous to the IFNOT statement in relation to the IF statement, meaning the statements are executed while the conditional list holds false.
+
 #### REPEAT Statement
 
-TODO describe repeat
-
-TODO describe args, note that variable must be global variable, and string constants only the global ones (right?), and argument is not all arg kinds
-
 ```
-command_repeat := 'REPEAT' whitespaces argument whitespaces variable eol
-command_endrepeat = 'ENDREPEAT'
+command_repeat := 'REPEAT' whitespaces integer_literal whitespaces variable eol
+command_endrepeat = 'ENDREPEAT' eol
 
 repeat_statement := command_repeat
-                    statement_list
+                    {statement}
                     command_endrepeat
 ```
 
+**Constraints**
 
-### Remarks
+The first argument to `REPEAT` must be a integer literal.
+
+The second argument must be a global variable of integer type.
+
+**Semantics**
+
+The repeat statement executes a set of statements until a counter variable reaches a threshold.
+
+More precisely, the counter variable is set to zero, the statements are executed, then the variable is incremented and if it is still less than the threshold, control is transfered back to the statements again.
+
+The statements are always executed at least once.
+
+Remarks
+------------
 
  + The lexical grammar is not regular because of the nestable *multi-line comments*.
  + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category.
+ + THIS IS A BROKEN LANGUAGE :)
  + NO SHORTCIRCUIT IN CONDITIONAL LIST
+
+miss2 cannot be the reference implementation because of bugs such as
+
+```
+IF {
+ENDIF
+```
 
 
 
@@ -420,7 +524,12 @@ TODO alternators
 TODO mission directives
 TODO SAN ANDREAS ALLOWS VARIABLES AND STRING CONSTANTS TO BEGIN WITH UNDERSCORES 
 TODO commands such as var decl can be implemented at compiler or command def level
-
+TODO types
+TODO scripts subscripts and such
+TODO translation limits
+TODO initial value of locals are undefined
+TODO describe goto and such inside a lexical scope to another lexical scope (or none)
+TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
 
 
 [string literals]:
@@ -429,4 +538,9 @@ TODO commands such as var decl can be implemented at compiler or command def lev
 
 [Wesser]: https://web.archive.org/web/20170111193059/http://www.gtamodding.com/wiki/GTA3script
 [Wesser2]: http://pastebin.com/raw/YfLWLXJw
+
+[miss2.exe]: https://www.dropbox.com/s/7xgvqo8b9u1qw02/gta3sc_v413.rar
+[miss2_strings]: http://pastebin.com/raw/Pjb0Ezkx
+[gtasa_listing]: https://pastebin.com/2VczpwK7
+
 
