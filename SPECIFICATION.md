@@ -3,18 +3,27 @@
 Introduction
 ---------------------
 
-This is an attempt to produce a somewhat formal language specification for the GTA3script programming language.
+This is an attempt to produce a somewhat formal language specification for the GTA3script language.
+
+GTA3script is a rather simple scripting language built by DMA Design (now Rockstar North) to design the mission scripts of its Grand Theft Auto series. It's so simple that it has a huge amount of quirks uncommon to other languages. This document attempts to pull together all those tricks in a coherent way.
 
 Previous work has been done by [Wesser]. However it's not (nor meant to be) structured formally. That said, this document wouldn't be possible without his huge research effort on describing the language.
 
-GTA3script is a rather simple scripting language built by Rockstar North to design the mission scripts of its Grand Theft Auto games. It's so simple that it has a huge amount of quirks uncommon to other languages. This document will attempt to pull together all those tricks in a coherent way.
+Scope
+---------------------
+
+This document is targeted at compiler writers and perhaps curious community members.
+
+This document specifies the syntax, constraints and semantic rules of the GTA3script language.
+
+This document does not specify a runtime system nor does it specify mechanisms by which the language is transformed for use by such a system.
 
 Terms and Definitions
 ---------------------
 
 TODO
 
-a multi-file is a bunch of script files
+multi-file
 
 internal command
 
@@ -32,62 +41,75 @@ Notation
 
 TODO
 
-Source Code Representation
----------------------
-
-The source code is described as an stream of ASCII characters.
-
-TODO is \x00 part of it?
-
-```
-ascii_char := '\x00' .. '\x7F' ;
-```
-
-TODO atom char
-
-```
-atom_char := ascii_char - (whitespace | newline | '"')
-```
-
 Elements
 ---------------------
 
 The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements will be presented together.
 
-### Whitespaces
+### Source Code
 
-The following ASCII characters should be treated as whitespaces:
-
-```
-whitespace := ' ' | '\t' | '(' | ')' | ',' | '\r' ;
-```
-
-A new line is specified as a LF character or the end of file.
+Source code is a stream of printable ASCII characters plus the control codes line feed (`\n`), horizontal tab (`\t`) and carriage return (`\r`).
 
 ```
-newline := `\n` | EOF ;
+ascii_char := ascii_printable | ascii_control ;
+ascii_printable := /* printable ASCII characters */ ;
+ascii_control := '\n' | '\t' | '\r' ;
 ```
 
-Whitespaces and newlines play a critical role in GTA3script unlike other languages such as C in which spaces are simply ignored.
+Carriage returns should appear only before a line feed.
 
-TODO eol
+Lowercase letters in the stream should be interpreted as its uppercase equivalent.
+
+Space, horizontal tab, parentheses and comma are defined as whitespace characters.
 
 ```
-sol := {whitespace}
-eol := {whitespace} newline
-whitespaces := whitespace {whitespace}
+whitespace := ' ' | '\t' | '(' | ')' | ',' ;
+```
+
+A line is a sequence of characters delimited by a newline. The start of the stream begins a line. The end of the stream finishes a line.
+
+```
+newline := ['\r'] `\n` ;
+```
+
+Each line should be interpreted as if there was no whitespaces in either ends of the line.
+
+We also define `atom_char` which will be the building blocks for identifiers.
+
+```
+atom_char := ascii_printable - (ascii_control | whitespace)
+```
+
+### Token Separator and End Of Line
+
+To simplify future definitions, we define the productions: `eol` as the end of a line, and `sep` as a token separator.
+
+ + `sep` is a token separator.
+ + `eol` is the end of a line.
+
+```
+sep := whitespace {whitespace}
+eol := newline | EOF
 ```
 
 ### Comments
 
-Comments serve as program documentation. There are two forms:
+Comments serve as program documentation.
+
+```
+comment := line_comment | block_comment ;
+line_comment := '//' {ascii_char} eol
+block_comment := '/*' {block_comment | ascii_char} '*/'
+```
+
+There are two forms:
 
  + *Line comments* starts with the character sequence `//` and stop at the end of the line.
- + *Multi-line comments* starts with the character sequence `/*` and stop with its matching `*/` character sequence. Those comments can be nested inside each other.
+ + *Block comments* starts with the character sequence `/*` and stop with its matching `*/`. Block comments can be nested inside each other.
 
-The contents of comments must be interpreted as if it were whitespaces in the source code. Comments cannot start inside [string literals].
+The contents of comments shall be interpreted as if it were whitespaces in the source code.
 
-TODO give a grammar
+Comments cannot start inside string literals.
 
 ### Command
 
@@ -98,7 +120,6 @@ The name of a command consists of any character in the ASCII character set excep
 ```
 command_name := atom_char { atom_char }
 ```
-
 
 A command is a command name followed by zero or more arguments. The end of a command is given by a newline.
 
@@ -111,7 +132,7 @@ command := command_name { argument } eol
 There are several types of arguments. Argument are always delimited by whitespaces.
 
 ```
-argument := whitespaces ( integer_literal | floating_literal | text_label_literal | label_literal | string_constant | string_literal | filename_literal | variable )
+argument := sep ( integer_literal | floating_literal | text_label_literal | label_literal | string_constant | string_literal | filename_literal | variable )
 ```
 
 #### Integer Literals
@@ -218,7 +239,7 @@ The declaration command names are a pair of the variable scoping rules and the v
 
 ```
 command_var_decl_name := 'VAR_INT' | 'LVAR_INT' | 'VAR_FLOAT' | 'LVAR_FLOAT'
-command_var_decl_arg := whitespaces variable
+command_var_decl_arg := sep variable
 command_var_decl := command_var_decl_name command_var_decl_arg {command_var_decl_arg} eol
 ```
 
@@ -292,7 +313,7 @@ Statements may be prefixed with a label.
 
 ```
 label_name := {atom_char}
-labeled_statement := label_name ':' (whitespaces embedded_statement | empty_statement)
+labeled_statement := label_name ':' (sep embedded_statement | empty_statement)
 ```
 
 **Constraints**
@@ -375,10 +396,10 @@ Transfer of control to a subroutine shall not deactivate the active scope. The b
 Conditional statements produce changes in the script compare flag.
 
 ```
-conditional_statement := ['NOT' whitespaces] primary_statement
+conditional_statement := ['NOT' sep] primary_statement
 
-and_conditional_stmt := 'AND' whitespaces conditional_statement
-or_conditional_stmt := 'OR' whitespaces conditional_statement
+and_conditional_stmt := 'AND' sep conditional_statement
+or_conditional_stmt := 'OR' sep conditional_statement
 
 conditional_list := conditional_statement
                     ({and_conditional_stmt} | {or_conditional_stmt})
@@ -407,7 +428,7 @@ Selection statements selects statements to execute from a set of statements depe
 #### IF Statement
 
 ```
-command_if := 'IF' whitespaces conditional_list
+command_if := 'IF' sep conditional_list
 command_else := 'ELSE' eol
 command_endif := 'ENDIF' eol
 
@@ -427,7 +448,7 @@ If the compare flag is true, control is transfered to the first set of statement
 #### IFNOT Statement
 
 ```
-command_ifnot := 'IFNOT' whitespaces conditional_list
+command_ifnot := 'IFNOT' sep conditional_list
 
 ifnot_statement := command_ifnot
                    {statement}
@@ -447,7 +468,7 @@ The `IFNOT` command executes a conditional list, grabs the complement of its com
 #### WHILE Statement
 
 ```
-command_while := 'WHILE' whitespaces conditional_list
+command_while := 'WHILE' sep conditional_list
 command_endwhile := 'ENDWHILE' eol
 
 while_statement := command_while
@@ -464,7 +485,7 @@ The `WHILE` command executes a conditional list, grabs its compare flag, and tra
 #### WHILENOT Statement
 
 ```
-command_whilenot := 'WHILENOT' whitespaces conditional_list
+command_whilenot := 'WHILENOT' sep conditional_list
 
 whilenot_statement := command_whilenot
                       {statement}
@@ -478,7 +499,7 @@ This is the analogous to the IFNOT statement in relation to the IF statement, me
 #### REPEAT Statement
 
 ```
-command_repeat := 'REPEAT' whitespaces integer_literal whitespaces variable eol
+command_repeat := 'REPEAT' sep integer_literal sep variable eol
 command_endrepeat = 'ENDREPEAT' eol
 
 repeat_statement := command_repeat
@@ -507,6 +528,8 @@ Remarks
  + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category.
  + THIS IS A BROKEN LANGUAGE :)
  + NO SHORTCIRCUIT IN CONDITIONAL LIST
+ + miss2 allows other chars other than the ones specified in source representation thus why we specify it (it is buggy)
+ + control chars behave in a weird way in miss2 (including CR)
 
 miss2 cannot be the reference implementation because of bugs such as
 
