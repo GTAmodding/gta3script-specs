@@ -306,53 +306,114 @@ The subscript may use a integer literal or another variable name of integer type
 
 The type of a variable reference is the inner type of the variable name being referenced.
 
+Some commands may accept either local variables or global variables, not both.
+
+Command Selectors
+------------------------
+
+A command selector (or alternator) is a kind of command which gets rewriten by the compiler to another command based on the supplied argument types.
+
+A command selector consists of its name and a set of commands which are alternatives for replacement.
+
+Once a command name is identified as a selector, the argument list is tested over each command in the set of alternatives. The compilation then behaves as if the command name was rewriten as the matching command name.
+
+The behaviour is unspecified if more than one command in the set produces a match.
+
+A list of selectors and theirs selection sets can be found in the appendix (TODO).
+
+**Example** 
+
+As an example, consider the command selector `SET` used in the following contexts:
+
+| Selector Used As              | Rewriten As                                        |
+| ----------------------------- | -------------------------------------------------- |
+| `SET lvar_int 10`             | `SET_LVAR_INT lvar_int 10`                         |
+| `SET lvar_flt var_flt`        | `SET_LVAR_FLOAT_TO_VAR_FLOAT lvar_flt var_flt`     |
+| `SET var_int STRING_CONSTANT` | `SET_VAR_INT_TO_CONSTANT var_int STRING_CONSTANT`  |
+
+For the first example, each command in the collection of alternatives for `SET` was evaluated with the arguments `lvar_int 10`. One must have produced a successful compilation, and that one was choosen as the replacement command.
+
+The same happens for the other examples in the table.
+
 Expressions
 -------------------------
 
-A script is built not only of commands, but of expressions as weel. Those expressions are also mapped to commands in later compilation phrases. Meaning, when we say *command*, we may also be talking about expressions.
-
-An expression may be an assignment to a variable, an equality test, a relational operation, a binary operation or an unary operation.
+A expression is a shortcut for one or more command selectors.
 
 ```
-expression := expr_assignment | expr_equality | expr_relational | expr_binary | expr_unary
+expression := expr_rtol
+            | expr_binary 
+            | expr_unary ;
 ```
 
-### Assignment Expression
+The arguments of an expression may not allow string literals.
+
+### Assignment, Equality and Relational Operators
 
 ```
-asop := '=' | '+=' | '-+' | '*=' | '/=' | '+=@' | '-=@' | '=#'
-expr_assignment := variable {whitespace} asop {whitespace} argument eol
-```
-
-### Equality Expression
-
-```
-expr_equality := argument {whitespace} '=' {whitespace} argument eol
-```
-
-### Relational Operation
-
-```
+asop := '=' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' | '=#' ;
 relop := '<' | '>' | '>=' | '<='
-expr_relational := argument {whitespace} relop {whitespace} argument eol
+expr_rtol := argument {whitespace} (asop | relop) {whitespace} argument eol ;
 ```
 
-### Binary Operation
+These expressions should be rewritten as the following selectors:
+
+| Operation | Command Selector                               |
+| --------- | ---------------------------------------------- |
+| `a = b`   | `SET a b`                                      |
+| `a = b`   | `IS_THING_EQUAL_TO_THING a b`                  |
+| `a =# b`  | `CSET a b`                                     |
+| `a += b`  | `ADD_THING_TO_THING a b`                       |
+| `a -= b`  | `SUB_THING_FROM_THING a b`                     |
+| `a *= b`  | `MULT_THING_BY_THING a b`                      |
+| `a /= b`  | `DIV_THING_BY_THING a b`                       |
+| `a +=@ b` | `ADD_THING_TO_THING_TIMED a b`                 |
+| `a -=@ b` | `SUB_THING_FROM_THING_TIMED a b`               |
+| `a > b`   | `IS_THING_GREATER_THAN_THING a b`              |
+| `a >= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING a b`       |
+| `a < b`   | `IS_THING_GREATER_THAN_THING b a`              |
+| `a <= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING b a`       |
+
+A rule to differentiate between assignment and equality (`=`) is given in the definition of conditional statements.
+
+### Binary Operations
 
 ```
 binop := '+' | '-' | '*' | '/' | '+@' | '-@'
-expr_binary := variable {whitespace} '=' {whitespace} argument {whitespace} binop argument eol
+expr_binary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument eol
 ```
+
+A operation of the form `a = b + c` should be rewritten as either:
+ 
+ + `ADD_THING_TO_THING a c` if the name `a` is the same as the name `b`.
+ + `ADD_THING_TO_THING a b` if the name `a` is the same as the name `c`.
+ + `SET a b` followed by `ADD_THING_TO_THING a c` otherwise.
+
+A operation of the form `a = b - c` should be rewritten as either:
+
+ + `SUB_THING_FROM_THING a c` if the name `a` is the same as the name `b`.
+ + Implementation-defined if `a` is the same name as `c`.
+ + `SET a b` followed by `SUB_THING_BY_THING a c` otherwise.
+
+A operation of the form `a = b * c` should be rewritten under the same rules as `a = b + c`, except by using `MULT_THING_BY_THING` instead of `ADD_THING_TO_THING`.
+
+A operation of the form `a = b / c` should be rewritten under the same rules as `a = b - c`, except by using `DIV_THING_BY_THING` instead of `SUB_THING_FROM_THING`.
+
+A operation of the form `a = b +@ c` and `a = b -@ c` should be rewritten under the same rules as `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
 
 ### Unary Operation
 
 ```
 unaryop := '--' | '++'
-expr_unary := (unaryop {whitespace} variable eol) 
-            | (variable {whitespace} unaryop eol)
+expr_unary := (unaryop {whitespace} argument eol) 
+            | (argument {whitespace} unaryop eol)
 ```
 
-TODO use limited arguments (no string literal)
+The operations `++a` and `a++` should be rewritten as `ADD_THING_TO_THING a 1`.
+
+The operations `--a` and `a--` should be rewritten as `SUB_THING_FROM_THING a 1`.
+
+Both prefix and postfix unary operations are the same.
 
 Statements
 --------------------------------
@@ -451,8 +512,6 @@ Transfer of control to a subroutine shall not deactivate the active scope. The b
 
 ### Variable Statement
 
-Variable statements declares a name and storage for variables.
-
 ```
 command_var_name := 'VAR_INT' 
                     | 'LVAR_INT'
@@ -476,6 +535,8 @@ Local variable may have identical names as long as they are in different lexical
 Local variables cannot have the same name as any global variable.
 
 **Semantics**
+
+This command declares one or more names with the specified storage duration, data type, and array dimensions.
 
 Global variable names can be seen by the entire multi-file.
 
@@ -510,6 +571,8 @@ The compare flag is set to true if the compare flag of at least one conditional 
 In any other case, the compare flag is set to false.
 
 There is no short-circuit evaluation. All conditional statements in a conditional list are executed. They are also executed in order.
+
+If the primary statement of a conditional statement is a expression with a operator of type `=`, equality comparision is choosen over assignment.
 
 ### Selection Statements
 
@@ -589,7 +652,7 @@ This is the analogous to the IFNOT statement in relation to the IF statement, me
 #### REPEAT Statement
 
 ```
-command_repeat := 'REPEAT' sep integer_literal sep variable eol
+command_repeat := 'REPEAT' sep integer sep variable eol
 command_endrepeat = 'ENDREPEAT' eol
 
 repeat_statement := command_repeat
@@ -601,7 +664,7 @@ repeat_statement := command_repeat
 
 The first argument to `REPEAT` must be a integer literal.
 
-The second argument must be a global variable of integer type.
+The second argument must be a variable of integer type.
 
 **Semantics**
 
