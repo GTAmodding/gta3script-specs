@@ -352,7 +352,7 @@ The arguments of an expression may not allow string literals.
 
 ```
 asop := '=' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' | '=#' ;
-relop := '<' | '>' | '>=' | '<='
+relop := '<' | '>' | '>=' | '<=' ;
 expr_rtol := argument {whitespace} (asop | relop) {whitespace} argument eol ;
 ```
 
@@ -379,8 +379,8 @@ A rule to differentiate between assignment and equality (`=`) is given in the de
 ### Binary Operations
 
 ```
-binop := '+' | '-' | '*' | '/' | '+@' | '-@'
-expr_binary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument eol
+binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
+expr_binary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument eol ;
 ```
 
 A operation of the form `a = b + c` should be rewritten as either:
@@ -404,9 +404,9 @@ A operation of the form `a = b +@ c` and `a = b -@ c` should be rewritten under 
 ### Unary Operation
 
 ```
-unaryop := '--' | '++'
-expr_unary := (unaryop {whitespace} argument eol) 
-            | (argument {whitespace} unaryop eol)
+unop := '--' | '++' ;
+expr_unary := (unop {whitespace} argument eol) 
+            | (argument {whitespace} unop eol) ;
 ```
 
 The operations `++a` and `a++` should be rewritten as `ADD_THING_TO_THING a 1`.
@@ -422,7 +422,7 @@ A statement specifies an action to be executed.
 
 ```
 statement := labeled_statement 
-           | embedded_statement
+           | embedded_statement ;
 ```
 
 ### Labeled Statements
@@ -430,8 +430,8 @@ statement := labeled_statement
 Statements may be prefixed with a label.
 
 ```
-label_name := {graph_char}
-labeled_statement := label_name ':' (sep embedded_statement | empty_statement)
+label_name := {graph_char} ;
+labeled_statement := label_name ':' (sep embedded_statement | empty_statement) ;
 ```
 
 **Constraints**
@@ -449,7 +449,7 @@ The name of a label may be empty. The name of a label may contain characters tha
 An empty statement does nothing.
 
 ```
-empty_statement := eol
+empty_statement := eol ;
 ```
 
 ### Embedded Statements
@@ -465,14 +465,14 @@ embedded_statement := empty_statement
                      | ifnot_statement
                      | while_statement
                      | whilenot_statement
-                     | repeat_statement
+                     | repeat_statement ;
 
 ```
 
 ### Primary Statement
 
 ```
-primary_statement := (command | expression)
+primary_statement := (command | expression) ;
 ```
 
 **Constraints**
@@ -486,12 +486,12 @@ The execution of a primary statement takes place by executing the command or exp
 ### Scope Statement
 
 ```
-command_scope_activate = '{' eol
-command_scope_finish = '}' eol
+command_scope_activate := '{' eol ;
+command_scope_finish := '}' eol ;
 
 scope_statement := command_scope_activate
                    {statement}
-                   command_scope_finish
+                   command_scope_finish ;
 ```
 
 **Constraints**
@@ -519,7 +519,7 @@ command_var_name := 'VAR_INT'
                     | 'LVAR_FLOAT' ;
 command_var_param := sep variable ;
 
-var_statement := command_var_name command_var_param {command_var_param} eol
+var_statement := command_var_name command_var_param {command_var_param} eol ;
 ```
 
 The declaration command name is a pair of storage duration and variable type.
@@ -547,13 +547,13 @@ Local variable names can be seen by their entire lexical scope.
 Conditional statements produce changes in the script compare flag.
 
 ```
-conditional_statement := ['NOT' sep] primary_statement
+conditional_statement := ['NOT' sep] primary_statement ;
 
-and_conditional_stmt := 'AND' sep conditional_statement
-or_conditional_stmt := 'OR' sep conditional_statement
+and_conditional_stmt := 'AND' sep conditional_statement ;
+or_conditional_stmt := 'OR' sep conditional_statement ;
 
 conditional_list := conditional_statement
-                    ({and_conditional_stmt} | {or_conditional_stmt})
+                    ({and_conditional_stmt} | {or_conditional_stmt}) ;
 ```
 
 **Semantics**
@@ -581,15 +581,15 @@ Selection statements selects statements to execute from a set of statements depe
 #### IF Statement
 
 ```
-command_if := 'IF' sep conditional_list
-command_else := 'ELSE' eol
-command_endif := 'ENDIF' eol
+command_if := 'IF' sep conditional_list ;
+command_else := 'ELSE' eol ;
+command_endif := 'ENDIF' eol ;
 
 if_statement := command_if
                 {statement}
                 [command_else
                 {statement}]
-                command_endif
+                command_endif ;
 ```
 
 **Semantics**
@@ -601,13 +601,13 @@ If the compare flag is true, control is transfered to the first set of statement
 #### IFNOT Statement
 
 ```
-command_ifnot := 'IFNOT' sep conditional_list
+command_ifnot := 'IFNOT' sep conditional_list ;
 
 ifnot_statement := command_ifnot
                    {statement}
                    [command_else
                    {statement}]
-                   command_endif
+                   command_endif ;
 ```
 
 **Semantics**
@@ -621,12 +621,12 @@ The `IFNOT` command executes a conditional list, grabs the complement of its com
 #### WHILE Statement
 
 ```
-command_while := 'WHILE' sep conditional_list
-command_endwhile := 'ENDWHILE' eol
+command_while := 'WHILE' sep conditional_list ;
+command_endwhile := 'ENDWHILE' eol ;
 
 while_statement := command_while
                    {statement}
-                   command_endwhile
+                   command_endwhile ;
 ```
 
 **Semantics**
@@ -638,11 +638,11 @@ The `WHILE` command executes a conditional list, grabs its compare flag, and tra
 #### WHILENOT Statement
 
 ```
-command_whilenot := 'WHILENOT' sep conditional_list
+command_whilenot := 'WHILENOT' sep conditional_list ;
 
 whilenot_statement := command_whilenot
                       {statement}
-                      command_endwhile
+                      command_endwhile ;
 ```
 
 **Semantics**
@@ -652,12 +652,12 @@ This is the analogous to the IFNOT statement in relation to the IF statement, me
 #### REPEAT Statement
 
 ```
-command_repeat := 'REPEAT' sep integer sep variable eol
-command_endrepeat = 'ENDREPEAT' eol
+command_repeat := 'REPEAT' sep integer sep variable eol ;
+command_endrepeat := 'ENDREPEAT' eol ;
 
 repeat_statement := command_repeat
                     {statement}
-                    command_endrepeat
+                    command_endrepeat ;
 ```
 
 **Constraints**
