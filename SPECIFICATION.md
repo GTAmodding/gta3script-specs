@@ -25,6 +25,10 @@ TODO
 
 multi-file
 
+multiscripts
+
+script file
+
 internal command
 
 jump
@@ -40,6 +44,34 @@ Notation
 ---------------------
 
 TODO
+
+Concepts
+--------------------
+
+### Scripts
+
+A script is a unit of execution which containts its own program counter, local variables and compare flag.
+
+A command is an action to be performed by such a script during an instant of time.
+
+A script file is a source file containing a sequence of commands. Those commands may be executed concurrently by multiple scripts.
+
+### Types
+
+A integer is a signed 32-bit integral number.
+
+A floating-point is a representation of a real number.
+
+A label is the location of a command.
+
+A text label is a identifier mapping to a runtime value which is yet unknown during the compilation phrase.
+
+TODO string constants have their own type (we call it constant?)
+
+TODO string type (of string literal)
+
+TODO probably should describe better this stuff.
+
 
 Elements
 ---------------------
@@ -74,22 +106,17 @@ newline := ['\r'] `\n` ;
 
 Each line should be interpreted as if there was no whitespaces in either ends of the line.
 
-We also define `atom_char` which will be the building blocks for identifiers.
+A graphical character is any printable character excluding whitespaces.
 
 ```
-atom_char := ascii_printable - (ascii_control | whitespace)
+graph_char := ascii_printable - whitespace ;
 ```
 
-### Token Separator and End Of Line
-
-To simplify future definitions, we define the productions: `eol` as the end of a line, and `sep` as a token separator.
-
- + `sep` is a token separator.
- + `eol` is the end of a line.
+To simplify future definitions, we define the productions `eol` as the end of a line, and `sep` as a token separator.
 
 ```
-sep := whitespace {whitespace}
-eol := newline | EOF
+sep := whitespace {whitespace} ;
+eol := newline | EOF ;
 ```
 
 ### Comments
@@ -98,8 +125,8 @@ Comments serve as program documentation.
 
 ```
 comment := line_comment | block_comment ;
-line_comment := '//' {ascii_char} eol
-block_comment := '/*' {block_comment | ascii_char} '*/'
+line_comment := '//' {ascii_char} eol ;
+block_comment := '/*' {block_comment | ascii_char} '*/' ;
 ```
 
 There are two forms:
@@ -113,141 +140,171 @@ Comments cannot start inside string literals.
 
 ### Command
 
-An script is structured as a serie commands describing what the script should do.
-
-The name of a command consists of any character in the ASCII character set except for whitespaces, newline and quotation marks. Command names are always case insensitive and from here on we'll describe them in upper-case.
+A command describes an action a script should perform.
 
 ```
-command_name := atom_char { atom_char }
+command_name := graph_char {graph_char} ;
+command := command_name { argument } eol ;
 ```
 
-A command is a command name followed by zero or more arguments. The end of a command is given by a newline.
+There are several types of arguments.
 
 ```
-command := command_name { argument } eol
+argument := sep (
+               integer
+             | floating 
+             | variable 
+             | label
+             | filename 
+             | string_identifier 
+             | string_constant
+             | string_literal 
+             );
 ```
 
-### Arguments
-
-There are several types of arguments. Argument are always delimited by whitespaces.
+### Integer Literal
 
 ```
-argument := sep ( integer_literal | floating_literal | text_label_literal | label_literal | string_constant | string_literal | filename_literal | variable )
+digit := '0'..'9';
+integer := ['-'] digit {digit | '-'} ;
 ```
 
-#### Integer Literals
+A integer literal is a sequence of digits and minus signs.
 
-An integer literal is a sequence of digits and minus signs.
+If the literal begins with a minus, the number following it should be negated.
 
-```
-integer_digit := '0'..'9'
-integer_literal := ['-'] integer_digit { (integer_digit | '-') }
-```
+If the `-` character happens anywhere but in the first character, all characters following and including the minus should be ignored.
 
-If the literal begins with a minus `-`, the integer number following it should be negated. If the `-` character happens anywhere but in the first character, all characters following and including the minus should be ignored.
+To make it clear, the following literals are valid and act as if they were the literal on the right.
 
-To make it clear, the following integer literals are valid and act as if they were the literal on the right.
+| Literal | Same As |
+| ------  | ------- |
+| 1       | 1       |
+| 010     | 10      |
+| -39     | -39     |
+| -432-10 | -432    |
 
-```
-1 => 1
-010 => 10
--39 => -39
--432-10 => -432
-```
+**Semantics**
 
-#### Floating-Point Literals
+The type of a integer literal is a integer.
 
-A floating-point literal is a nonempty sequence of digits which must contain at least one occurence of the characters `.`, `f` or `F`. Once the `f` or `F` characters are found, all characters including and following it should be ignored. The same should happen when the character `.` is found a second time. The literal may be preceeded by a minus sign, which should negate the floating-point number.
+### Floating-Point Literals
 
 ```
-floating_form1 := '.' integer_digit { integer_digit | '.' | 'f' | 'F' }
-floating_form2 := integer_digit { integer_digit } ('.' | 'f' | 'F') { integer_digit | '.' | 'f' | 'F' }
-floating_literal := ['-'] (floating_form1 | floating_form2)
+floating_form1 := '.' digit { digit | '.' | 'f' | 'F' } ;
+floating_form2 := digit { digit } ('.' | 'f' | 'F') { digit | '.' | 'f' | 'F' } ;
+floating := ['-'] (floating_form1 | floating_form2) ;
 ```
+
+A floating-point literal is a nonempty sequence of digits which must contain at least one occurence of the characters `.`, `f` or `F`.
+
+Once the `f` or `F` characters are found, all characters including and following it should be ignored. The same should happen when the character `.` is found a second time.
+
+The literal may be preceeded by a minus sign, which should negate the floating-point number.
 
 The following are examples of valid and invalid literals:
 
-```
-1 => invalid
--1 => invalid
-1f => 1.0
-1. => 1.0
-.1 => 0.1
-.1f => 0.1
-.11 => 0.11
-.1.9 => 0.1
-1.1 => 1.1
-1.f => 1.0
-1.. => 1.0
-```
+| Literal | Same As |
+| ------  | ------- |
+| 1       | invalid |
+| -1      | invalid |
+| 1f      | 1.0     |
+| 1.      | 1.0     |
+| .1      | 0.1     |
+| .1f     | 0.1     |
+| .11     | 0.11    |
+| .1.9    | 0.1     |
+| 1.1     | 1.1     |
+| 1.f     | 1.0     |
+| 1..     | 1.0     |
 
-#### Text Literals
+**Semantics**
 
-There are a few types of text literals. An text literal begins with an alphabetic value and may be followed by any character except whitespaces, newline and quotation marks. A text literal shall not end with a `:` character. Text literals are case insensitive.
+The type of a floating-point literal is a float.
 
-A **string constant** is a text literal which expands to an integer value.
+### String Identifiers
 
-A **text label literal** is a text literal which expands to an internal game value which is yet unknown during the compilation phrase.
-
-A **label literal** is a reference to a script label.
+A string identifier is a identifier which is resolved during runtime.
 
 ```
-text_literal := ('A'..'Z' | 'a'..'z') [ {atom_char} (atom_char - ':') ]
-string_constant := text_literal
-text_label_literal := text_literal
-label_literal := text_literal
+string_identifier := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
 ```
 
-#### String Literal
+**Semantics**
+
+The type of a string identifier is a text label.
+
+### String Constant
+
+A string constant is category of identifier which is resolved to integers during compilation.
+
+```
+string_constant := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
+```
+
+**Semantics**
+
+The type of a string constant is a constant.
+
+### String Literal
 
 A string literals holds a sequence of ASCII characters delimited by quotation marks.
 
 ```
-string_literal := '"' { ascii_char - '"' } '"'
+string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 ```
 
-#### Filename Literal
+**Semantics**
 
-A filename literal represents a script filename. It is a sequence of zero or more characters followed by an extension `.sc`.
+The type of a string literal is a string.
 
-```
-filename_literal := {atom_char} '.' ('s' | 'S') ('c' | 'C')
-```
+### Label Identifiers
 
-#### Variable Reference
-
-The name of a variable is a sequence of characters similar to the one in `text_literal` except the characters `[` and `]` cannot happen. Variable names are also case insensitive.
+A label identifier is a identifier referencing a script label.
 
 ```
-variable_char := atom_char - ('[' | ']')
-variable_name := ('A'..'Z' | 'a'..'z') [ {variable_char} (variable_char - ':') ]
+label := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
 ```
 
-A reference to a variable is a variable name optionally followed by an array subscript. The subscript may either use a variable name or an integer for indexing. Any character following the subscript should be ignored. Do note a subscript cannot happen twice.
+**Semantics**
+
+The type of a label identifier is a label.
+
+### Filename Identifiers
+
+A filename identifier is a identifier referencing another script file.
 
 ```
-subscript := '[' (variable_name | integer_literal) ']' 
-variable := variable_name [ subscript {variable_char} ]
+filename := {graph_char} '.SC' ;
 ```
 
-Variable Declaration
----------------------------
+**Semantics**
 
-A variable declaration happens by placing a declaration command followed by the variable names to be declared.
+The type of a filename identifier is a label.
 
-The declaration command names are a pair of the variable scoping rules and the variable static type.
+Filename identifiers cannot be used in the same context as labels. Only specific commands (described later) may use this class of identifier.
+
+### Variable Reference
+
+The name of a variable is a sequence of graphical characters, except the characters `[` and `]` cannot happen.
 
 ```
-command_var_decl_name := 'VAR_INT' | 'LVAR_INT' | 'VAR_FLOAT' | 'LVAR_FLOAT'
-command_var_decl_arg := sep variable
-command_var_decl := command_var_decl_name command_var_decl_arg {command_var_decl_arg} eol
+variable_char := graph_char - ('[' | ']') ;
+variable_name := ('A'..'Z') [ {variable_char} (variable_char - ':') ] ;
 ```
 
-A variable declaration should have at least one variable declared.
+A reference to a variable is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript cannot happen twice.
 
-A array is declared if a subscript happens on the `variable` argument. The subscript must be use an integer literal, behaviour is otherwise unspecified.
+```
+subscript := '[' (variable_name | integer_literal) ']' ;
+variable := variable_name [ subscript {variable_char} ] ;
+```
 
-A local variable should only be declared inside a [scope].
+**Semantics**
+
+The subscript may use a integer literal or another variable name of integer type.
+
+The type of a variable reference is the inner type of the variable name being referenced.
 
 Expressions
 -------------------------
@@ -312,7 +369,7 @@ statement := labeled_statement
 Statements may be prefixed with a label.
 
 ```
-label_name := {atom_char}
+label_name := {graph_char}
 labeled_statement := label_name ':' (sep embedded_statement | empty_statement)
 ```
 
@@ -553,6 +610,7 @@ TODO translation limits
 TODO initial value of locals are undefined
 TODO describe goto and such inside a lexical scope to another lexical scope (or none)
 TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
+TODO shall should must etc
 
 
 [string literals]:
