@@ -399,6 +399,7 @@ Embedded statements are statements not prefixed by a label.
 embedded_statement := empty_statement
                      | primary_statement
                      | scope_statement
+                     | var_statement
                      | if_statement
                      | ifnot_statement
                      | while_statement
@@ -447,6 +448,38 @@ The active scope is finished when control-flow of a script is transfered to outs
 The transfer of control to the middle of a inactive lexical scope activates it.
 
 Transfer of control to a subroutine shall not deactivate the active scope. The behaviour of the script is unspecified if such a subroutine activates another lexical scope.
+
+### Variable Statement
+
+Variable statements declares a name and storage for variables.
+
+```
+command_var_name := 'VAR_INT' 
+                    | 'LVAR_INT'
+                    | 'VAR_FLOAT'
+                    | 'LVAR_FLOAT' ;
+command_var_param := sep variable ;
+
+var_statement := command_var_name command_var_param {command_var_param} eol
+```
+
+The declaration command name is a pair of storage duration and variable type.
+
+The commands with the `VAR_` prefix declares global variables. The ones with `LVAR_` declares local variables. The `INT` suffix declares variables capable of storing and having type integer. The `FLOAT` suffix declares floating-point ones.
+
+**Constraints**
+
+Global variable names must be unique across the multi-file.
+
+Local variable may have identical names as long as they are in different lexical scopes.
+
+Local variables cannot have the same name as any global variable.
+
+**Semantics**
+
+Global variable names can be seen by the entire multi-file.
+
+Local variable names can be seen by their entire lexical scope.
 
 ### Conditional Statements
 
@@ -610,7 +643,9 @@ TODO translation limits
 TODO initial value of locals are undefined
 TODO describe goto and such inside a lexical scope to another lexical scope (or none)
 TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
+TODO timera timerb
 TODO shall should must etc
+
 
 
 [string literals]:
