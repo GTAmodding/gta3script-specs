@@ -23,23 +23,6 @@ Terms and Definitions
 
 TODO
 
-multi-file
-
-multiscripts
-
-script file
-
-internal command
-
-jump
-
-subrountine
-
-compare flag
-
-global string constant
-
-
 Notation
 ---------------------
 
@@ -50,11 +33,27 @@ Concepts
 
 ### Scripts
 
-A script is a unit of execution which containts its own program counter, local variables and compare flag.
+A **script** is a unit of execution which containts its own *program counter*, *local variables* and *compare flag*.
 
-A command is an action to be performed by such a script during an instant of time.
+A **command** is an operation to be performed by such a script during an instant of time. Commands may produce several *side-effects*. 
 
-A script file is a source file containing a sequence of commands. Those commands may be executed concurrently by multiple scripts.
+A possible side-effect of executing a command is to update the *compare flag*. The **compare flag** of a command is the boolean result it produces.
+
+The **compare flag** of a script is the compare flag of the its last executed statement.
+
+The **program counter** of a script indicates its currently executing command. Unless a command changes the *program counter* explicitly, the counter goes from the first command to the next sequentially. A explicit change in the *program counter* is said to be a change in the *flow of control*.
+
+A command is said to perform a **jump** if it changes the *flow of control* irreversibly.
+
+A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored shortly.
+
+A **variable** is a storage location assigned to a *name*. This location holds a *data value* of specific *type*.
+
+There are global and local variables. The storage of **global variables** is shared across scripts. The storage of **local variables** is local to each script.
+
+A **script file** is a source file containing a sequence of commands. Those commands may be executed concurrently by multiple scripts.
+
+The **multi-file** is a collection of *script files*. Hereafter being the collection of *script files* being compiled.
 
 ### Types
 
@@ -140,7 +139,7 @@ Comments cannot start inside string literals.
 
 ### Command
 
-A command describes an action a script should perform.
+A command describes an operation a script should perform.
 
 ```
 command_name := graph_char {graph_char} ;
@@ -477,7 +476,7 @@ primary_statement := (command | expression) ;
 
 **Constraints**
 
-The command it enbodies cannot be any of the internal commands.
+The command it enbodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `IF`, `ENDWHILE`, `{`).
 
 **Semantics**
 
