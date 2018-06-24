@@ -133,11 +133,14 @@ There are two forms:
  + *Line comments* starts with the character sequence `//` and stop at the end of the line.
  + *Block comments* starts with the character sequence `/*` and stop with its matching `*/`. Block comments can be nested inside each other.
 
-The contents of comments shall be interpreted as if it were whitespaces in the source code.
+The contents of comments shall be interpreted as if it were whitespaces in the source code. More specifically: 
+
+ + A *line comment* should be interpreted as an `eol`.
+ + A single, nested, *block comment* should be interpreted as an `eol` on each line boundary it crosses. On its last line (i.e. the one it does not cross), it should be interpreted as one or more `whitespace` characters.
 
 Comments cannot start inside string literals.
 
-### Command
+### Commands
 
 A command describes an operation a script should perform.
 
@@ -161,7 +164,7 @@ argument := sep (
              );
 ```
 
-### Integer Literal
+### Integer Literals
 
 ```
 digit := '0'..'9';
@@ -190,8 +193,8 @@ The type of a integer literal is a integer.
 ### Floating-Point Literals
 
 ```
-floating_form1 := '.' digit { digit | '.' | 'f' | 'F' } ;
-floating_form2 := digit { digit } ('.' | 'f' | 'F') { digit | '.' | 'f' | 'F' } ;
+floating_form1 := '.' digit { digit | '.' | 'F' } ;
+floating_form2 := digit { digit } ('.' | 'F') { digit | '.' | 'F' } ;
 floating := ['-'] (floating_form1 | floating_form2) ;
 ```
 
@@ -233,7 +236,7 @@ string_identifier := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
 
 The type of a string identifier is a text label.
 
-### String Constant
+### String Constants
 
 A string constant is category of identifier which is resolved to integers during compilation.
 
@@ -245,7 +248,7 @@ string_constant := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
 
 The type of a string constant is a constant.
 
-### String Literal
+### String Literals
 
 A string literals holds a sequence of ASCII characters delimited by quotation marks.
 
@@ -283,7 +286,7 @@ The type of a filename identifier is a label.
 
 Filename identifiers cannot be used in the same context as labels. Only specific commands (described later) may use this class of identifier.
 
-### Variable Reference
+### Variable References
 
 The name of a variable is a sequence of graphical characters, except the characters `[` and `]` cannot happen.
 
@@ -347,7 +350,11 @@ expression := expr_rtol
 
 The arguments of an expression may not allow string literals.
 
-### Assignment, Equality and Relational Operators
+Any variable, constant or identifier which contains any of `asop`, `relop`, `binop` or `unop` in its name cannot be used in a expression. Integers with a minus anywhere but in the beggining of its token cannot be used as well.
+
+The name of commands used to require script files (see Require Statements) cannot be on the left hand side of a expression.
+
+### Assignment, Equality and Relational Operations
 
 ```
 asop := '=' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' | '=#' ;
@@ -400,7 +407,7 @@ A operation of the form `a = b / c` should be rewritten under the same rules as 
 
 A operation of the form `a = b +@ c` and `a = b -@ c` should be rewritten under the same rules as `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
 
-### Unary Operation
+### Unary Operations
 
 ```
 unop := '--' | '++' ;
@@ -464,11 +471,11 @@ embedded_statement := empty_statement
                      | ifnot_statement
                      | while_statement
                      | whilenot_statement
-                     | repeat_statement ;
-
+                     | repeat_statement
+                     | require_statement ;
 ```
 
-### Primary Statement
+### Primary Statements
 
 ```
 primary_statement := (command | expression) ;
@@ -476,13 +483,13 @@ primary_statement := (command | expression) ;
 
 **Constraints**
 
-The command it enbodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `IF`, `ENDWHILE`, `{`).
+The command it enbodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `IF`, `ENDWHILE`, `{`, `GOSUB_FILE`, etc).
 
 **Semantics**
 
 The execution of a primary statement takes place by executing the command or expression it embodies.
 
-### Scope Statement
+### Scope Statements
 
 ```
 command_scope_activate := '{' eol ;
@@ -509,7 +516,7 @@ The transfer of control to the middle of a inactive lexical scope activates it.
 
 Transfer of control to a subroutine shall not deactivate the active scope. The behaviour of the script is unspecified if such a subroutine activates another lexical scope.
 
-### Variable Statement
+### Variable Statements
 
 ```
 command_var_name := 'VAR_INT' 
@@ -673,6 +680,58 @@ More precisely, the counter variable is set to zero, the statements are executed
 
 The statements are always executed at least once.
 
+### Require Statements
+
+```
+require_statement := command_gosub_file
+                   | command_launch_mission
+                   | command_load_and_launch_mission ;
+```
+
+Require statements request script files to become part of the multi-file being compiled if they aren't yet.
+
+Script files are explained further in their own section.
+
+**Constraints** 
+
+Require statements shall only appear as part of the content of the *main script file* and of *main extension files*.
+
+#### GOSUB_FILE Statement
+
+```
+command_gosub_file := 'GOSUB_FILE' sep label sep filename eol ;
+```
+
+**Semantics**
+
+The `GOSUB_FILE` command requires a *main extension file* to be part of the multi-file.
+
+It also calls the subroutine specified by label.
+
+#### LAUNCH_MISSION Statement
+
+```
+command_launch_mission := 'LAUNCH_MISSION' sep filename eol ;
+```
+
+**Semantics**
+
+The `LAUNCH_MISSION` command requires a *subscript file* to be part of the multi-file. 
+
+It also starts a new script with the program counter at the `MISSION_START` directive of the specified script file.
+
+#### LOAD_AND_LAUNCH_MISSION Statement
+
+```
+command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;
+```
+
+**Semantics**
+
+The `LOAD_AND_LAUNCH_MISSION` command requires a *mission script file* to be part of the multi-file. 
+
+It also starts a new *mission script* with the program counter at the `MISSION_START` directive of the specified script file.
+
 Remarks
 ------------
 
@@ -690,7 +749,20 @@ IF {
 ENDIF
 ```
 
+interesting stuff
 
+```
+--b // '--' variable(b)
+--b b // command(--b) variable(b)
+// happens with other expressions as well
+``
+
+more interesting stuff
+
+```
+VAR_INT = 4 // works
+LOAD_AND_LAUNCH_MISSION = 4 // does not work
+```
 
 
 TODO exclude string from arguments?
@@ -707,6 +779,8 @@ TODO describe goto and such inside a lexical scope to another lexical scope (or 
 TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
 TODO timera timerb
 TODO shall should must etc
+TODO casing of filenames should not matter
+TODO better name for what we are calling require statements
 
 
 
