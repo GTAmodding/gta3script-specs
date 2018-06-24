@@ -35,25 +35,41 @@ Concepts
 
 A **script** is a unit of execution which containts its own *program counter*, *local variables* and *compare flag*.
 
-A **command** is an operation to be performed by such a script during an instant of time. Commands may produce several *side-effects*. 
+A **variable** is a storage location assigned to a *name*. This location holds a *data value* of specific *type*.
 
-A possible side-effect of executing a command is to update the *compare flag*. The **compare flag** of a command is the boolean result it produces.
+There are global and local variables. The storage of **global variables** is shared across scripts. The storage of **local variables** is local to each script.
 
-The **compare flag** of a script is the compare flag of the its last executed statement.
+A **command** is an operation to be performed by a script. Commands may produce several *side-effects*. 
+
+A possible side-effect of executing a command is to update the *compare flag*. The **compare flag** of a command is the boolean result it produces. The **compare flag of a script** is the *compare flag* of the its last executed command. The *compare flag* is useful for conditionally changing the *flow of control*.
 
 The **program counter** of a script indicates its currently executing command. Unless a command changes the *program counter* explicitly, the counter goes from the first command to the next sequentially. A explicit change in the *program counter* is said to be a change in the *flow of control*.
 
 A command is said to perform a **jump** if it changes the *flow of control* irreversibly.
 
-A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored shortly.
+A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored later.
 
-A **variable** is a storage location assigned to a *name*. This location holds a *data value* of specific *type*.
+A command may **terminate** one or more scripts (including itself). A terminated script halts execution and cannot be seen by other scripts anymore.
 
-There are global and local variables. The storage of **global variables** is shared across scripts. The storage of **local variables** is local to each script.
+### Script Files
 
 A **script file** is a source file containing a sequence of commands. Those commands may be executed concurrently by multiple scripts.
 
 The **multi-file** is a collection of *script files*. Hereafter being the collection of *script files* being compiled.
+
+The **main script file** is the entry script file. This is where the first script (called the **main script**) starts execution. Compilation also begins here.
+
+Other script files are **required** to become part of the *multi-file* by the means of require statements within the *main script file*. Many kinds of script files may be *required*.
+
+A **main extension file** (or **foreign gosub file**) is a script file required by the means of a *GOSUB_FILE statement*. Other script files may be required from here as well.
+
+A **subscript file** is a script file required by the means of the *LAUNCH_MISSION statement*. A **subscript** is a script started by the same statement.
+
+A **mission script file** is a script file required by the means of the *LOAD_AND_LAUNCH_MISSION statement*. A **mission script** is a script started by the same statement. Only a single *mission script* may be running at once.
+
+Commands in the *main script file*, *main extension files* and *subscript files* shall not refer to labels in *mission script files*. A *mission script file* shall not refer to labels in other *mission script files*.
+
+The *main script file* is found in a unspecified manner. The other *script files* are found by recursively searching a directory with the same filename (excluding extension) as the *main script file*. This directory is in the same path as the *main script file*. The search for the *script files* should be case-insensitive. All *script files* must have a `.sc` extension. If multiple script files with the same name are found, behaviour is unspecified.
 
 ### Types
 
@@ -548,6 +564,8 @@ Global variable names can be seen by the entire multi-file.
 
 Local variable names can be seen by their entire lexical scope.
 
+The initial value of variables is unspecified.
+
 ### Conditional Statements
 
 Conditional statements produce changes in the script compare flag.
@@ -688,9 +706,7 @@ require_statement := command_gosub_file
                    | command_load_and_launch_mission ;
 ```
 
-Require statements request script files to become part of the multi-file being compiled if they aren't yet.
-
-Script files are explained further in their own section.
+Require statements request script files to become part of the multi-file being compiled.
 
 **Constraints** 
 
@@ -704,9 +720,11 @@ command_gosub_file := 'GOSUB_FILE' sep label sep filename eol ;
 
 **Semantics**
 
-The `GOSUB_FILE` command requires a *main extension file* to be part of the multi-file.
+The `GOSUB_FILE` command requires a *main extension file* to become part of the multi-file.
 
 It also calls the subroutine specified by label.
+
+The behaviour is unspecified if the label is not part of the required file.
 
 #### LAUNCH_MISSION Statement
 
@@ -716,7 +734,7 @@ command_launch_mission := 'LAUNCH_MISSION' sep filename eol ;
 
 **Semantics**
 
-The `LAUNCH_MISSION` command requires a *subscript file* to be part of the multi-file. 
+The `LAUNCH_MISSION` command requires a *subscript file* to become part of the multi-file. 
 
 It also starts a new script with the program counter at the `MISSION_START` directive of the specified script file.
 
@@ -726,11 +744,82 @@ It also starts a new script with the program counter at the `MISSION_START` dire
 command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;
 ```
 
+**Constraints**
+
+Only a single *mission script* may be runinng at once.
+
 **Semantics**
 
-The `LOAD_AND_LAUNCH_MISSION` command requires a *mission script file* to be part of the multi-file. 
+The `LOAD_AND_LAUNCH_MISSION` command requires a *mission script file* to become part of the multi-file. 
 
 It also starts a new *mission script* with the program counter at the `MISSION_START` directive of the specified script file.
+
+
+Script File Structure
+----------------------------
+
+### Main Script Files
+
+```
+main_script_goal := {statement} ;
+```
+
+A main script file contains a sequence of zero or more statements.
+
+**Semantics**
+
+The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is unspecified.
+
+### Main Extension Files
+
+```
+main_extension_goal := {statement} ;
+```
+
+A main extension file contains a sequence of zero or more statements.
+
+**Semantics**
+
+There is no startup semantics for main extension files. They are not entry point for scripts.
+
+### Subscript Files
+
+```
+mission_start_directive := 'MISSION_START' [sep {whitespace | graph_char}] eol
+mission_end_directive := 'MISSION_END' [sep {whitespace | graph_char}] eol
+
+subscript_goal := mission_start_directive
+                  {statement}
+                  [label_name ':' sep] mission_end_directive
+                  {statement} ;
+```
+
+A subscript file contains a sequence of zero or more statements in between a `MISSION_START` and a `MISSION_END` directive. More statements may follow.
+
+The directives may contain arbitrary characters at its tail. Those should be ignored.
+
+**Constraints**
+
+The `MISSION_START` directive shall be in the very first line of the subscript file and may not be preceded by anything but ASCII spaces (` `) and horizontal tabs (`\t`). Even comments are disallowed.
+
+The `MISSION_END` directive does not have the same restriction.
+
+**Semantics**
+
+The entry point of the subscript specified by this script file is at the `MISSION_START` directive.
+
+The `MISSION_END` directive should have the same behaviour as of the `TERMINATE_THIS_SCRIPT` command.
+
+### Mission Script Files
+
+```
+mission_goal := subscript_goal ;
+```
+
+A mission script file has the same structure as of a subscript file.
+
+
+
 
 Remarks
 ------------
@@ -755,7 +844,7 @@ interesting stuff
 --b // '--' variable(b)
 --b b // command(--b) variable(b)
 // happens with other expressions as well
-``
+```
 
 more interesting stuff
 
@@ -782,7 +871,7 @@ TODO shall should must etc
 TODO casing of filenames should not matter
 TODO better name for what we are calling require statements
 
-
+RATIONALE for global having unspecified initial value: Stories variable sharing (must read more though).
 
 [string literals]:
 [scope]:
