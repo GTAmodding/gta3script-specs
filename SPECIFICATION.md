@@ -3,16 +3,16 @@
 Introduction
 ---------------------
 
-This is an attempt to produce a somewhat formal language specification for the GTA3script language.
+This is an attempt to produce a formal language specification for the GTA3script language. 
 
-GTA3script is a rather simple scripting language built by DMA Design (now Rockstar North) to design the mission scripts of its Grand Theft Auto series. It's so simple that it has a huge amount of quirks uncommon to other languages. This document attempts to pull together all those tricks in a coherent way.
+GTA3script is a imperative, strong and statically typed scripting language built by DMA Design (now Rockstar North) to design the mission scripts of its Grand Theft Auto game series.
 
-Previous work has been done by [Wesser]. However it's not (nor meant to be) structured formally. That said, this document wouldn't be possible without his huge research effort on describing the language.
+The language is very simple and contains a huge amount of quirks uncommon to other languages. This document attempts to pull together all those tricks in a coherent way.
 
 Scope
 ---------------------
 
-This document is targeted at compiler writers and perhaps curious community members.
+This document is targeted at implementation writers and perhaps curious community members.
 
 This document specifies the syntax, constraints and semantic rules of the GTA3script language.
 
@@ -21,7 +21,49 @@ This document does not specify a runtime system nor does it specify mechanisms b
 Terms and Definitions
 ---------------------
 
-TODO
+**behaviour**
+
+external appearance or action.
+
+**behaviour, implementation-defined**
+
+behavior specific to an implementation, where that implementation must document that behavior.
+
+**behaviour, undefined**
+
+behavior which is not guaranteed to produce any specific result.
+
+**behaviour, unspecified**
+
+behavior for which this specification provides no requirements.
+
+**constraint**
+
+restriction, either syntactic or semantic, on how language elements can be used.
+
+**execution environment**
+
+the software on which the result of translation is being executed on.
+
+**translation environment**
+
+the software on which the language is being translated for use by an execution environment.
+
+**implementation**
+
+particular set of software, running in a particular translation environment under particular control options, that performs translation of programs for, and supports execution of commands in, a particular execution environment.
+
+**value**
+
+precise meaning of the contents of an name when interpreted as having a specific type.
+
+**argument**
+
+a value passed to a command that is intended to map to a corresponding parameter.
+
+**parameter**
+
+the expected type of value to be received in a specific argument position of a command.
 
 Notation
 ---------------------
@@ -35,27 +77,29 @@ Concepts
 
 A **script** is a unit of execution which containts its own *program counter*, *local variables* and *compare flag*.
 
-A **variable** is a storage location assigned to a *name*. This location holds a *data value* of specific *type*.
+A **variable** is a storage location assigned to a name. This location holds a value of specific type.
 
 There are global and local variables. The storage of **global variables** is shared across scripts. The storage of **local variables** is local to each script.
 
-A **command** is an operation to be performed by a script. Commands may produce several *side-effects*. 
+The lifetime of a *global variable* is the same as of the execution of all scripts. The lifetime of a *local variable* is the same as its script and lexical scope.
 
-A possible side-effect of executing a command is to update the *compare flag*. The **compare flag** of a command is the boolean result it produces. The **compare flag of a script** is the *compare flag* of the its last executed command. The *compare flag* is useful for conditionally changing the *flow of control*.
+A **command** is an operation to be performed by a script. Commands may produce several **side-effects** which are described by each command description.
 
-The **program counter** of a script indicates its currently executing command. Unless a command changes the *program counter* explicitly, the counter goes from the first command to the next sequentially. A explicit change in the *program counter* is said to be a change in the *flow of control*.
+A possible side-effect of executing a command is the updating of the *compare flag*. The **compare flag** of a command is the boolean result it produces. The **compare flag of a script** is the *compare flag* of the its last executed command. The *compare flag* is useful for conditionally changing the *flow of control*.
+
+The **program counter** of a script indicates its currently executing command. Unless a command changes the *program counter* explicitly, the counter goes from the current command to the next sequentially. A explicit change in the *program counter* is said to be a change in the *flow of control*.
 
 A command is said to perform a **jump** if it changes the *flow of control* irreversibly.
 
 A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored later.
 
-A command may **terminate** one or more scripts (including itself). A terminated script halts execution and cannot be seen by other scripts anymore.
+A command is said to **terminate** a script if it halts and reclaims storage and states of such a script.
 
 ### Script Files
 
 A **script file** is a source file containing a sequence of commands. Those commands may be executed concurrently by multiple scripts.
 
-The **multi-file** is a collection of *script files*. Hereafter being the collection of *script files* being compiled.
+The **multi-file** is a collection of *script files*. Hereafter being the collection of *script files* being translated.
 
 The **main script file** is the entry script file. This is where the first script (called the **main script**) starts execution. Compilation also begins here.
 
@@ -73,20 +117,23 @@ The *main script file* is found in a unspecified manner. The other *script files
 
 ### Types
 
-A integer is a signed 32-bit integral number.
+Due to the command-driven nature of the language, typing rules are applied to *argument* and *parameters* of commands.
 
-A floating-point is a representation of a real number.
+The language is statically typed. The type of every *argument* and *parameter* is known by the translator.
 
-A label is the location of a command.
+The language is strongly typed. One type of *argument* cannot be converted to another in order to fit the requirement of a *parameter*.
 
-A text label is a identifier mapping to a runtime value which is yet unknown during the compilation phrase.
+A **integer** is a binary, signed integral number. It represents 32 bits of data and the range of values *-2147483648* through *2147483647*.
 
-TODO string constants have their own type (we call it constant?)
+A **floating-point** is a representation of a real number. Its exact representation, precision and range of values is implementation-defined.
 
-TODO string type (of string literal)
+A **label** is a name specifying the location of a command.
 
-TODO probably should describe better this stuff.
+A **text label** is a name whose value is only known in the execution environment.
 
+A **constant** is a name whose value is known in the translation environment. The value of a *constant* is an *integer* value but these types are distinct.
+
+A **string** is a sequence of zero or more characters.
 
 Elements
 ---------------------
@@ -242,8 +289,6 @@ The type of a floating-point literal is a float.
 
 ### String Identifiers
 
-A string identifier is a identifier which is resolved during runtime.
-
 ```
 string_identifier := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
 ```
@@ -253,8 +298,6 @@ string_identifier := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
 The type of a string identifier is a text label.
 
 ### String Constants
-
-A string constant is category of identifier which is resolved to integers during compilation.
 
 ```
 string_constant := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
@@ -266,7 +309,7 @@ The type of a string constant is a constant.
 
 ### String Literals
 
-A string literals holds a sequence of ASCII characters delimited by quotation marks.
+A string literal holds a string delimited by quotation marks.
 
 ```
 string_literal := '"' { ascii_char - (newline | '"') } '"' ;
@@ -278,7 +321,7 @@ The type of a string literal is a string.
 
 ### Label Identifiers
 
-A label identifier is a identifier referencing a script label.
+A label identifier is an identifier referencing a script label.
 
 ```
 label := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
@@ -290,7 +333,7 @@ The type of a label identifier is a label.
 
 ### Filename Identifiers
 
-A filename identifier is a identifier referencing another script file.
+A filename identifier is an identifier referencing another script file.
 
 ```
 filename := {graph_char} '.SC' ;
@@ -326,14 +369,20 @@ The type of a variable reference is the inner type of the variable name being re
 
 Some commands may accept either local variables or global variables, not both.
 
+Argument Matching
+------------------------
+
+TODO
+
+
 Command Selectors
 ------------------------
 
-A command selector (or alternator) is a kind of command which gets rewriten by the compiler to another command based on the supplied argument types.
+A command selector (or alternator) is a kind of command which gets rewriten by the translator to another command based on the supplied argument types.
 
 A command selector consists of its name and a set of commands which are alternatives for replacement.
 
-Once a command name is identified as a selector, the argument list is tested over each command in the set of alternatives. The compilation then behaves as if the command name was rewriten as the matching command name.
+Once a command name is identified as a selector, the argument list is tested over each command in the set of alternatives. The translation then behaves as if the command name was rewriten as the matching command name.
 
 The behaviour is unspecified if more than one command in the set produces a match.
 
@@ -349,7 +398,7 @@ As an example, consider the command selector `SET` used in the following context
 | `SET lvar_flt var_flt`        | `SET_LVAR_FLOAT_TO_VAR_FLOAT lvar_flt var_flt`     |
 | `SET var_int STRING_CONSTANT` | `SET_VAR_INT_TO_CONSTANT var_int STRING_CONSTANT`  |
 
-For the first example, each command in the collection of alternatives for `SET` was evaluated with the arguments `lvar_int 10`. One must have produced a successful compilation, and that one was choosen as the replacement command.
+For the first example, each command in the collection of alternatives for `SET` was evaluated with the arguments `lvar_int 10`. One must have produced a successful match, and that one was choosen as the replacement command.
 
 The same happens for the other examples in the table.
 
@@ -706,7 +755,7 @@ require_statement := command_gosub_file
                    | command_load_and_launch_mission ;
 ```
 
-Require statements request script files to become part of the multi-file being compiled.
+Require statements request script files to become part of the multi-file being translated.
 
 **Constraints** 
 
@@ -819,6 +868,108 @@ mission_goal := subscript_goal ;
 A mission script file has the same structure as of a subscript file.
 
 
+Supporting Commands
+-----------------------
+
+In order to perform useful computations the following supporting commands are defined.
+
+A implementation is not required (although recommended) to provide support to any of these commands.
+
+### WAIT
+
+TODO
+
+### GOTO
+
+TODO
+
+### GOSUB
+
+TODO
+
+### GOSUB_FILE
+
+TODO (hmm already defined)
+
+### RETURN
+
+TODO
+
+### START_NEW_SCRIPT
+
+TODO
+
+### LAUNCH_MISSION
+
+TODO (hmm already defined)
+
+### LOAD_AND_LAUNCH_MISSION
+
+TODO (hmm already defined)
+
+### TERMINATE_THIS_SCRIPT
+
+TODO
+
+### SCRIPT_NAME
+
+TODO
+
+
+Supporting Command Selectors
+-------------------------------
+
+### SET
+
+TODO
+
+### ADD_THING_TO_THING
+
+TODO
+
+### SUB_THING_FROM_THING
+
+TODO
+
+### MULT_THING_BY_THING
+
+TODO
+
+### DIV_THING_BY_THING
+
+TODO
+
+### IS_THING_GREATER_THAN_THING
+
+TODO
+
+### IS_THING_GREATER_OR_EQUAL_TO_THING
+
+TODO
+
+### IS_THING_EQUAL_TO_THING
+
+TODO
+
+### IS_THING_NOT_EQUAL_TO_THING
+
+TODO
+
+### ADD_THING_TO_THING_TIMED
+
+TODO
+
+### SUB_THING_FROM_THING_TIMED
+
+TODO
+
+### CSET
+
+TODO
+
+### ABS
+
+TODO
 
 
 Remarks
@@ -851,6 +1002,12 @@ more interesting stuff
 ```
 VAR_INT = 4 // works
 LOAD_AND_LAUNCH_MISSION = 4 // does not work
+```
+
+mm
+
+```
+SET_CAR_COLOUR 0 ON 0 // global string constant ON does not work
 ```
 
 
