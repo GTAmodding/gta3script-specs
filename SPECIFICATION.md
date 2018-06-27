@@ -43,11 +43,11 @@ restriction, either syntactic or semantic, on how language elements can be used.
 
 **execution environment**
 
-the software on which the result of translation is being executed on.
+the software on which the result of translation is executed on.
 
 **translation environment**
 
-the software on which the language is being translated for use by an execution environment.
+the software on which the language is translated for use by an execution environment.
 
 **implementation**
 
@@ -63,7 +63,7 @@ a value passed to a command that is intended to map to a corresponding parameter
 
 **parameter**
 
-the expected type of value to be received in a specific argument position of a command.
+the value to be received in a specific argument position of a command.
 
 Notation
 ---------------------
@@ -87,7 +87,7 @@ A **command** is an operation to be performed by a script. Commands may produce 
 
 A possible side-effect of executing a command is the updating of the *compare flag*. The **compare flag** of a command is the boolean result it produces. The **compare flag of a script** is the *compare flag* of the its last executed command. The *compare flag* is useful for conditionally changing the *flow of control*.
 
-The **program counter** of a script indicates its currently executing command. Unless a command changes the *program counter* explicitly, the counter goes from the current command to the next sequentially. A explicit change in the *program counter* is said to be a change in the *flow of control*.
+The **program counter** of a script indicates its currently executing command. Unless one of the *side-effects* of a command is to change the *program counter*, the counter goes from the current command to the next sequentially. A explicit change in the *program counter* is said to be a change in the *flow of control*.
 
 A command is said to perform a **jump** if it changes the *flow of control* irreversibly.
 
@@ -101,7 +101,7 @@ A **script file** is a source file containing a sequence of commands. Those comm
 
 The **multi-file** is a collection of *script files*. Hereafter being the collection of *script files* being translated.
 
-The **main script file** is the entry script file. This is where the first script (called the **main script**) starts execution. Compilation also begins here.
+The **main script file** is the entry script file. This is where the first script (called the **main script**) starts execution. Translation begins here.
 
 Other script files are **required** to become part of the *multi-file* by the means of require statements within the *main script file*. Many kinds of script files may be *required*.
 
@@ -209,22 +209,17 @@ A command describes an operation a script should perform.
 
 ```
 command_name := graph_char {graph_char} ;
-command := command_name { argument } eol ;
+command := command_name { sep argument } eol ;
 ```
 
 There are several types of arguments.
 
 ```
-argument := sep (
-               integer
-             | floating 
-             | variable 
-             | label
-             | filename 
-             | string_identifier 
-             | string_constant
-             | string_literal 
-             );
+argument := integer
+          | floating 
+          | identifier
+          | variable 
+          | string_literal ;
 ```
 
 ### Integer Literals
@@ -287,25 +282,25 @@ The following are examples of valid and invalid literals:
 
 The type of a floating-point literal is a float.
 
-### String Identifiers
+### Identifiers
 
 ```
-string_identifier := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
+identifier := ('$' | 'A'..'Z') {graph_char} ;
 ```
+
+**Constraints**
+
+An identifier should not end with a `:` character.
 
 **Semantics**
 
 The type of a string identifier is a text label.
 
-### String Constants
-
-```
-string_constant := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
-```
-
-**Semantics**
-
 The type of a string constant is a constant.
+
+The type of a label identifier is a label.
+
+TODO explain semantics better (also note how string identifier cannot start with `$`).
 
 ### String Literals
 
@@ -319,39 +314,13 @@ string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 
 The type of a string literal is a string.
 
-### Label Identifiers
-
-A label identifier is an identifier referencing a script label.
-
-```
-label := ('A'..'Z') [ {graph_char} (graph_char - ':') ] ;
-```
-
-**Semantics**
-
-The type of a label identifier is a label.
-
-### Filename Identifiers
-
-A filename identifier is an identifier referencing another script file.
-
-```
-filename := {graph_char} '.SC' ;
-```
-
-**Semantics**
-
-The type of a filename identifier is a label.
-
-Filename identifiers cannot be used in the same context as labels. Only specific commands (described later) may use this class of identifier.
-
 ### Variable References
 
 The name of a variable is a sequence of graphical characters, except the characters `[` and `]` cannot happen.
 
 ```
 variable_char := graph_char - ('[' | ']') ;
-variable_name := ('A'..'Z') [ {variable_char} (variable_char - ':') ] ;
+variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ```
 
 A reference to a variable is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript cannot happen twice.
@@ -360,6 +329,10 @@ A reference to a variable is a variable name optionally followed by an array sub
 subscript := '[' (variable_name | integer_literal) ']' ;
 variable := variable_name [ subscript {variable_char} ] ;
 ```
+
+**Constraints**
+
+A variable name should not end with a `:` character.
 
 **Semantics**
 
@@ -372,7 +345,43 @@ Some commands may accept either local variables or global variables, not both.
 Argument Matching
 ------------------------
 
+A command may accept parameters of either integer, float, label, text label or string type.
+
+A command may also accept a **multi-parameter**. A *multi-parameter* is a restricted union of the integer and float type.
+
+A command parameter may only accept variables (of either kinds), only accept local variables or only accept global variables. A parameter accepting only variables should have an identifier argument matching a variable reference.
+
+Each command have its own parameters description which should be described with the command.
+
+### Integer
+
 TODO
+
+### Float
+
+TODO
+
+### Label
+
+A parameter of type label should match a identifier argument. Such a identifier must be the name of a label in the multi-file.
+
+### Text Label
+
+A parameter of type text label should match an identifier argument.
+
+If the parameter only accepts variables, the identifier should match a variable reference. Otherwise, if the head of the identifier is a `$` character, the tail of the identifier should match a variable reference.
+
+TODO
+
+### String
+
+A parameter of type string should match a string literal argument.
+
+TODO
+
+TODO arg count
+
+TODO reminder text string => label, string identifier, string constant, variable reference
 
 
 Command Selectors
@@ -605,6 +614,8 @@ Local variable may have identical names as long as they are in different lexical
 
 Local variables cannot have the same name as any global variable.
 
+A variable shall not have the same name as a string constant.
+
 **Semantics**
 
 This command declares one or more names with the specified storage duration, data type, and array dimensions.
@@ -750,6 +761,8 @@ The statements are always executed at least once.
 ### Require Statements
 
 ```
+filename := {graph_char} '.SC' ;
+
 require_statement := command_gosub_file
                    | command_launch_mission
                    | command_load_and_launch_mission ;
@@ -1024,9 +1037,12 @@ TODO initial value of locals are undefined
 TODO describe goto and such inside a lexical scope to another lexical scope (or none)
 TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
 TODO timera timerb
-TODO shall should must etc
+TODO shall should must cannot could etc
 TODO casing of filenames should not matter
 TODO better name for what we are calling require statements
+TODO interesting NOP is not compiled
+TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
+TODO note var_text_label (and such) parameter type matches without dollar
 
 RATIONALE for global having unspecified initial value: Stories variable sharing (must read more though).
 
