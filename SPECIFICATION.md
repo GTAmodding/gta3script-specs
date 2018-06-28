@@ -5,9 +5,9 @@ Introduction
 
 This is an attempt to produce a formal language specification for the GTA3script language. 
 
-GTA3script is a imperative, strong and statically typed scripting language built by DMA Design (now Rockstar North) to design the mission scripts of its Grand Theft Auto game series.
+GTA3script is an imperative, strong and statically typed scripting language built by DMA Design (now Rockstar North) to design the mission scripts in Grand Theft Auto game series.
 
-The language is very simple and contains a huge amount of quirks uncommon to other languages. This document attempts to pull together all those tricks in a coherent way.
+The language is very basic and contains a huge amount of quirks uncommon to other languages. This document attempts to pull together all those tricks in a coherent way.
 
 Scope
 ---------------------
@@ -77,9 +77,9 @@ Concepts
 
 A **script** is a unit of execution which containts its own *program counter*, *local variables* and *compare flag*.
 
-A **variable** is a storage location assigned to a name. This location holds a value of specific type.
+A **variable** is a named storage location. This location holds a value of specific type.
 
-There are global and local variables. The storage of **global variables** is shared across scripts. The storage of **local variables** is local to each script.
+There are global and local variables. **Global variables** are stored in a way they are accessible from any script. **Local variables** are said to pertain to the particular script and only accessible from it.
 
 The lifetime of a *global variable* is the same as of the execution of all scripts. The lifetime of a *local variable* is the same as its script and lexical scope.
 
@@ -87,9 +87,9 @@ A **command** is an operation to be performed by a script. Commands may produce 
 
 A possible side-effect of executing a command is the updating of the *compare flag*. The **compare flag** of a command is the boolean result it produces. The **compare flag of a script** is the *compare flag* of the its last executed command. The *compare flag* is useful for conditionally changing the *flow of control*.
 
-The **program counter** of a script indicates its currently executing command. Unless one of the *side-effects* of a command is to change the *program counter*, the counter goes from the current command to the next sequentially. A explicit change in the *program counter* is said to be a change in the *flow of control*.
+The **program counter** of a script indicates its currently executing command. Unless one of the *side-effects* of a command is to change the *program counter*, the counter goes from the current command to the next sequentially. An explicit change in the *program counter* is said to be a change in the *flow of control*.
 
-A command is said to perform a **jump** if it changes the *flow of control* irreversibly.
+A command is said to perform a **goto** if it changes the *flow of control* irreversibly.
 
 A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored later.
 
@@ -584,7 +584,7 @@ The command `{` activates a lexical scope where local variables can be declared 
 
 The command `}` finishes such a lexical scope.
 
-The active scope is finished when control-flow of a script is transfered to outside the active lexical scope by a jump.
+The active scope is finished when control-flow of a script is transfered to outside the active lexical scope by a GOTO command.
 
 The transfer of control to the middle of a inactive lexical scope activates it.
 
