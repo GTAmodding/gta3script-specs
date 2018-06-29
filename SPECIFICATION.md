@@ -168,10 +168,10 @@ newline := ['\r'] `\n` ;
 
 Each line should be interpreted as if there was no whitespaces in either ends of the line.
 
-A graphical character is any printable character excluding whitespaces.
+A graphical character is any printable character excluding whitespaces and quotation marks.
 
 ```
-graph_char := ascii_printable - whitespace ;
+graph_char := ascii_printable - (whitespace | '"') ;
 ```
 
 To simplify future definitions, we define the productions `eol` as the end of a line, and `sep` as a token separator.
@@ -847,8 +847,8 @@ There is no startup semantics for main extension files. They are not entry point
 ### Subscript Files
 
 ```
-mission_start_directive := 'MISSION_START' [sep {whitespace | graph_char}] eol
-mission_end_directive := 'MISSION_END' [sep {whitespace | graph_char}] eol
+mission_start_directive := 'MISSION_START' [sep {whitespace | graph_char | string_literal}] eol
+mission_end_directive := 'MISSION_END' [sep {whitespace | graph_char | string_literal}] eol
 
 subscript_goal := mission_start_directive
                   {statement}
@@ -858,7 +858,7 @@ subscript_goal := mission_start_directive
 
 A subscript file contains a sequence of zero or more statements in between a `MISSION_START` and a `MISSION_END` directive. More statements may follow.
 
-The directives may contain arbitrary characters at its tail. Those should be ignored.
+The directives may contain arbitrary characters at their tail. Those should be ignored. Appearence of quotation marks should form pairs.
 
 **Constraints**
 
