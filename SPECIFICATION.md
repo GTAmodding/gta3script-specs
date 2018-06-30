@@ -89,7 +89,7 @@ A possible side-effect of executing a command is the updating of the *compare fl
 
 The **program counter** of a script indicates its currently executing command. Unless one of the *side-effects* of a command is to change the *program counter*, the counter goes from the current command to the next sequentially. An explicit change in the *program counter* is said to be a change in the *flow of control*.
 
-A command is said to perform a **goto** if it changes the *flow of control* irreversibly.
+A command is said to perform a **jump** if it changes the *flow of control* irreversibly.
 
 A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored later.
 
@@ -584,7 +584,7 @@ The command `{` activates a lexical scope where local variables can be declared 
 
 The command `}` finishes such a lexical scope.
 
-The active scope is finished when control-flow of a script is transfered to outside the active lexical scope by a GOTO command.
+The active scope is finished when control-flow of a script is transferred to outside the active lexical scope by a jump.
 
 The transfer of control to the middle of a inactive lexical scope activates it.
 
@@ -656,7 +656,7 @@ In any other case, the compare flag is set to false.
 
 There is no short-circuit evaluation. All conditional statements in a conditional list are executed. They are also executed in order.
 
-If the primary statement of a conditional statement is a expression with a operator of type `=`, equality comparision is choosen over assignment.
+If the primary statement of a conditional statement is a expression with a operator of type `=`, equality comparision is chosen over assignment.
 
 ### Selection Statements
 
