@@ -858,7 +858,7 @@ subscript_goal := mission_start_directive
 
 A subscript file contains a sequence of zero or more statements in between a `MISSION_START` and a `MISSION_END` directive. More statements may follow.
 
-The directives may contain arbitrary characters at their tail. Those should be ignored. Appearence of quotation marks should form pairs.
+The directives may contain arbitrary characters at their tail. Those should be ignored. Appearance of quotation marks should form pairs.
 
 **Constraints**
 
@@ -994,6 +994,7 @@ Remarks
  + NO SHORTCIRCUIT IN CONDITIONAL LIST
  + miss2 allows other chars other than the ones specified in source representation thus why we specify it (it is buggy)
  + control chars behave in a weird way in miss2 (including CR)
+ + in miss2, string literals are limited and also broken (quite a hack indeed). we do not follow its broken behaviours. Like: only one string per command; the end of a string ends the line (basically);
 
 miss2 cannot be the reference implementation because of bugs such as
 
@@ -1043,6 +1044,12 @@ TODO better name for what we are calling require statements
 TODO interesting NOP is not compiled
 TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
 TODO note var_text_label (and such) parameter type matches without dollar
+TODO x = ABS y (which game introduced this even? see code patterns)
+TODO IF/IFNOT GOTO
+TODO WHILENOT is not implemented properly in miss2 (only has =)
+TODO lhs of assignment-like and binary expr must be identifier, except in '=' due to a bug and ambiguity with equality
+TODO disallow binary ops in IF/AND/OR (spreading over more than one line)
+TODO miss2 docs from gta2script has lots of insights, read and re-read it once in a while
 
 RATIONALE for global having unspecified initial value: Stories variable sharing (must read more though).
 
@@ -1057,4 +1064,4 @@ RATIONALE for global having unspecified initial value: Stories variable sharing 
 [miss2_strings]: http://pastebin.com/raw/Pjb0Ezkx
 [gtasa_listing]: https://pastebin.com/2VczpwK7
 
-
+[gta2script.7z]: gtamp.com/GTA2/gta2script.7z
