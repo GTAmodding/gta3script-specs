@@ -5,9 +5,11 @@ Introduction
 
 This is an attempt to produce a formal language specification for the GTA3script language. 
 
-GTA3script is an imperative, strong and statically typed scripting language built by DMA Design (now Rockstar North) to design the mission scripts in Grand Theft Auto game series.
+GTA3script is an imperative, strong and statically typed scripting language built by DMA Design (now Rockstar North) to design the mission scripts in Grand Theft Auto.
 
-The language is very basic and contains a huge amount of quirks uncommon to other languages. This document attempts to pull together all those tricks in a coherent way.
+The DMA Design compiler is very basic and contains a huge amount of bugs. These bugs introduce a lot of inconsistencies and quirks to the language. This document attempts to resolve these issues and set a coherent language.
+
+The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A non-exhaustive list of differences is presented on the appendix.
 
 Scope
 ---------------------
@@ -168,10 +170,10 @@ newline := ['\r'] `\n` ;
 
 Each line should be interpreted as if there was no whitespaces in either ends of the line.
 
-A graphical character is any printable character excluding whitespaces and quotation marks.
+A token character is any character capable of forming a single token.
 
 ```
-graph_char := ascii_printable - (whitespace | '"') ;
+token_char := ascii_printable - (whitespace | '"' | '+' | '-' | '*' | '/' | '=' | '<' | '>') ;
 ```
 
 To simplify future definitions, we define the productions `eol` as the end of a line, and `sep` as a token separator.
@@ -208,7 +210,7 @@ Comments cannot start inside string literals.
 A command describes an operation a script should perform.
 
 ```
-command_name := graph_char {graph_char} ;
+command_name := token_char {token_char} ;
 command := command_name { sep argument } ;
 ```
 
@@ -226,23 +228,12 @@ argument := integer
 
 ```
 digit := '0'..'9';
-integer := ['-'] digit {digit | '-'} ;
+integer := ['-'] digit {digit} ;
 ```
 
-A integer literal is a sequence of digits and minus signs.
+A integer literal is a sequence of digits optionally preceded by a minus sign.
 
 If the literal begins with a minus, the number following it should be negated.
-
-If the `-` character happens anywhere but in the first character, all characters following and including the minus should be ignored.
-
-To make it clear, the following literals are valid and act as if they were the literal on the right.
-
-| Literal | Same As |
-| ------  | ------- |
-| 1       | 1       |
-| 010     | 10      |
-| -39     | -39     |
-| -432-10 | -432    |
 
 **Semantics**
 
@@ -285,7 +276,7 @@ The type of a floating-point literal is a float.
 ### Identifiers
 
 ```
-identifier := ('$' | 'A'..'Z') {graph_char} ;
+identifier := ('$' | 'A'..'Z') {token_char} ;
 ```
 
 **Constraints**
@@ -319,7 +310,7 @@ The type of a string literal is a string.
 The name of a variable is a sequence of graphical characters, except the characters `[` and `]` cannot happen.
 
 ```
-variable_char := graph_char - ('[' | ']') ;
+variable_char := token_char - ('[' | ']') ;
 variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ```
 
@@ -418,8 +409,6 @@ A expression is a shortcut to one or more command selectors.
 
 The arguments of an expression may not allow string literals.
 
-Any variable, constant or identifier which contains any of `asop`, `relop`, `binop` or `unop` in its name cannot be used in a expression. Integers with a minus anywhere but in the beggining of its token cannot be used as well.
-
 The name of commands used to require script files (see Require Statements) cannot be on the left hand side of a expression.
 
 ### Assignment Expressions
@@ -515,7 +504,7 @@ statement := labeled_statement
 Statements may be prefixed with a label.
 
 ```
-label_name := {graph_char} ;
+label_name := {token_char} ;
 labeled_statement := label_name ':' (sep embedded_statement | empty_statement) ;
 ```
 
@@ -780,7 +769,7 @@ The statements are always executed at least once.
 ### Require Statements
 
 ```
-filename := {graph_char} '.SC' ;
+filename := {token_char} '.SC' ;
 
 require_statement := command_gosub_file
                    | command_launch_mission
@@ -796,7 +785,7 @@ Require statements shall only appear as part of the content of the *main script 
 #### GOSUB_FILE Statement
 
 ```
-command_gosub_file := 'GOSUB_FILE' sep label sep filename eol ;
+command_gosub_file := 'GOSUB_FILE' sep identifier sep filename eol ;
 ```
 
 **Semantics**
@@ -866,8 +855,8 @@ There is no startup semantics for main extension files. They are not entry point
 ### Subscript Files
 
 ```
-mission_start_directive := 'MISSION_START' [sep {whitespace | graph_char | string_literal}] eol
-mission_end_directive := 'MISSION_END' [sep {whitespace | graph_char | string_literal}] eol
+mission_start_directive := 'MISSION_START' eol
+mission_end_directive := 'MISSION_END' eol
 
 subscript_goal := mission_start_directive
                   {statement}
@@ -876,8 +865,6 @@ subscript_goal := mission_start_directive
 ```
 
 A subscript file contains a sequence of zero or more statements in between a `MISSION_START` and a `MISSION_END` directive. More statements may follow.
-
-The directives may contain arbitrary characters at their tail. Those should be ignored. Appearance of quotation marks should form pairs.
 
 **Constraints**
 
@@ -1007,28 +994,125 @@ TODO
 Remarks
 ------------
 
+### Notes
+
  + The lexical grammar is not regular because of the nestable *multi-line comments*.
- + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category.
- + THIS IS A BROKEN LANGUAGE :)
- + NO SHORTCIRCUIT IN CONDITIONAL LIST
- + miss2 allows other chars other than the ones specified in source representation thus why we specify it (it is buggy)
- + control chars behave in a weird way in miss2 (including CR)
- + in miss2, string literals are limited and also broken (quite a hack indeed). we do not follow its broken behaviours. Like: only one string per command; the end of a string ends the line (basically);
+ + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category (TODO check this again after the change to a subset of miss2)
+ + Examples of dependence on context for lexing:
+    - `LABEL: COMMAND: 0 0`.
+    - `X = Y` is `command(X) '=' identifier(Y)` whereas `X Y` is `command(X) identifier(Y)`.
 
-miss2 cannot be the reference implementation because of bugs such as
+### How to MISS2
+
+The leaked script compiler is full of bugs. It was written for in-house use, so it's meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn't. For the conservative, the following is a list of known things miss2 accepts (or does not accept) that this specification does not (or does).
+
+**Unrestricted character set**
+
+More control codes than the specified are *accepted* by miss2 (such as `\r` anywhere or `\v`). The compiler behaves in weird ways when those are used.
+
+You may use custom characters (c > 127), but you may clash with the characters DMA used to tokenize string literals.
+
+**A string literal is the same as four tokens**
 
 ```
-IF {
+SAVE_STRING_TO_DEBUG_FILE "OO AR AZ WERTY"
+SAVE_STRING_TO_DEBUG_FILE FOO BAR BAZ QWERTY
+// both are recognized by miss2 and produce the same bytecode
+// this specification only accepts the string literal one
+``` 
+
+**A string literal ends a line**
+
+As part of transforming a string literal into tokens, miss2 puts a null terminator in the line. Thus, any argument following it is kinda of ignored.
+
+```
+SAVE_STRING_TO_DEBUG_FILE "this is a string" and this is ignored
+// this specification does not accept this
+```
+
+**Accepts internal compiler commands**
+
+Remove the constraint that commands that conflict with grammar definitions cannot be used in a `command_statement` and you get atrocities like:
+
+```
+IF { // does not begin a lexical scope
 ENDIF
+
+IF WHILE 0 // it's like an ANDOR within an ANDOR
+ENDIF
+
+// there is probably a lot more of these
 ```
 
-interesting stuff
+**WHILENOT is incomplete**
+
+WHILENOT only accepts equality comparision
 
 ```
---b // '--' variable(b)
---b b // command(--b) variable(b)
-// happens with other expressions as well
+WHILENOT x = 1
+ENDWHILE
+
+WHILENOT x < 1 // not recognized
+ENDWHILE
+
+// since we accept the above, we are not a subset anymore.
+// to fix this (and become a subset again) only allow equality
+// on WHILENOT.
 ```
+
+**AND/OR behaves differently than IF/WHILE/expressions**
+
+```
+WHILENOT x < 1 // not recognized
+AND x < 1      // recognized
+ENDWHILE
+// this specification accepts both
+
+WHILE WAIT 1-1 // not recognized
+AND WAIT 1-1   // recognized
+// this specification accepts neither
+
+WHILE WAIT-1   // the command WAIT with a -1 argument
+AND WAIT-1     // a command named WAIT-1
+// this specification accepts neither
+```
+
+**INT tokens allow minus in the middle**
+
+```
+WAIT 1-1
+WAIT 1-
+// this specification does not accept this
+```
+
+**Commands may have operator characters**
+
+```
+--b   // recognized as '--' variable(b)
+--b b // recognized as command(--b) variable(b)
+// this makes the lexer context sensitive
+// but this spec disallow the later form based
+// on the belief the IF/WHILE/expressions parser
+// is the correct one (details above).
+```
+
+**anything may follow MISSION_START**
+
+```
+MISSION_START anythin"may follow" this thing
+MISSION_END the same "happens"with mission_end
+// this specification does not accept this
+```
+
+**labels may contain any printable character (except quotation marks)**
+
+```
+e-=1:                  // recognized (we don't accept this)
+GOTO e-=1              // not recognized
+LAUNCH_MISSION e/=.sc  // recognized (we don't accept this)
+```
+
+**STILL NEED TO THINK ABOUT**
 
 more interesting stuff
 
@@ -1049,8 +1133,6 @@ TODO do note arguments are ambigous
 TODO alternators
 TODO mission directives
 TODO SAN ANDREAS ALLOWS VARIABLES AND STRING CONSTANTS TO BEGIN WITH UNDERSCORES 
-TODO commands such as var decl can be implemented at compiler or command def level
-TODO types
 TODO scripts subscripts and such
 TODO translation limits
 TODO initial value of locals are undefined
@@ -1058,13 +1140,10 @@ TODO describe goto and such inside a lexical scope to another lexical scope (or 
 TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
 TODO timera timerb
 TODO shall should must cannot could etc
-TODO casing of filenames should not matter
 TODO better name for what we are calling require statements
 TODO interesting NOP is not compiled
 TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
 TODO note var_text_label (and such) parameter type matches without dollar
-TODO x = ABS y (which game introduced this even? see code patterns)
-TODO IF/IFNOT GOTO
 TODO WHILENOT is not implemented properly in miss2 (only has =)
 TODO lhs of assignment-like and binary expr must be identifier, except in '=' due to a bug and ambiguity with equality
 TODO disallow binary ops in IF/AND/OR (spreading over more than one line)
