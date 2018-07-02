@@ -414,13 +414,7 @@ The same happens for the other examples in the table.
 Expressions
 -------------------------
 
-A expression is a shortcut for one or more command selectors.
-
-```
-expression := expr_rtol
-            | expr_binary 
-            | expr_unary ;
-```
+A expression is a shortcut to one or more command selectors.
 
 The arguments of an expression may not allow string literals.
 
@@ -428,20 +422,32 @@ Any variable, constant or identifier which contains any of `asop`, `relop`, `bin
 
 The name of commands used to require script files (see Require Statements) cannot be on the left hand side of a expression.
 
-### Assignment, Equality and Relational Operations
+### Assignment Expressions
 
 ```
-asop := '=' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' | '=#' ;
-relop := '<' | '>' | '>=' | '<=' ;
-expr_rtol := argument {whitespace} (asop | relop) {whitespace} argument eol ;
+binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
+asop := '=' | '=#' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' ;
+unop := '--' | '++' ;
+
+expr_assign_binary := argument {whitespace} asop {whitespace} argument eol ;
+expr_assign_ternary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument eol ;
+expr_assign_unary := (unop {whitespace} argument eol) 
+                   | (argument {whitespace} unop eol) ;
+
+assignment_expression := expr_assign_unary
+                       | expr_assign_binary
+                       | expr_assign_ternary ;
 ```
 
-These expressions should be rewritten as the following selectors:
+The unary assignments `++a` and `a++` should behave as if `ADD_THING_TO_THING a 1` was executed.
+
+The unary assignments `--a` and `a--` should behave as if `SUB_THING_FROM_THING a 1` was executed.
+
+The binary assignment expressions should behave as if the following was executed:
 
 | Operation | Command Selector                               |
 | --------- | ---------------------------------------------- |
 | `a = b`   | `SET a b`                                      |
-| `a = b`   | `IS_THING_EQUAL_TO_THING a b`                  |
 | `a =# b`  | `CSET a b`                                     |
 | `a += b`  | `ADD_THING_TO_THING a b`                       |
 | `a -= b`  | `SUB_THING_FROM_THING a b`                     |
@@ -449,51 +455,43 @@ These expressions should be rewritten as the following selectors:
 | `a /= b`  | `DIV_THING_BY_THING a b`                       |
 | `a +=@ b` | `ADD_THING_TO_THING_TIMED a b`                 |
 | `a -=@ b` | `SUB_THING_FROM_THING_TIMED a b`               |
-| `a > b`   | `IS_THING_GREATER_THAN_THING a b`              |
-| `a >= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING a b`       |
-| `a < b`   | `IS_THING_GREATER_THAN_THING b a`              |
-| `a <= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING b a`       |
 
-A rule to differentiate between assignment and equality (`=`) is given in the definition of conditional statements.
-
-### Binary Operations
-
-```
-binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
-expr_binary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument eol ;
-```
-
-A operation of the form `a = b + c` should be rewritten as either:
+The ternary assignment `a = b + c` should behave as if the following was executed:
  
  + `ADD_THING_TO_THING a c` if the name `a` is the same as the name `b`.
  + `ADD_THING_TO_THING a b` if the name `a` is the same as the name `c`.
  + `SET a b` followed by `ADD_THING_TO_THING a c` otherwise.
 
-A operation of the form `a = b - c` should be rewritten as either:
+The ternary assignment `a = b - c` should behave as if the following was executed:
 
  + `SUB_THING_FROM_THING a c` if the name `a` is the same as the name `b`.
  + Implementation-defined if `a` is the same name as `c`.
  + `SET a b` followed by `SUB_THING_BY_THING a c` otherwise.
 
-A operation of the form `a = b * c` should be rewritten under the same rules as `a = b + c`, except by using `MULT_THING_BY_THING` instead of `ADD_THING_TO_THING`.
+The ternary assignment `a = b * c` should behave as if `a = b + c`, except by using `MULT_THING_BY_THING` instead of `ADD_THING_TO_THING`.
 
-A operation of the form `a = b / c` should be rewritten under the same rules as `a = b - c`, except by using `DIV_THING_BY_THING` instead of `SUB_THING_FROM_THING`.
+The ternary assignment `a = b / c` should behave as if `a = b - c`, except by using `DIV_THING_BY_THING` instead of `SUB_THING_FROM_THING`.
 
-A operation of the form `a = b +@ c` and `a = b -@ c` should be rewritten under the same rules as `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
+The ternary assignments `a = b +@ c` and `a = b -@ c` should behave as if `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
 
-### Unary Operations
+The left hand side of every assignment expression must be an identifier, except for the ternary assignments and the binary assignments `a = b` and `a =# b`.
+
+### Conditional Expressions
 
 ```
-unop := '--' | '++' ;
-expr_unary := (unop {whitespace} argument eol) 
-            | (argument {whitespace} unop eol) ;
+relop := '=' | '<' | '>' | '>=' | '<=' ;
+conditional_expression := argument {whitespace} relop {whitespace} argument eol ;
 ```
 
-The operations `++a` and `a++` should be rewritten as `ADD_THING_TO_THING a 1`.
+These expressions should behave as if the following was executed:
 
-The operations `--a` and `a--` should be rewritten as `SUB_THING_FROM_THING a 1`.
-
-Both prefix and postfix unary operations are the same.
+| Operation | Command Selector                               |
+| --------- | ---------------------------------------------- |
+| `a = b`   | `IS_THING_EQUAL_TO_THING a b`                  |
+| `a > b`   | `IS_THING_GREATER_THAN_THING a b`              |
+| `a >= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING a b`       |
+| `a < b`   | `IS_THING_GREATER_THAN_THING b a`              |
+| `a <= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING b a`       |
 
 Statements
 --------------------------------
@@ -522,15 +520,17 @@ The name of a label must be unique across the multi-file.
 
 This label may be referenced in certain commands to transfer (or start) control-flow of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it enbodies.
 
-The name of a label may be empty. The name of a label may contain characters that do not match the `text_literal` production. In such cases, the label cannot be used as arguments to commands.
+The name of a label may be empty. The name of a label may contain characters that do not match the `identifier` production. In such cases, the label cannot be used as arguments to commands.
 
 ### Empty Statements
-
-An empty statement does nothing.
 
 ```
 empty_statement := eol ;
 ```
+
+**Semantics**
+
+An empty statement does nothing.
 
 ### Embedded Statements
 
@@ -538,7 +538,9 @@ Embedded statements are statements not prefixed by a label.
 
 ```
 embedded_statement := empty_statement
-                     | primary_statement
+                     | command_statement
+                     | assignment_expression
+                     | conditional_expression
                      | scope_statement
                      | var_statement
                      | if_statement
@@ -549,10 +551,14 @@ embedded_statement := empty_statement
                      | require_statement ;
 ```
 
-### Primary Statements
+**Semantics**
+
+The execution of the assignment expression `a = b` is favored over the the execution of the conditional expression of the same form.
+
+### Command Statements
 
 ```
-primary_statement := (command | expression) ;
+command_statement := command ;
 ```
 
 **Constraints**
@@ -561,7 +567,7 @@ The command it enbodies cannot be any of the commands specified by this section 
 
 **Semantics**
 
-The execution of a primary statement takes place by executing the command or expression it embodies.
+The execution of a command statement takes place by executing the command it embodies.
 
 ### Scope Statements
 
@@ -631,7 +637,7 @@ The initial value of variables is unspecified.
 Conditional statements produce changes in the script compare flag.
 
 ```
-conditional_statement := ['NOT' sep] primary_statement ;
+conditional_statement := ['NOT' sep] (command_statement | conditional_expression) ;
 
 and_conditional_stmt := 'AND' sep conditional_statement ;
 or_conditional_stmt := 'OR' sep conditional_statement ;
@@ -642,21 +648,17 @@ conditional_list := conditional_statement
 
 **Semantics**
 
-The compare flag of a conditional statement is the same as the primary statement it enbodies.
+The execution of a conditional statement takes place by executing the command or expression it embodies.
 
-The compare flag is negated by prepending the statement by a `NOT`. 
+The compare flag of the executed command or expression is negated if the statement is prefixed with a `NOT`.
 
 A conditional list is either a conditional statement or a combination of these by the use of either `AND` or `OR` tokens.
 
-The compare flag is set to true if the compare flag of all conditional statements in a `AND` list holds true.
+A conditional list shall not be short-circuit evaluated. All conditional statements are executed in order.
 
-The compare flag is set to true if the compare flag of at least one conditional statement in a `OR` list holds true.
+The compare flag is set to true if the compare flag of all conditional statements in a `AND` list holds true. Otherwise it is set to false.
 
-In any other case, the compare flag is set to false.
-
-There is no short-circuit evaluation. All conditional statements in a conditional list are executed. They are also executed in order.
-
-If the primary statement of a conditional statement is a expression with a operator of type `=`, equality comparision is chosen over assignment.
+The compare flag is set to true if the compare flag of at least one conditional statement in a `OR` list holds true. Otherwise it is set to false.
 
 ### Selection Statements
 
