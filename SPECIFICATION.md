@@ -209,7 +209,7 @@ A command describes an operation a script should perform.
 
 ```
 command_name := graph_char {graph_char} ;
-command := command_name { sep argument } eol ;
+command := command_name { sep argument } ;
 ```
 
 There are several types of arguments.
@@ -429,11 +429,11 @@ binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
 asop := '=' | '=#' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' ;
 unop := '--' | '++' ;
 
-expr_assign_abs := argument {whitespace} '=' {whitespace} 'ABS' {whitespace} argument eol;
-expr_assign_binary := argument {whitespace} asop {whitespace} argument eol ;
-expr_assign_ternary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument eol ;
-expr_assign_unary := (unop {whitespace} argument eol) 
-                   | (argument {whitespace} unop eol) ;
+expr_assign_abs := argument {whitespace} '=' {whitespace} 'ABS' {whitespace} argument ;
+expr_assign_binary := argument {whitespace} asop {whitespace} argument ;
+expr_assign_ternary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument ;
+expr_assign_unary := (unop {whitespace} argument) 
+                   | (argument {whitespace} unop) ;
 
 assignment_expression := expr_assign_unary
                        | expr_assign_binary
@@ -487,7 +487,7 @@ The left hand side of every assignment expression must be an identifier, except 
 
 ```
 relop := '=' | '<' | '>' | '>=' | '<=' ;
-conditional_expression := argument {whitespace} relop {whitespace} argument eol ;
+conditional_expression := argument {whitespace} relop {whitespace} argument ;
 ```
 
 These expressions should behave as if the following was executed:
@@ -546,35 +546,39 @@ Embedded statements are statements not prefixed by a label.
 ```
 embedded_statement := empty_statement
                      | command_statement
-                     | assignment_expression
-                     | conditional_expression
+                     | expression_statement
                      | scope_statement
                      | var_statement
                      | if_statement
                      | ifnot_statement
+                     | if_goto_statement
+                     | ifnot_goto_statement
                      | while_statement
                      | whilenot_statement
                      | repeat_statement
                      | require_statement ;
 ```
 
-**Semantics**
-
-The execution of the assignment expression `a = b` is favored over the the execution of the conditional expression of the same form.
-
 ### Command Statements
 
 ```
-command_statement := command ;
+command_statement := command eol ;
 ```
 
 **Constraints**
 
 The command it enbodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `IF`, `ENDWHILE`, `{`, `GOSUB_FILE`, etc).
 
+### Expression Statements
+
+```
+expression_statement := assignment_expression eol
+                      | conditional_expression eol ;
+```
+
 **Semantics**
 
-The execution of a command statement takes place by executing the command it embodies.
+The execution of the assignment expression `a = b` is favored over the the execution of the conditional expression of the same form.
 
 ### Scope Statements
 
@@ -644,89 +648,100 @@ The initial value of variables is unspecified.
 Conditional statements produce changes in the script compare flag.
 
 ```
-conditional_statement := ['NOT' sep] (command_statement | conditional_expression) ;
+conditional_element := ['NOT' sep] (command | conditional_expression) ;
 
-and_conditional_stmt := 'AND' sep conditional_statement ;
-or_conditional_stmt := 'OR' sep conditional_statement ;
+and_conditional_stmt := 'AND' sep conditional_element eol ;
+or_conditional_stmt := 'OR' sep conditional_element eol ;
 
-conditional_list := conditional_statement
+conditional_list := conditional_element eol
                     ({and_conditional_stmt} | {or_conditional_stmt}) ;
 ```
 
 **Semantics**
 
-The execution of a conditional statement takes place by executing the command or expression it embodies.
+The execution of a conditional element takes place by executing the command or expression it embodies.
 
-The compare flag of the executed command or expression is negated if the statement is prefixed with a `NOT`.
+The execution of a command should follows the same semantic rules of a command statement.
 
-A conditional list is either a conditional statement or a combination of these by the use of either `AND` or `OR` tokens.
+The compare flag of the executed element is negated if the statement is prefixed with a `NOT`.
 
-A conditional list shall not be short-circuit evaluated. All conditional statements are executed in order.
+A conditional list is a sequence of one or more conditional elements separated by either `AND` or `OR` tokens.
 
-The compare flag is set to true if the compare flag of all conditional statements in a `AND` list holds true. Otherwise it is set to false.
+A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.
 
-The compare flag is set to true if the compare flag of at least one conditional statement in a `OR` list holds true. Otherwise it is set to false.
+The compare flag is set to true if the compare flag of all conditional elements in a `AND` list holds true. Otherwise it is set to false.
+
+The compare flag is set to true if the compare flag of at least one conditional elements in a `OR` list holds true. Otherwise it is set to false.
 
 ### Selection Statements
 
-Selection statements selects statements to execute from a set of statements depending on a list of conditions.
+Selection statements selects which statements to execute depending on certain conditions.
 
 #### IF Statement
 
 ```
-command_if := 'IF' sep conditional_list ;
-command_else := 'ELSE' eol ;
-command_endif := 'ENDIF' eol ;
-
-if_statement := command_if
+if_statement := 'IF' sep conditional_list
                 {statement}
-                [command_else
+                ['ELSE'
                 {statement}]
-                command_endif ;
+                'ENDIF' ;
 ```
 
 **Semantics**
 
-The `IF` command executes a conditional list, grabs its compare flag and chooses between two set of statements to execute.
+This statement executes a list of conditions, grabs its compare flag and chooses between two set of statements to execute.
 
-If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set (if an `ELSE` exists) or to the end of the construct.
+If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set if an `ELSE` exists. After the set of statements are executed, control is transfered to the end of the IF block, unless execution of the statements resulted in a jump out of it.
 
 #### IFNOT Statement
 
 ```
-command_ifnot := 'IFNOT' sep conditional_list ;
-
-ifnot_statement := command_ifnot
+ifnot_statement := 'IFNOT' sep conditional_list
                    {statement}
-                   [command_else
+                   ['ELSE'
                    {statement}]
-                   command_endif ;
+                   'ENDIF' ;
 ```
 
 **Semantics**
 
-The behaviour of this statement is the same as of the IF statement, except the `IFNOT` command acts differently.
+The behaviour of this is the same as of the IF statement, except the complement of the compare flag is used to test which set of statements to execute.
 
-The `IFNOT` command executes a conditional list, grabs the complement of its compare flag, then chooses between the two sets of statements to execute.
+#### IF GOTO Statement
+
+```
+if_goto_statement := 'IF' sep conditional_element sep 'GOTO' identifier eol ;
+```
+
+**Semantics**
+
+This statement performs a jump to the label specified by identifier if the compare flag of the conditional element holds true. Otherwise, the flow of control is unchanged.
+
+#### IFNOT GOTO Statement
+
+```
+ifnot_goto_statement := 'IFNOT' sep conditional_element sep 'GOTO' identifier eol ;
+```
+
+**Semantics**
+
+The behaviour of this is the same as of the IF GOTO statement, except the complement of the compare flag is used to test whether to jump.
 
 ### Iteration Statements
 
 #### WHILE Statement
 
 ```
-command_while := 'WHILE' sep conditional_list ;
-command_endwhile := 'ENDWHILE' eol ;
-
-while_statement := command_while
+while_statement := 'WHILE' sep conditional_list
                    {statement}
-                   command_endwhile ;
+                   'ENDWHILE' eol ;
 ```
 
 **Semantics**
 
-The while statement executes a set of statements while the conditional list holds true.
+The WHILE statement executes a set of statements while the compare flag of the conditional list holds true.
 
-The `WHILE` command executes a conditional list, grabs its compare flag, and transfers control to after the `ENDWHILE` if it's false. Otherwise, it executes the set of statements given, and then transfers control back again to the `WHILE` command.
+The statement executes by grabbing the compare flag of the list of conditions and transfers control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. After the set of statements are executed, control is transfered to beggining of the block, unless execution of the statements resulted in a jump out of it.
 
 #### WHILENOT Statement
 
@@ -740,17 +755,14 @@ whilenot_statement := command_whilenot
 
 **Semantics**
 
-This is the analogous to the IFNOT statement in relation to the IF statement, meaning the statements are executed while the conditional list holds false.
+The behaviour of this is the same as of the WHILE statement, except the complement of the compare flag is used to test whether to continue executing the set of statements.
 
 #### REPEAT Statement
 
 ```
-command_repeat := 'REPEAT' sep integer sep variable eol ;
-command_endrepeat := 'ENDREPEAT' eol ;
-
-repeat_statement := command_repeat
+repeat_statement := 'REPEAT' sep integer sep variable eol
                     {statement}
-                    command_endrepeat ;
+                    'ENDREPEAT' eol ;
 ```
 
 **Constraints**
@@ -761,9 +773,9 @@ The second argument must be a variable of integer type.
 
 **Semantics**
 
-The repeat statement executes a set of statements until a counter variable reaches a threshold.
+The REPEAT statement executes a set of statements until a counter variable reaches a threshold.
 
-More precisely, the counter variable is set to zero, the statements are executed, then the variable is incremented and if it is still less than the threshold, control is transfered back to the statements again.
+The counter variable is set to zero and the statements are executed. After the statements are executed, and none of them resulted in a jump out of the block, the variable is incremented and if it compares less than the threshold, control is transfered back to the set of statements.
 
 The statements are always executed at least once.
 
