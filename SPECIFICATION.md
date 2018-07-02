@@ -661,7 +661,7 @@ conditional_list := conditional_element eol
 
 The execution of a conditional element takes place by executing the command or expression it embodies.
 
-The execution of a command should follows the same semantic rules of a command statement.
+The execution of a command follows the same semantic rules of a command statement.
 
 The compare flag of the executed element is negated if the statement is prefixed with a `NOT`.
 
@@ -746,11 +746,9 @@ The statement executes by grabbing the compare flag of the list of conditions an
 #### WHILENOT Statement
 
 ```
-command_whilenot := 'WHILENOT' sep conditional_list ;
-
-whilenot_statement := command_whilenot
+whilenot_statement := 'WHILENOT' sep conditional_list
                       {statement}
-                      command_endwhile ;
+                      'ENDWHILE' eol ;
 ```
 
 **Semantics**
