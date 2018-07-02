@@ -429,6 +429,7 @@ binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
 asop := '=' | '=#' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' ;
 unop := '--' | '++' ;
 
+expr_assign_abs := argument {whitespace} '=' {whitespace} 'ABS' {whitespace} argument eol;
 expr_assign_binary := argument {whitespace} asop {whitespace} argument eol ;
 expr_assign_ternary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument eol ;
 expr_assign_unary := (unop {whitespace} argument eol) 
@@ -436,7 +437,8 @@ expr_assign_unary := (unop {whitespace} argument eol)
 
 assignment_expression := expr_assign_unary
                        | expr_assign_binary
-                       | expr_assign_ternary ;
+                       | expr_assign_ternary
+                       | expr_assign_abs ;
 ```
 
 The unary assignments `++a` and `a++` should behave as if `ADD_THING_TO_THING a 1` was executed.
@@ -456,6 +458,11 @@ The binary assignment expressions should behave as if the following was executed
 | `a +=@ b` | `ADD_THING_TO_THING_TIMED a b`                 |
 | `a -=@ b` | `SUB_THING_FROM_THING_TIMED a b`               |
 
+The absolute assignment `a = ABS b` should behave as if the following was executed:
+
+ + `ABS a` if the name `a` is the same as the name `b`.
+ + `SET a b` followed by `ABS a` otherwise.
+
 The ternary assignment `a = b + c` should behave as if the following was executed:
  
  + `ADD_THING_TO_THING a c` if the name `a` is the same as the name `b`.
@@ -474,7 +481,7 @@ The ternary assignment `a = b / c` should behave as if `a = b - c`, except by us
 
 The ternary assignments `a = b +@ c` and `a = b -@ c` should behave as if `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
 
-The left hand side of every assignment expression must be an identifier, except for the ternary assignments and the binary assignments `a = b` and `a =# b`.
+The left hand side of every assignment expression must be an identifier, except for absolute assignments, ternary assignments, and the binary assignments `a = b` and `a =# b`.
 
 ### Conditional Expressions
 
@@ -1052,6 +1059,7 @@ TODO WHILENOT is not implemented properly in miss2 (only has =)
 TODO lhs of assignment-like and binary expr must be identifier, except in '=' due to a bug and ambiguity with equality
 TODO disallow binary ops in IF/AND/OR (spreading over more than one line)
 TODO miss2 docs from gta2script has lots of insights, read and re-read it once in a while
+TODO ugh maybe GOTO is a reserved word becaues of IF...GOTO
 
 RATIONALE for global having unspecified initial value: Stories variable sharing (must read more though).
 
