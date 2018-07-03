@@ -222,7 +222,6 @@ There are several types of arguments.
 argument := integer
           | floating 
           | identifier
-          | variable 
           | string_literal ;
 ```
 
@@ -287,6 +286,8 @@ An identifier should not end with a `:` character.
 
 **Semantics**
 
+The type of a variable is TODO.
+
 The type of a string identifier is a text label.
 
 The type of a string constant is a constant.
@@ -307,31 +308,6 @@ string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 
 The type of a string literal is a string.
 
-### Variable References
-
-The name of a variable is a sequence of token characters, except the characters `[` and `]` cannot happen.
-
-```
-variable_char := token_char - ('[' | ']') ;
-variable_name := ('$' | 'A'..'Z') {variable_char} ;
-```
-
-A reference to a variable is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript shall not happen more than once.
-
-```
-subscript := '[' (variable_name | integer_literal) ']' ;
-variable := variable_name [ subscript {variable_char} ] ;
-```
-
-**Constraints**
-
-A variable name should not end with a `:` character.
-
-**Semantics**
-
-The subscript may use a integer literal or another variable name of integer type.
-
-The type of a variable reference is the inner type of the variable name being referenced.
 
 Argument Matching
 ------------------------
@@ -374,6 +350,25 @@ TODO arg count
 
 TODO reminder text string => label, string identifier, string constant, variable reference
 
+**Variable Reference (TODO where to put this)**
+
+The name of a variable is a sequence of token characters, except the characters `[` and `]` cannot happen.
+
+```
+variable_char := token_char - ('[' | ']') ;
+variable_name := ('$' | 'A'..'Z') {variable_char} ;
+```
+
+A reference to a variable is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript shall not happen more than once.
+
+```
+subscript := '[' (variable_name | integer_literal) ']' ;
+variable := variable_name [ subscript {variable_char} ] ;
+```
+
+The subscript may use a integer literal or another variable name of integer type.
+
+The type of a variable reference is the inner type of the variable name being referenced.
 
 Command Selectors
 ------------------------
@@ -746,7 +741,7 @@ The behaviour of this is the same as of the WHILE statement, except the compleme
 #### REPEAT Statement
 
 ```
-repeat_statement := 'REPEAT' sep integer sep variable eol
+repeat_statement := 'REPEAT' sep integer sep identifier eol
                     {statement}
                     'ENDREPEAT' eol ;
 ```
@@ -1093,8 +1088,8 @@ WAIT 1-
 **Commands may have operator characters**
 
 ```
---b   // recognized as '--' variable(b)
---b b // recognized as command(--b) variable(b)
+--b   // recognized as '--' identifier(b)
+--b b // recognized as command(--b) identifier(b)
 // this makes the lexer context sensitive
 // but this spec disallow the later form based
 // on the belief the IF/WHILE/expressions parser
