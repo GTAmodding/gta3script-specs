@@ -79,6 +79,8 @@ Concepts
 
 A **script** is a unit of execution which containts its own *program counter*, *local variables* and *compare flag*.
 
+A **program** is a collection of scripts running concurrently.
+
 A **variable** is a named storage location. This location holds a value of specific type.
 
 There are global and local variables. **Global variables** are stored in a way they are accessible from any script. **Local variables** are said to pertain to the particular script and only accessible from it.
@@ -95,7 +97,7 @@ A command is said to perform a **jump** if it changes the *flow of control* irre
 
 A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored later.
 
-A command is said to **terminate** a script if it halts and reclaims storage and states of such a script.
+A command is said to **terminate** a script if it halts and reclaims storage of such a script.
 
 ### Script Files
 
@@ -201,7 +203,7 @@ There are two forms:
 The contents of comments shall be interpreted as if it were whitespaces in the source code. More specifically: 
 
  + A *line comment* should be interpreted as an `eol`.
- + A single, nested, *block comment* should be interpreted as an `eol` on each line boundary it crosses. On its last line (i.e. the one it does not cross), it should be interpreted as one or more `whitespace` characters.
+ + A single, nested, *block comment* should be interpreted as an `eol` on each line boundary it crosses. On its last line (i.e. the one it does not cross), it should be interpreted as one or more whitespace characters.
 
 Comments cannot start inside string literals.
 
@@ -307,14 +309,14 @@ The type of a string literal is a string.
 
 ### Variable References
 
-The name of a variable is a sequence of graphical characters, except the characters `[` and `]` cannot happen.
+The name of a variable is a sequence of token characters, except the characters `[` and `]` cannot happen.
 
 ```
 variable_char := token_char - ('[' | ']') ;
 variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ```
 
-A reference to a variable is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript cannot happen twice.
+A reference to a variable is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript shall not happen more than once.
 
 ```
 subscript := '[' (variable_name | integer_literal) ']' ;
@@ -330,8 +332,6 @@ A variable name should not end with a `:` character.
 The subscript may use a integer literal or another variable name of integer type.
 
 The type of a variable reference is the inner type of the variable name being referenced.
-
-Some commands may accept either local variables or global variables, not both.
 
 Argument Matching
 ------------------------
@@ -378,6 +378,8 @@ TODO reminder text string => label, string identifier, string constant, variable
 Command Selectors
 ------------------------
 
+TODO this is confusing, rewrite once the argument matching section is done.
+
 A command selector (or alternator) is a kind of command which gets rewriten by the translator to another command based on the supplied argument types.
 
 A command selector consists of its name and a set of commands which are alternatives for replacement.
@@ -405,7 +407,7 @@ The same happens for the other examples in the table.
 Expressions
 -------------------------
 
-A expression is a shortcut to one or more command selectors.
+An expression is a shortcut to one or more command selectors.
 
 The arguments of an expression may not allow string literals.
 
@@ -436,16 +438,16 @@ The unary assignments `--a` and `a--` should behave as if `SUB_THING_FROM_THING 
 
 The binary assignment expressions should behave as if the following was executed:
 
-| Operation | Command Selector                               |
-| --------- | ---------------------------------------------- |
-| `a = b`   | `SET a b`                                      |
-| `a =# b`  | `CSET a b`                                     |
-| `a += b`  | `ADD_THING_TO_THING a b`                       |
-| `a -= b`  | `SUB_THING_FROM_THING a b`                     |
-| `a *= b`  | `MULT_THING_BY_THING a b`                      |
-| `a /= b`  | `DIV_THING_BY_THING a b`                       |
-| `a +=@ b` | `ADD_THING_TO_THING_TIMED a b`                 |
-| `a -=@ b` | `SUB_THING_FROM_THING_TIMED a b`               |
+| Expression | Behaves As If                                  |
+| ---------- | ---------------------------------------------- |
+| `a = b`    | `SET a b`                                      |
+| `a =# b`   | `CSET a b`                                     |
+| `a += b`   | `ADD_THING_TO_THING a b`                       |
+| `a -= b`   | `SUB_THING_FROM_THING a b`                     |
+| `a *= b`   | `MULT_THING_BY_THING a b`                      |
+| `a /= b`   | `DIV_THING_BY_THING a b`                       |
+| `a +=@ b`  | `ADD_THING_TO_THING_TIMED a b`                 |
+| `a -=@ b`  | `SUB_THING_FROM_THING_TIMED a b`               |
 
 The absolute assignment `a = ABS b` should behave as if the following was executed:
 
@@ -481,13 +483,13 @@ conditional_expression := argument {whitespace} relop {whitespace} argument ;
 
 These expressions should behave as if the following was executed:
 
-| Operation | Command Selector                               |
-| --------- | ---------------------------------------------- |
-| `a = b`   | `IS_THING_EQUAL_TO_THING a b`                  |
-| `a > b`   | `IS_THING_GREATER_THAN_THING a b`              |
-| `a >= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING a b`       |
-| `a < b`   | `IS_THING_GREATER_THAN_THING b a`              |
-| `a <= b`  | `IS_THING_GREATER_OR_EQUAL_TO_THING b a`       |
+| Expression | Behaves As If                                  |
+| ---------- | ---------------------------------------------- |
+| `a = b`    | `IS_THING_EQUAL_TO_THING a b`                  |
+| `a > b`    | `IS_THING_GREATER_THAN_THING a b`              |
+| `a >= b`   | `IS_THING_GREATER_OR_EQUAL_TO_THING a b`       |
+| `a < b`    | `IS_THING_GREATER_THAN_THING b a`              |
+| `a <= b`   | `IS_THING_GREATER_OR_EQUAL_TO_THING b a`       |
 
 Statements
 --------------------------------
@@ -514,7 +516,7 @@ The name of a label must be unique across the multi-file.
 
 **Semantics**
 
-This label may be referenced in certain commands to transfer (or start) control-flow of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it enbodies.
+This label may be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
 
 The name of a label may be empty. The name of a label may contain characters that do not match the `identifier` production. In such cases, the label cannot be used as arguments to commands.
 
@@ -556,7 +558,7 @@ command_statement := command eol ;
 
 **Constraints**
 
-The command it enbodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `IF`, `ENDWHILE`, `{`, `GOSUB_FILE`, etc).
+The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `IF`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).
 
 ### Expression Statements
 
@@ -567,17 +569,16 @@ expression_statement := assignment_expression eol
 
 **Semantics**
 
+An expression statement executes the expression it embodies.
+
 The execution of the assignment expression `a = b` is favored over the the execution of the conditional expression of the same form.
 
 ### Scope Statements
 
 ```
-command_scope_activate := '{' eol ;
-command_scope_finish := '}' eol ;
-
-scope_statement := command_scope_activate
+scope_statement := '{' eol
                    {statement}
-                   command_scope_finish ;
+                   '}' eol ;
 ```
 
 **Constraints**
@@ -586,15 +587,17 @@ Lexical scopes cannot be nested.
 
 **Semantics**
 
-The command `{` activates a lexical scope where local variables can be declared or used.
+The command `{` activates a lexical scope where local variables can be declared.
 
-The command `}` finishes such a lexical scope.
+The command `}` leaves the active lexical scope.
 
-The active scope is finished when control-flow of a script is transferred to outside the active lexical scope by a jump.
+The transfer of control to any of the statements within the scope block activates it.
 
-The transfer of control to the middle of a inactive lexical scope activates it.
+The execution of a jump to outside the scope block leaves the lexical scope.
 
-Transfer of control to a subroutine shall not deactivate the active scope. The behaviour of the script is unspecified if such a subroutine activates another lexical scope.
+Performing a subroutine call shall not leave the active scope. The name of local variables become hidden if the subroutine is not within the scope block. The behaviour of the program is unspecified if such a subroutine activates another lexical scope.
+
+Leaving a lexical scope causes the storage for the declared local variables to be reclaimed.
 
 ### Variable Statements
 
@@ -603,28 +606,28 @@ command_var_name := 'VAR_INT'
                     | 'LVAR_INT'
                     | 'VAR_FLOAT'
                     | 'LVAR_FLOAT' ;
-command_var_param := sep variable ;
+command_var_param := sep identifier ;
 
 var_statement := command_var_name command_var_param {command_var_param} eol ;
 ```
 
-The declaration command name is a pair of storage duration and variable type.
+The name of the command is a pair of storage duration and variable type.
 
-The commands with the `VAR_` prefix declares global variables. The ones with `LVAR_` declares local variables. The `INT` suffix declares variables capable of storing and having type integer. The `FLOAT` suffix declares floating-point ones.
+The commands with the `VAR_` prefix declares global variables. The ones with `LVAR_` declares local variables. The `INT` suffix declares variables capable of storing integers. The `FLOAT` suffix declares floating-point ones.
 
 **Constraints**
 
 Global variable names must be unique across the multi-file.
 
-Local variable may have identical names as long as they are in different lexical scopes.
+Local variables may have identical names as long as they are in different lexical scopes.
 
-Local variables cannot have the same name as any global variable.
+Local variables shall not have the same name as any global variable.
 
 A variable shall not have the same name as a string constant.
 
 **Semantics**
 
-This command declares one or more names with the specified storage duration, data type, and array dimensions.
+This command declares one or more names with the specified storage duration, type, and array dimensions.
 
 Global variable names can be seen by the entire multi-file.
 
@@ -648,23 +651,19 @@ conditional_list := conditional_element eol
 
 **Semantics**
 
-The execution of a conditional element takes place by executing the command or expression it embodies.
-
-The execution of a command follows the same semantic rules of a command statement.
-
-The compare flag of the executed element is negated if the statement is prefixed with a `NOT`.
+A conditional element executes the command or expression it embodies. The execution of a command follows the same semantic rules of a command statement. The compare flag of the executed element is negated if the `NOT` prefix is used.
 
 A conditional list is a sequence of one or more conditional elements separated by either `AND` or `OR` tokens.
-
-A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.
 
 The compare flag is set to true if the compare flag of all conditional elements in a `AND` list holds true. Otherwise it is set to false.
 
 The compare flag is set to true if the compare flag of at least one conditional elements in a `OR` list holds true. Otherwise it is set to false.
 
+A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.
+
 ### Selection Statements
 
-Selection statements selects which statements to execute depending on certain conditions.
+Selection statements selects which statement to execute depending on certain conditions.
 
 #### IF Statement
 
@@ -680,7 +679,7 @@ if_statement := 'IF' sep conditional_list
 
 This statement executes a list of conditions, grabs its compare flag and chooses between two set of statements to execute.
 
-If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set if an `ELSE` exists. After the set of statements are executed, control is transfered to the end of the IF block, unless execution of the statements resulted in a jump out of it.
+If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set if an `ELSE` exists. After the set of statements are executed, control is transfered to the end of the IF block, unless execution of the statements resulted in a jump out of the block.
 
 #### IFNOT Statement
 
@@ -730,7 +729,7 @@ while_statement := 'WHILE' sep conditional_list
 
 The WHILE statement executes a set of statements while the compare flag of the conditional list holds true.
 
-The statement executes by grabbing the compare flag of the list of conditions and transfers control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. After the set of statements are executed, control is transfered to beggining of the block, unless execution of the statements resulted in a jump out of it.
+The statement executes by grabbing the compare flag of the list of conditions and transfering control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. After the set of statements are executed, control is transfered again to beggining of the block, unless execution of the statements resulted in a jump out of the block.
 
 #### WHILENOT Statement
 
@@ -754,7 +753,7 @@ repeat_statement := 'REPEAT' sep integer sep variable eol
 
 **Constraints**
 
-The first argument to `REPEAT` must be a integer literal.
+The first argument to REPEAT must be an integer literal.
 
 The second argument must be a variable of integer type.
 
@@ -762,7 +761,7 @@ The second argument must be a variable of integer type.
 
 The REPEAT statement executes a set of statements until a counter variable reaches a threshold.
 
-The counter variable is set to zero and the statements are executed. After the statements are executed, and none of them resulted in a jump out of the block, the variable is incremented and if it compares less than the threshold, control is transfered back to the set of statements.
+The counter variable is set to zero and the statements are executed. After the statements are executed, and none of them resulted in a jump out of the block, the variable is incremented and if it compares less than the threshold, control is transfered back to the set of statements. Otherwise, it leaves the block.
 
 The statements are always executed at least once.
 
@@ -780,7 +779,7 @@ Require statements request script files to become part of the multi-file being t
 
 **Constraints** 
 
-Require statements shall only appear as part of the content of the *main script file* and of *main extension files*.
+Require statements shall only appear in the *main script file* or *main extension files*.
 
 #### GOSUB_FILE Statement
 
@@ -806,7 +805,7 @@ command_launch_mission := 'LAUNCH_MISSION' sep filename eol ;
 
 The `LAUNCH_MISSION` command requires a *subscript file* to become part of the multi-file. 
 
-It also starts a new script with the program counter at the `MISSION_START` directive of the specified script file.
+It also starts a new subscript with the program counter at the `MISSION_START` directive of the specified script file.
 
 #### LOAD_AND_LAUNCH_MISSION Statement
 
@@ -831,10 +830,10 @@ Script File Structure
 ### Main Script Files
 
 ```
-main_script_goal := {statement} ;
+main_script_file := {statement} ;
 ```
 
-A main script file contains a sequence of zero or more statements.
+A main script file is a sequence of zero or more statements.
 
 **Semantics**
 
@@ -843,48 +842,37 @@ The main script starts execution at the first statement of the main script file.
 ### Main Extension Files
 
 ```
-main_extension_goal := {statement} ;
+main_extension_file := {statement} ;
 ```
 
-A main extension file contains a sequence of zero or more statements.
-
-**Semantics**
-
-There is no startup semantics for main extension files. They are not entry point for scripts.
+A main extension file is a sequence of zero or more statements.
 
 ### Subscript Files
 
 ```
-mission_start_directive := 'MISSION_START' eol
-mission_end_directive := 'MISSION_END' eol
-
-subscript_goal := mission_start_directive
+subscript_file := 'MISSION_START' eol
                   {statement}
-                  [label_name ':' sep] mission_end_directive
+                  [label_name ':' sep] 'MISSION_END' eol
                   {statement} ;
 ```
 
-A subscript file contains a sequence of zero or more statements in between a `MISSION_START` and a `MISSION_END` directive. More statements may follow.
+A subscript file is a sequence of zero or more statements in a `MISSION_START` and `MISSION_END` block. More statements may follow.
 
 **Constraints**
 
-The `MISSION_START` directive shall be in the very first line of the subscript file and may not be preceded by anything but ASCII spaces (` `) and horizontal tabs (`\t`). Even comments are disallowed.
-
-The `MISSION_END` directive does not have the same restriction.
+The `MISSION_START` command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (` `) and horizontal tabs (`\t`). Even comments are disallowed.
 
 **Semantics**
 
-The entry point of the subscript specified by this script file is at the `MISSION_START` directive.
-
-The `MISSION_END` directive should have the same behaviour as of the `TERMINATE_THIS_SCRIPT` command.
+The `MISSION_END` command should behaviour as if by executing the `TERMINATE_THIS_SCRIPT` command.
 
 ### Mission Script Files
 
 ```
-mission_goal := subscript_goal ;
+mission_script_file := subscript_file ;
 ```
 
-A mission script file has the same structure as of a subscript file.
+A mission script file has the same structure of a subscript file.
 
 
 Supporting Commands
@@ -892,7 +880,7 @@ Supporting Commands
 
 In order to perform useful computations the following supporting commands are defined.
 
-A implementation is not required (although recommended) to provide support to any of these commands.
+An implementation is not required to provide support to any of these commands.
 
 ### WAIT
 
@@ -911,6 +899,14 @@ TODO
 TODO (hmm already defined)
 
 ### RETURN
+
+TODO
+
+### RETURN_TRUE
+
+TODO
+
+### RETURN_FALSE
 
 TODO
 
@@ -933,7 +929,6 @@ TODO
 ### SCRIPT_NAME
 
 TODO
-
 
 Supporting Command Selectors
 -------------------------------
@@ -991,7 +986,7 @@ TODO
 TODO
 
 
-Remarks
+Appendix
 ------------
 
 ### Notes
@@ -999,12 +994,16 @@ Remarks
  + The lexical grammar is not regular because of the nestable *multi-line comments*.
  + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category (TODO check this again after the change to a subset of miss2)
  + Examples of dependence on context for lexing:
-    - `LABEL: COMMAND: 0 0`.
+    - `LABEL: COMMAND:` is `label(LABEL:) command(COMMAND:)`.
     - `X = Y` is `command(X) '=' identifier(Y)` whereas `X Y` is `command(X) identifier(Y)`.
+    - `X --` is `identifier(X) '--'` whereas `X -1` is `command(X) integer(-1)`.
+    - `NAME NAME` is `command(NAME) identifier(NAME)`,
+    - `AND x` is `command(AND) identifier(x)` outside of an IF. Same for `NOT` and `OR`.
+    - `AND AND x` is `'AND' command(AND) identifier(x)` if within an IF.
 
 ### How to MISS2
 
-The leaked script compiler is full of bugs. It was written for in-house use, so it's meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn't. For the conservative, the following is a list of known things miss2 accepts (or does not accept) that this specification does not (or does).
+The leaked script compiler is full of bugs. It was written for in-house use, so it's meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn't. For the conservative, the following is a list of known things miss2 accepts that this specification does not.
 
 **Unrestricted character set**
 
@@ -1128,29 +1127,23 @@ SET_CAR_COLOUR 0 ON 0 // global string constant ON does not work
 ```
 
 
-TODO exclude string from arguments?
-TODO do note arguments are ambigous
-TODO alternators
-TODO mission directives
-TODO SAN ANDREAS ALLOWS VARIABLES AND STRING CONSTANTS TO BEGIN WITH UNDERSCORES 
-TODO scripts subscripts and such
+TODO shall should must cannot could may etc
+TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES 
+TODO scripts subscripts mission script and such (what are the execution differences)
 TODO translation limits
-TODO initial value of locals are undefined
-TODO describe goto and such inside a lexical scope to another lexical scope (or none)
 TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
 TODO timera timerb
-TODO shall should must cannot could etc
 TODO better name for what we are calling require statements
 TODO interesting NOP is not compiled
 TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
 TODO note var_text_label (and such) parameter type matches without dollar
-TODO WHILENOT is not implemented properly in miss2 (only has =)
-TODO lhs of assignment-like and binary expr must be identifier, except in '=' due to a bug and ambiguity with equality
-TODO disallow binary ops in IF/AND/OR (spreading over more than one line)
-TODO miss2 docs from gta2script has lots of insights, read and re-read it once in a while
-TODO ugh maybe GOTO is a reserved word becaues of IF...GOTO
-
-RATIONALE for global having unspecified initial value: Stories variable sharing (must read more though).
+TODO uhh GOTO may clash with argument when used  in IF...GOTO
+TODO specify array access pattern (is first index 0? is a[0] valid for non-array? for sure a[2] does not if out-of-bounds)
+TODO is MISSION_START/END a command?
+TODO SAVE_VAR_INT
+TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
+TODO maybe move the semantic definition that we cannot use mission script labels from outside it from concepts to the script file structure section
+TODO the rationale for global having unspecified initial value: Stories variable sharing (must read more though).
 
 [string literals]:
 [scope]:
