@@ -982,25 +982,10 @@ TODO
 Appendix
 ------------
 
-### Notes
-
- + The lexical grammar is not regular because of the nestable *multi-line comments*.
- + The lexical grammar is not context-free either. Contextual information is needed in order to match each lexical category (TODO check this again after the change to a subset of miss2)
- + Examples of dependence on context for lexing:
-    - `LABEL: COMMAND:` is `label(LABEL:) command(COMMAND:)`.
-    - `X = Y` is `command(X) '=' identifier(Y)` whereas `X Y` is `command(X) identifier(Y)`.
-    - `X --` is `identifier(X) '--'` whereas `X -1` is `command(X) integer(-1)`.
-    - `NAME NAME` is `command(NAME) identifier(NAME)`,
-    - `AND x` is `command(AND) identifier(x)` outside of an IF. Same for `NOT` and `OR`.
-    - `AND AND x` is `'AND' command(AND) identifier(x)` if within an IF.
-    - `1234 1234` is `command(1234) integer(1234)`.
-
 ### Regular Lexical Grammar
 
-A regular lexical grammar can be defined as follow:
-
 ```
-# A Simple Lexical Grammar
+# A Regular Lexical Grammar for GTA3script
 sep := sep ;
 eol := eol ;
 token := token_char {token_char} 
@@ -1024,11 +1009,55 @@ minus_minus := '--' ;
 plus_plus := '++' ;
 ```
 
-There are only operators, separators, unclassified tokens, and string literals. Further information about each unclassified token may be discovered by the parser.
+There are only operators, separators, unclassified tokens, and string literals.
+
+Each unclassified token requires parsing context in order to be classified.
+
+Comments are excluded from this grammar because nested block comments are context-free.
+
+The following are examples of context dependency for token classification:
+
+```
+// for the sake of simplicity separation tokens are omitted.
+
+WORD: WORD:    // label(WORD:) command(WORD:)
+
+WORD WORD      // command(WORD) identifier(WORD)
+
+1234 1234      // command(1234) integer(1234)
+
+X = Y          // identifier(X) '=' identifier(Y)
+X Y            // command(X) identifier(Y)
+
+X --           // identifier(X) '--'
+X -1           // command(X) integer(-1)
+
+LAUNCH_MISSION a.sc // command(LAUNCH_MISSION) filename(a.sc)
+OTHER_COMMAND a.sc  // command(OTHER_COMMAND) identifier(a.sc)
+// NOTE: filename is not an identifier because, for instance,
+// filename(4x4.sc) cannot be classified as an identifier.
+
+OR             // command(AND)
+NOT            // command(NOT)
+IF SOMETHING   //
+OR OR          // 'OR' command(OR)
+OR NOT NOT     // 'OR' 'NOT' command(NOT)
+    NOP        //
+ENDIF          //
+
+// NOTE: that is a defect actually, see following example:
+IF SOMETHING
+    AND var    // 'AND' command(var) -- not what we want
+    // same problem for OR.
+    // NOT is affected by IF NOT var.
+ENDIF
+```
 
 ### How to MISS2
 
 The leaked script compiler is full of bugs. It was written for in-house use, so it's meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn't. For the conservative, the following is a list of known things miss2 accepts that this specification does not.
+
+Do note a regular lexical grammar (like above) cannot be built for the language recognized by miss2.
 
 **Unrestricted character set**
 
@@ -1194,16 +1223,20 @@ TODO SAVE_VAR_INT
 TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
 TODO maybe move the semantic definition that we cannot use mission script labels from outside it from concepts to the script file structure section
 TODO the rationale for global having unspecified initial value: Stories variable sharing (must read more though).
+TODO read gta3sc issues and source for quirks
+TODO re-read Wesser's PM
+TODO fix AND OR NOT defect?
 
-[string literals]:
-[scope]:
+Arachniography
+--------------------
 
+ 1. [Official GTA2script Compiler V9.6](http://gtamp.com/GTA2/gta2script.7z) by DMA Design.
+ 2. [Official GTA2script Scripting Information](https://public.thelink2012.xyz/gta3/GTA2%20Scripting.html) by DMA Design. 
+ 3. [Official GTA3 Script Compiler V413](https://www.dropbox.com/s/7xgvqo8b9u1qw02/gta3sc_v413.rar) by Rockstar North.
+ 4. [GTA III 10th Anniversary Multiscripts Source Code](https://public.thelink2012.xyz/gta3/gta3_main_source.7z) by Rockstar North, War Drum Studios.
+ 5. [GTA3 Script Compiler V413 Strings](http://pastebin.com/raw/Pjb0Ezkx) organized by Wesser.
+ 6. [GTA3 Script Compiler V413 Definitions](https://www.dropbox.com/s/zkn59hrw7o76ry7/gta3vc_sc_defines.rar) organized by Wesser.
+ 7. [GTASA Mobile Symbol Listing](https://pastebin.com/raw/2VczpwK7) organized by LINK/2012.
+ 8. [Work-In-Progress SCM Language Article](http://pastebin.com/raw/YfLWLXJw) by Wesser.
+ 9. [Ancient SCM Language Article](http://web.archive.org/web/20170111193059/http://www.gtamodding.com/wiki/GTA3script) by Wesser.
 
-[Wesser]: https://web.archive.org/web/20170111193059/http://www.gtamodding.com/wiki/GTA3script
-[Wesser2]: http://pastebin.com/raw/YfLWLXJw
-
-[miss2.exe]: https://www.dropbox.com/s/7xgvqo8b9u1qw02/gta3sc_v413.rar
-[miss2_strings]: http://pastebin.com/raw/Pjb0Ezkx
-[gtasa_listing]: https://pastebin.com/2VczpwK7
-
-[gta2script.7z]: gtamp.com/GTA2/gta2script.7z
