@@ -1003,7 +1003,8 @@ A regular lexical grammar can be defined as follow:
 # A Simple Lexical Grammar
 sep := sep ;
 eol := eol ;
-token := token_char {token_char} ;
+token := token_char {token_char} 
+       | '-' (digit | '.') {token_char} ;
 string_literal := string_literal ;
 plus := '+' ;
 minus := '-' ;
