@@ -26,6 +26,8 @@ def validate_grammar(block):
 
 def process_block(block):
     validate_grammar(block)
+    if block.startswith('#') and 'Lexical Grammar' in block:
+        return
     print(block)
 
 def make_grammar():

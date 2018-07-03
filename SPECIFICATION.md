@@ -993,6 +993,37 @@ Appendix
     - `NAME NAME` is `command(NAME) identifier(NAME)`,
     - `AND x` is `command(AND) identifier(x)` outside of an IF. Same for `NOT` and `OR`.
     - `AND AND x` is `'AND' command(AND) identifier(x)` if within an IF.
+    - `1234 1234` is `command(1234) integer(1234)`.
+
+### Regular Lexical Grammar
+
+A regular lexical grammar can be defined as follow:
+
+```
+# A Simple Lexical Grammar
+sep := sep ;
+eol := eol ;
+token := token_char {token_char} ;
+string_literal := string_literal ;
+plus := '+' ;
+minus := '-' ;
+star := '*' ;
+slash := '/' ;
+plus_at := '+@' ;
+minus_at := '-@' ;
+equal := '=' ;
+equal_hash := '=#' ;
+plus_equal := '+=' ;
+minus_equal := '-=' ;
+star_equal := '*=' ; 
+slash_equal := '/=' ;
+plus_equal_at := '+=@' ;
+minus_equal_at := '-=@' ;
+minus_minus := '--' ;
+plus_plus := '++' ;
+```
+
+There are only operators, separators, unclassified tokens, and string literals. Further information about each unclassified token may be discovered by the parser.
 
 ### How to MISS2
 
