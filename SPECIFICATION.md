@@ -768,8 +768,6 @@ The statements are always executed at least once.
 ### Require Statements
 
 ```
-filename := {token_char} '.SC' ;
-
 require_statement := command_gosub_file
                    | command_launch_mission
                    | command_load_and_launch_mission ;
@@ -781,36 +779,42 @@ Require statements request script files to become part of the multi-file being t
 
 Require statements shall only appear in the *main script file* or *main extension files*.
 
+The filename of required files must have a `.SC` extension.
+
 #### GOSUB_FILE Statement
 
 ```
-command_gosub_file := 'GOSUB_FILE' sep identifier sep filename eol ;
+command_gosub_file := 'GOSUB_FILE' sep identifier sep identifier eol ;
 ```
 
 **Semantics**
 
 The `GOSUB_FILE` command requires a *main extension file* to become part of the multi-file.
 
-It also calls the subroutine specified by label.
+The filename is specified by the second argument.
+
+It also calls the subroutine specified by the label in the first argument.
 
 The behaviour is unspecified if the label is not part of the required file.
 
 #### LAUNCH_MISSION Statement
 
 ```
-command_launch_mission := 'LAUNCH_MISSION' sep filename eol ;
+command_launch_mission := 'LAUNCH_MISSION' sep identifier eol ;
 ```
 
 **Semantics**
 
 The `LAUNCH_MISSION` command requires a *subscript file* to become part of the multi-file. 
 
+The filename is specified in the first argument.
+
 It also starts a new subscript with the program counter at the `MISSION_START` directive of the specified script file.
 
 #### LOAD_AND_LAUNCH_MISSION Statement
 
 ```
-command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;
+command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep identifier eol ;
 ```
 
 **Constraints**
@@ -820,6 +824,8 @@ Only a single *mission script* may be runinng at once.
 **Semantics**
 
 The `LOAD_AND_LAUNCH_MISSION` command requires a *mission script file* to become part of the multi-file. 
+
+The filename is specified in the first argument.
 
 It also starts a new *mission script* with the program counter at the `MISSION_START` directive of the specified script file.
 
@@ -1109,6 +1115,13 @@ MISSION_END the same "happens"with mission_end
 e-=1:                  // recognized (we don't accept this)
 GOTO e-=1              // not recognized
 LAUNCH_MISSION e/=.sc  // recognized (we don't accept this)
+```
+
+**filenames may be empty**
+
+```
+LAUNCH_MISSION .sc
+// this specification does not accept this
 ```
 
 **STILL NEED TO THINK ABOUT**
