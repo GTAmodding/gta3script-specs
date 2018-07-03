@@ -415,11 +415,11 @@ binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
 asop := '=' | '=#' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' ;
 unop := '--' | '++' ;
 
-expr_assign_abs := argument {whitespace} '=' {whitespace} 'ABS' {whitespace} argument ;
-expr_assign_binary := argument {whitespace} asop {whitespace} argument ;
-expr_assign_ternary := argument {whitespace} '=' {whitespace} argument {whitespace} binop argument ;
-expr_assign_unary := (unop {whitespace} argument) 
-                   | (argument {whitespace} unop) ;
+expr_assign_abs := identifier {whitespace} '=' {whitespace} 'ABS' {whitespace} argument ;
+expr_assign_binary := identifier {whitespace} asop {whitespace} argument ;
+expr_assign_ternary := identifier {whitespace} '=' {whitespace} argument {whitespace} binop argument ;
+expr_assign_unary := (unop {whitespace} identifier) 
+                   | (identifier {whitespace} unop) ;
 
 assignment_expression := expr_assign_unary
                        | expr_assign_binary
@@ -466,8 +466,6 @@ The ternary assignment `a = b * c` should behave as if `a = b + c`, except by us
 The ternary assignment `a = b / c` should behave as if `a = b - c`, except by using `DIV_THING_BY_THING` instead of `SUB_THING_FROM_THING`.
 
 The ternary assignments `a = b +@ c` and `a = b -@ c` should behave as if `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
-
-The left hand side of every assignment expression must be an identifier, except for absolute assignments, ternary assignments, and the binary assignments `a = b` and `a =# b`.
 
 ### Conditional Expressions
 
@@ -1117,6 +1115,20 @@ LAUNCH_MISSION e/=.sc  // recognized (we don't accept this)
 ```
 LAUNCH_MISSION .sc
 // this specification does not accept this
+```
+
+**non-identifiers on the lhs of assignment expressions**
+
+Some expressions implement this correctly in miss2, some don't.
+
+```
+1 = ABS 2 // recognized
+--1       // recognized for every unary expression
+1 = 2 * 3 // recognized for every ternary expression
+1 = 2     // recognized
+1 =# 2    // recognized
+1 *= 2    // not recognized for every other binary expression
+// this specification does not accept any of this
 ```
 
 **STILL NEED TO THINK ABOUT**
