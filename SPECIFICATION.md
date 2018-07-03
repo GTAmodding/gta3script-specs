@@ -499,8 +499,8 @@ statement := labeled_statement
 Statements may be prefixed with a label.
 
 ```
-label_name := {token_char} ;
-labeled_statement := label_name ':' (sep embedded_statement | empty_statement) ;
+label_def := identifier ':' ;
+labeled_statement := label_def (sep embedded_statement | empty_statement) ;
 ```
 
 **Constraints**
@@ -509,9 +509,9 @@ The name of a label must be unique across the multi-file.
 
 **Semantics**
 
-This label may be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
+This declares a label named after the given identifier.
 
-The name of a label may be empty. The name of a label may contain characters that do not match the `identifier` production. In such cases, the label cannot be used as arguments to commands.
+The label may be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
 
 ### Empty Statements
 
@@ -851,7 +851,7 @@ A main extension file is a sequence of zero or more statements.
 ```
 subscript_file := 'MISSION_START' eol
                   {statement}
-                  [label_name ':' sep] 'MISSION_END' eol
+                  [label_def sep] 'MISSION_END' eol
                   {statement} ;
 ```
 
@@ -1108,6 +1108,17 @@ MISSION_END the same "happens"with mission_end
 e-=1:                  // recognized (we don't accept this)
 GOTO e-=1              // not recognized
 LAUNCH_MISSION e/=.sc  // recognized (we don't accept this)
+```
+
+**label may be empty or not match identifier**
+
+The name of a label may be empty. The name of a label may contain characters that do not match the `identifier` production.
+
+```
+:     // recognized
+::::  // recognized
+@abc: // recognized
+// this specification does not accept this
 ```
 
 **filenames may be empty**
