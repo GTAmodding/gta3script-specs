@@ -229,7 +229,7 @@ argument := integer
 ### Integer Literals
 
 ```
-digit := '0'..'9';
+digit := '0'..'9' ;
 integer := ['-'] digit {digit} ;
 ```
 
@@ -405,9 +405,11 @@ Expressions
 
 An expression is a shortcut to one or more command selectors.
 
+**Constraints**
+
 The arguments of an expression may not allow string literals.
 
-The name of commands used to require script files (see Require Statements) cannot be on the left hand side of a expression.
+The name of commands used to require script files (e.g. `GOSUB_FILE`) and its directive commands (i.e. `MISSION_START` and `MISSION_END`) cannot be on the left hand side of a expression.
 
 ### Assignment Expressions
 
@@ -502,7 +504,10 @@ Statements may be prefixed with a label.
 
 ```
 label_def := identifier ':' ;
-labeled_statement := label_def (sep embedded_statement | empty_statement) ;
+label_prefix := label_def sep ;
+
+labeled_statement := label_prefix embedded_statement 
+                   | label_def empty_statement ;
 ```
 
 **Constraints**
@@ -553,7 +558,7 @@ command_statement := command eol ;
 
 **Constraints**
 
-The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `IF`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).
+The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).
 
 ### Expression Statements
 
@@ -573,7 +578,7 @@ The execution of the assignment expression `a = b` is favored over the the execu
 ```
 scope_statement := '{' eol
                    {statement}
-                   '}' eol ;
+                   [label_prefix] '}' eol ;
 ```
 
 **Constraints**
@@ -644,6 +649,10 @@ conditional_list := conditional_element eol
                     ({and_conditional_stmt} | {or_conditional_stmt}) ;
 ```
 
+**Constraints**
+
+The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).
+
 **Semantics**
 
 A conditional element executes the command or expression it embodies. The execution of a command follows the same semantic rules of a command statement. The compare flag of the executed element is negated if the `NOT` prefix is used.
@@ -665,25 +674,25 @@ Selection statements selects which statement to execute depending on certain con
 ```
 if_statement := 'IF' sep conditional_list
                 {statement}
-                ['ELSE'
+                [[label_prefix] 'ELSE' eol
                 {statement}]
-                'ENDIF' ;
+                [label_prefix] 'ENDIF' eol ;
 ```
 
 **Semantics**
 
 This statement executes a list of conditions, grabs its compare flag and chooses between two set of statements to execute.
 
-If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set if an `ELSE` exists. After the set of statements are executed, control is transfered to the end of the IF block, unless execution of the statements resulted in a jump out of the block.
+If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set if an `ELSE` exists. Execution of the `ELSE` or the `ENDIF` command causes control to leave the IF block.
 
 #### IFNOT Statement
 
 ```
 ifnot_statement := 'IFNOT' sep conditional_list
                    {statement}
-                   ['ELSE'
+                   [[label_prefix] 'ELSE' eol
                    {statement}]
-                   'ENDIF' ;
+                   [label_prefix] 'ENDIF' eol ;
 ```
 
 **Semantics**
@@ -717,21 +726,21 @@ The behaviour of this is the same as of the IF GOTO statement, except the comple
 ```
 while_statement := 'WHILE' sep conditional_list
                    {statement}
-                   'ENDWHILE' eol ;
+                   [label_prefix] 'ENDWHILE' eol ;
 ```
 
 **Semantics**
 
 The WHILE statement executes a set of statements while the compare flag of the conditional list holds true.
 
-The statement executes by grabbing the compare flag of the list of conditions and transfering control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. After the set of statements are executed, control is transfered again to beggining of the block, unless execution of the statements resulted in a jump out of the block.
+The statement executes by grabbing the compare flag of the list of conditions and transfering control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the `ENDWHILE` command causes control to be transfered to beggining of the block, where the conditions are evaluated again.
 
 #### WHILENOT Statement
 
 ```
 whilenot_statement := 'WHILENOT' sep conditional_list
                       {statement}
-                      'ENDWHILE' eol ;
+                      [label_prefix] 'ENDWHILE' eol ;
 ```
 
 **Semantics**
@@ -743,7 +752,7 @@ The behaviour of this is the same as of the WHILE statement, except the compleme
 ```
 repeat_statement := 'REPEAT' sep integer sep identifier eol
                     {statement}
-                    'ENDREPEAT' eol ;
+                    [label_prefix] 'ENDREPEAT' eol ;
 ```
 
 **Constraints**
@@ -756,7 +765,7 @@ The second argument must be a variable of integer type.
 
 The REPEAT statement executes a set of statements until a counter variable reaches a threshold.
 
-The counter variable is set to zero and the statements are executed. After the statements are executed, and none of them resulted in a jump out of the block, the variable is incremented and if it compares less than the threshold, control is transfered back to the set of statements. Otherwise, it leaves the block.
+The `REPEAT` command causes the variable to be set to zero. Execution of the `ENDREPEAT` command causes the variable to be incremented and if it compares less than the threshold, it transfers control back to the set of statements. Otherwise, it leaves the block.
 
 The statements are always executed at least once.
 
@@ -847,7 +856,7 @@ A main extension file is a sequence of zero or more statements.
 ```
 subscript_file := 'MISSION_START' eol
                   {statement}
-                  [label_def sep] 'MISSION_END' eol
+                  [label_prefix] 'MISSION_END' eol
                   {statement} ;
 ```
 
@@ -1080,6 +1089,8 @@ We suggest an implementation to emit an warnings to declarations of names and th
 x = 1-1
 x = 1 -1
 x = 1 - 1
+x = 1--1
+x = 1- -1
 ```
 
 The first line could mean `1` minus `1`, or it could mean `1` and then the number `-1`. The latter is the correct interpretation. And yes, it is a syntax error.
@@ -1087,6 +1098,10 @@ The first line could mean `1` minus `1`, or it could mean `1` and then the numbe
 The second line has the same ambiguity and its interpretation should be the same as the first line.
 
 The third line is not ambiguous.
+
+The fourth line is ambiguous. Its actual meaning is `1` followed by the unary operator `--` and it is a syntax error.
+
+The fifth line is not ambiguous.
 
 The token stream produced by the regular lexical grammar in the appendix should solve this issue naturally.
 
@@ -1227,6 +1242,38 @@ Some expressions implement this correctly in miss2, some don't.
 // this specification does not accept any of this
 ```
 
+**labels in AND/OR**
+
+miss2 allows labels to prefix AND/OR conditions. However, it produces weird code. As such, this specification does not accept it.
+
+```
+IF x = 0
+lab_or: OR x = 1 // goes to the WAIT 0 after the last condition
+OR x = 2         // this specification does not accept this
+    WAIT 1
+ELSE
+    WAIT 2
+ENDIF
+```
+
+**weird closing blocks**
+
+stuff like the following is recognized by miss2
+
+```
+WHILE x = 0
+    IF y = 1
+        WAIT 0
+ENDWHILE
+    ENDIF
+// this specification does not accept this (nor variations of this)
+```
+
+this happens with scopes, IFs, REPEATs, WHILEs, `MISSION_END`, and what not.
+
+it is very interesting actually, but clearly a language bug (would not say a implementation bug though).
+
+
 **STILL NEED TO THINK ABOUT**
 
 more interesting stuff
@@ -1263,6 +1310,7 @@ TODO the rationale for global having unspecified initial value: Stories variable
 TODO read gta3sc issues and source for quirks
 TODO re-read Wesser's PM
 TODO fix AND OR NOT defect?
+TODO list of special command names (user cannot write these)
 
 Arachniography
 --------------------
