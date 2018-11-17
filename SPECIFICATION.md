@@ -77,7 +77,7 @@ Concepts
 
 ### Scripts
 
-A **script** is a unit of execution which containts its own *program counter*, *local variables* and *compare flag*.
+A **script** is a unit of execution which contains its own *program counter*, *local variables* and *compare flag*.
 
 A **program** is a collection of scripts running concurrently.
 
@@ -237,10 +237,6 @@ A integer literal is a sequence of digits optionally preceded by a minus sign.
 
 If the literal begins with a minus, the number following it should be negated.
 
-**Semantics**
-
-The type of a integer literal is a integer.
-
 ### Floating-Point Literals
 
 ```
@@ -249,11 +245,11 @@ floating_form2 := digit { digit } ('.' | 'F') { digit | '.' | 'F' } ;
 floating := ['-'] (floating_form1 | floating_form2) ;
 ```
 
-A floating-point literal is a nonempty sequence of digits which must contain at least one occurence of the characters `.`, `f` or `F`.
+A floating-point literal is a nonempty sequence of digits which must contain at least one occurrence of the characters `.`, `f` or `F`.
 
 Once the `f` or `F` characters are found, all characters including and following it should be ignored. The same should happen when the character `.` is found a second time.
 
-The literal may be preceeded by a minus sign, which should negate the floating-point number.
+The literal may be preceded by a minus sign, which should negate the floating-point number.
 
 The following are examples of valid and invalid literals:
 
@@ -271,10 +267,6 @@ The following are examples of valid and invalid literals:
 | 1.f     | 1.0     |
 | 1..     | 1.0     |
 
-**Semantics**
-
-The type of a floating-point literal is a float.
-
 ### Identifiers
 
 ```
@@ -285,18 +277,6 @@ identifier := ('$' | 'A'..'Z') {token_char} ;
 
 An identifier should not end with a `:` character.
 
-**Semantics**
-
-The type of a variable is TODO.
-
-The type of a string identifier is a text label.
-
-The type of a string constant is a constant.
-
-The type of a label identifier is a label.
-
-TODO explain semantics better (also note how string identifier cannot start with `$`).
-
 ### String Literals
 
 A string literal holds a string delimited by quotation marks.
@@ -305,62 +285,16 @@ A string literal holds a string delimited by quotation marks.
 string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 ```
 
-**Semantics**
+### Variable References
 
-The type of a string literal is a string.
-
-
-Argument Matching
-------------------------
-
-A command may accept parameters of either integer, float, label, text label or string type.
-
-A command may also accept a **multi-parameter**. A *multi-parameter* is a restricted union of the integer and float type.
-
-A command parameter may only accept variables (of either kinds), only accept local variables or only accept global variables. A parameter accepting only variables should have an identifier argument matching a variable reference.
-
-Each command have its own parameters description which should be described with the command.
-
-### Integer
-
-TODO
-
-### Float
-
-TODO
-
-### Label
-
-A parameter of type label should match a identifier argument. Such a identifier must be the name of a label in the multi-file.
-
-### Text Label
-
-A parameter of type text label should match an identifier argument.
-
-If the parameter only accepts variables, the identifier should match a variable reference. Otherwise, if the head of the identifier is a `$` character, the tail of the identifier should match a variable reference.
-
-TODO
-
-### String
-
-A parameter of type string should match a string literal argument.
-
-TODO
-
-TODO arg count
-
-TODO reminder text string => label, string identifier, string constant, variable reference
-
-**Variable Reference (TODO where to put this)**
-
-The name of a variable is a sequence of token characters, except the characters `[` and `]` cannot happen.
+The *name of a variable* is a sequence of token characters, except the characters `[` and `]` cannot happen.
 
 ```
 variable_char := token_char - ('[' | ']') ;
 variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ```
 
-A reference to a variable is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript shall not happen more than once.
+A *reference to a variable* is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript shall not happen more than once.
 
 ```
 subscript := '[' (variable_name | integer_literal) ']' ;
@@ -371,34 +305,138 @@ The subscript may use a integer literal or another variable name of integer type
 
 The type of a variable reference is the inner type of the variable name being referenced.
 
+Parameters
+-----------------------
+
+A command receives several arguments. Every argument must obey the rules of its corresponding *parameter definition*.
+
+A *parameter definition* is a set of definitions regarding a single parameter for a specific command.
+
+A command must have the same amount of arguments as its amount of parameter definitions, unless the missing arguments correspond to *optional parameters*.
+
+### String Constants
+
+A *string constant* is a name whose integer value is known in the translation environment.
+
+An *enumeration* is a collection of string constants.
+
+A parameter definition may have an associated enumeration. A string constant is said to be matched if an identifier in an argument refers to a name in such enumeration.
+
+There are four special enumerations whose semantics are defined along this specification:
+
+ + The *global string constants* enumeration.
+ + The *default models* enumeration (*DEFAULTMODEL*).
+ + The *any model* enumeration (*ANYMODEL*).
+ + The *used objects* enumeration.
+
+Other enumerations may be defined by the implementation.
+
+If a parameter definition specifies an enumeration, the global string constants enumeration cannot be matched for the said parameter.
+
+If a parameter definition is associated with an any model enumeration, the argument should be matched with the default models enumeration. If there is no match, the identifier associated with the argument should be added into the used objects enumeration (unless already present), and a match should occur on the used objects enumeration.
+
+### Parameter Types
+
+#### INT
+
+An *INT parameter* accepts an argument only if it is an integer literal or an identifier naming a global string constant.
+
+### FLOAT
+
+A *FLOAT parameter* accepts an argument only if it is an floating-point literal.
+
+#### VAR_INT
+
+A *VAR_INT parameter* accepts an argument only if it is an identifier referencing a global variable of integer type.
+
+#### VAR_FLOAT
+
+A *VAR_FLOAT parameter* accepts an argument only if it is an identifier referencing a global variable of floating-point type.
+
+#### LVAR_INT
+
+A *LVAR_INT parameter* accepts an argument only if it is an identifier referencing a local variable of integer type.
+
+#### LVAR_FLOAT
+
+A *LVAR_FLOAT parameter* accepts an argument only if it is an identifier referencing a local variable of floating-point type.
+
+#### VAR_LVAR_INT
+
+A *VAR_LVAR_INT parameter* accepts an argument only if it is an identifier referencing a variable of integer type.
+
+#### VAR_LVAR_FLOAT
+
+A *VAR_LVAR_FLOAT parameter* accepts an argument only if it is a identifier referencing a variable of floating-point type.
+
+#### ANY_INT
+
+An *ANY_INT parameter* accepts an argument only if it is an integer literal or an identifier either naming a matching string constant, global string constant or referencing a variable of integer type (in this order).
+
+#### ANY_FLOAT
+
+An *ANY_FLOAT parameter* accepts an argument only if it is an floating-point literal or an identifier referencing a variable of floating-point type.
+
+#### LABEL
+
+A *LABEL parameter* accepts an argument only if it is an identifier naming a label.
+
+#### TEXT_LABEL
+
+A *TEXT_LABEL parameter* accepts an argument only if it is an identifier. If the identifier is prefixed with a dollar symbol (`$`), its suffix must name a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
+
+#### VAR_TEXT_LABEL
+
+A *VAR_TEXT_LABEL parameter* accepts an argument only if it is an identifier referencing a global variable of text label type.
+
+#### LVAR_TEXT_LABEL
+
+A *VAR_TEXT_LABEL parameter* accepts an argument only if it is an identifier referencing a local variable of text label type.
+
+#### STRING
+
+A *STRING parameter* accepts an argument only if it is a string literal.
+
+#### Optional Parameters
+
+Additionally, the following parameters are defined as behaving equivalently to their correspondent parameters above, except that in case an argument is absent, parameter matching stops as if the end of the parameter list has been reached.
+
+ + *VAR_INT_OPT*
+ + *VAR_FLOAT_OPT*
+ + *LVAR_INT_OPT*
+ + *LVAR_FLOAT_OPT*
+ + *VAR_TEXT_LABEL_OPT*
+ + *LVAR_TEXT_LABEL_OPT*
+ + *NUMERIC_OPT*
+
+Such parameters are always trailing parameters.
+
+The *NUMERIC_OPT* parameter accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer or floating-point type.
+
+### Additional Notes
+
+
 Command Selectors
 ------------------------
 
-TODO this is confusing, rewrite once the argument matching section is done.
+A *command selector* (or *alternator*) is a kind of command which gets rewritten by the translator to another command based on the supplied argument types.
 
-A command selector (or alternator) is a kind of command which gets rewriten by the translator to another command based on the supplied argument types.
+A command selector consists of a name and a finite sequence of commands which are alternatives for replacement.
 
-A command selector consists of its name and a set of commands which are alternatives for replacement.
+An actual command named after a selector shall behave as if its command name was rewritten as a *matching alternative* before any semantic checking takes place.
 
-Once a command name is identified as a selector, the argument list is tested over each command in the set of alternatives. The translation then behaves as if the command name was rewriten as the matching command name.
+A *matching alternative* is the first command in the alternative sequence to have the same amount of parameters as arguments in the actual command, and to obey the following rules for every argument and its corresponding parameter:
 
-The behaviour is unspecified if more than one command in the set produces a match.
++ An integer literal argument must have a parameter of type *INT*.
++ An floating-point literal argument must have a parameter of type *FLOAT*.
++ For identifiers, the following happens (in the given order):
+  1. If the identifier names a global string constant, the parameter type must be *INT*.
+  2. If the identifier names a global variable, the parameter type must be either (depending on the type of said variable) *VAR_INT*, *VAR_FLOAT* or *VAR_TEXT_LABEL*.
+  3. If the identifier names a local variable, the same rule as above should apply, except by using *LVAR_INT*, *LVAR_FLOAT* and *LVAR_TEXT_LABEL*.
+  4. If the identifier names any string constant (except used objects), the parameter type must be *ANY_INT* and the argument shall behave as if it was rewritten as an integer literal corresponding to the string constant.
+  5. Otherwise, the parameter type must be *TEXT_LABEL*.
 
-A list of selectors and theirs selection sets can be found in the appendix (TODO).
-
-**Example** 
-
-As an example, consider the command selector `SET` used in the following contexts:
-
-| Selector Used As              | Rewriten As                                        |
-| ----------------------------- | -------------------------------------------------- |
-| `SET lvar_int 10`             | `SET_LVAR_INT lvar_int 10`                         |
-| `SET lvar_flt var_flt`        | `SET_LVAR_FLOAT_TO_VAR_FLOAT lvar_flt var_flt`     |
-| `SET var_int STRING_CONSTANT` | `SET_VAR_INT_TO_CONSTANT var_int STRING_CONSTANT`  |
-
-For the first example, each command in the collection of alternatives for `SET` was evaluated with the arguments `lvar_int 10`. One must have produced a successful match, and that one was choosen as the replacement command.
-
-The same happens for the other examples in the table.
+If no matching alternative is found, the program is ill-formed.
 
 Expressions
 -------------------------
@@ -571,7 +609,7 @@ expression_statement := assignment_expression eol
 
 An expression statement executes the expression it embodies.
 
-The execution of the assignment expression `a = b` is favored over the the execution of the conditional expression of the same form.
+The execution of the assignment expression `a = b` is favored over the execution of the conditional expression of the same form.
 
 ### Scope Statements
 
@@ -683,7 +721,7 @@ if_statement := 'IF' sep conditional_list
 
 This statement executes a list of conditions, grabs its compare flag and chooses between two set of statements to execute.
 
-If the compare flag is true, control is transfered to the first set of statements. Otherwise, to the second set if an `ELSE` exists. Execution of the `ELSE` or the `ENDIF` command causes control to leave the IF block.
+If the compare flag is true, control is transferred to the first set of statements. Otherwise, to the second set if an `ELSE` exists. Execution of the `ELSE` or the `ENDIF` command causes control to leave the IF block.
 
 #### IFNOT Statement
 
@@ -733,7 +771,7 @@ while_statement := 'WHILE' sep conditional_list
 
 The WHILE statement executes a set of statements while the compare flag of the conditional list holds true.
 
-The statement executes by grabbing the compare flag of the list of conditions and transfering control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the `ENDWHILE` command causes control to be transfered to beggining of the block, where the conditions are evaluated again.
+The statement executes by grabbing the compare flag of the list of conditions and transferring control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the `ENDWHILE` command causes control to be transferred to beginning of the block, where the conditions are evaluated again.
 
 #### WHILENOT Statement
 
@@ -819,7 +857,7 @@ command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;
 
 **Constraints**
 
-Only a single *mission script* may be runinng at once.
+Only a single *mission script* may be running at once.
 
 **Semantics**
 
@@ -1081,7 +1119,7 @@ The first line could mean an command, taking two arguments, `goto` and `other`. 
 
 The second line is unambiguous due to context.
 
-We suggest an implementation to emit an warnings to declarations of names and the use of string identifiers equal to `goto`.
+We suggest an implementation to emit an warnings to declarations of names and the use of text labels equal to `goto`.
 
 #### Ternary Minus One
 
@@ -1151,7 +1189,7 @@ ENDIF
 
 **WHILENOT is incomplete**
 
-WHILENOT only accepts equality comparision
+WHILENOT only accepts equality comparison
 
 ```
 WHILENOT x = 1
@@ -1278,12 +1316,6 @@ it is very interesting actually, but clearly a language bug (would not say a imp
 we don't really what are these, so we won't specify them.
 
 
-**STILL NEED TO THINK ABOUT**
-
-```
-SET_CAR_COLOUR 0 ON 0 // global string constant ON does not work
-```
-
 
 TODO shall should must cannot could may etc
 TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES 
@@ -1294,7 +1326,6 @@ TODO timera timerb
 TODO better name for what we are calling require statements
 TODO interesting NOP is not compiled
 TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
-TODO note var_text_label (and such) parameter type matches without dollar
 TODO specify array access pattern (is first index 0? is a[0] valid for non-array? for sure a[2] does not if out-of-bounds)
 TODO SAVE_VAR_INT
 TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
