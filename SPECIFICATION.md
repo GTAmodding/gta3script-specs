@@ -1273,17 +1273,12 @@ this happens with scopes, IFs, REPEATs, WHILEs, `MISSION_END`, and what not.
 
 it is very interesting actually, but clearly a language bug (would not say a implementation bug though).
 
+**exclusive scripts**
+
+we don't really what are these, so we won't specify them.
+
 
 **STILL NEED TO THINK ABOUT**
-
-more interesting stuff
-
-```
-VAR_INT = 4 // works
-LOAD_AND_LAUNCH_MISSION = 4 // does not work
-```
-
-mm
 
 ```
 SET_CAR_COLOUR 0 ON 0 // global string constant ON does not work
@@ -1300,9 +1295,7 @@ TODO better name for what we are calling require statements
 TODO interesting NOP is not compiled
 TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
 TODO note var_text_label (and such) parameter type matches without dollar
-TODO uhh GOTO may clash with argument when used  in IF...GOTO
 TODO specify array access pattern (is first index 0? is a[0] valid for non-array? for sure a[2] does not if out-of-bounds)
-TODO is MISSION_START/END a command?
 TODO SAVE_VAR_INT
 TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
 TODO maybe move the semantic definition that we cannot use mission script labels from outside it from concepts to the script file structure section
@@ -1311,6 +1304,14 @@ TODO read gta3sc issues and source for quirks
 TODO re-read Wesser's PM
 TODO fix AND OR NOT defect?
 TODO list of special command names (user cannot write these)
+TODO creating packages and such are declarations too (not only var decls)
+TODO correctly specify that a[1] = a[1]abc + 2 is not the same as a[1] = a[1] + 2
+TODO unclosed nested comments is a error
+TODO talk about repetion of filenames and using in different script types
+TODO gxtsema gxt key length <8
+TODO gxtsema filename (excluding extension must be) <16
+TODO label name <=38
+
 
 Arachniography
 --------------------
