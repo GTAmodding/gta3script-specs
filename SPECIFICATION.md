@@ -43,6 +43,26 @@ behavior for which this specification provides no requirements.
 
 restriction, either syntactic or semantic, on how language elements can be used.
 
+**must**
+
+describes an absolute requirement of the specification. synonymous with **shall**.
+
+**must not**
+
+describes an absolute prohibition of the specification. synonymous with **shall not**.
+
+**should**
+
+describes a recommended but not absolutely necessary requirement of the specification.
+
+**should not**
+
+describes an unrecommended but not absolutely necessary requirement of the specifcation.
+
+**may**
+
+describes an optional feature or behaviour of the specification.
+
 **execution environment**
 
 the software on which the result of translation is executed on.
@@ -54,6 +74,14 @@ the software on which the language is translated for use by an execution environ
 **implementation**
 
 particular set of software, running in a particular translation environment under particular control options, that performs translation of programs for, and supports execution of commands in, a particular execution environment.
+
+**ill-formed program**
+
+program that is not well-formed. translators should produce diagnostic messages for such programs.
+
+**well-formed program**
+
+program constructed according to the synctatic and semantic rules as defined by this specification.
 
 **value**
 
@@ -77,61 +105,61 @@ Concepts
 
 ### Scripts
 
-A **script** is a unit of execution which contains its own *program counter*, *local variables* and *compare flag*.
+A *script* is a unit of execution which contains its own *program counter*, *local variables* and *compare flag*.
 
-A **program** is a collection of scripts running concurrently in a cooperative fashion.
+A *program* is a collection of scripts running concurrently in a cooperative fashion.
 
-A **variable** is a named storage location. This location holds a value of specific type.
+A *variable* is a named storage location. This location holds a value of specific type.
 
-There are global and local variables. **Global variables** are stored in a way they are accessible from any script. **Local variables** are said to pertain to the particular script and only accessible from it.
+There are global and local variables. *Global variables* are stored in a way they are accessible from any script. *Local variables* are said to pertain to the particular script and only accessible from it.
 
 The lifetime of a *global variable* is the same as of the execution of all scripts. The lifetime of a *local variable* is the same as its script and lexical scope.
 
-A **command** is an operation to be performed by a script. Commands may produce several **side-effects** which are described by each command description.
+A *command* is an operation to be performed by a script. Commands produces *side-effects* which are described by each command description.
 
-A possible side-effect of executing a command is the updating of the *compare flag*. The **compare flag** of a command is the boolean result it produces. The **compare flag of a script** is the *compare flag* of the its last executed command. The *compare flag* is useful for conditionally changing the *flow of control*.
+A possible side-effect of executing a command is the updating of the *compare flag*. The *compare flag* of a command is the boolean result it produces. The *compare flag of a script* is the *compare flag* of the its last executed command. The *compare flag* is useful for conditionally changing the *flow of control*.
 
-The **program counter** of a script indicates its currently executing command. Unless one of the *side-effects* of a command is to change the *program counter*, the counter goes from the current command to the next sequentially. An explicit change in the *program counter* is said to be a change in the *flow of control*.
+The *program counter* of a script indicates its currently executing command. Unless one of the *side-effects* of a command is to change the *program counter*, the counter goes from the current command to the next sequentially. An explicit change in the *program counter* is said to be a change in the *flow of control*.
 
-A command is said to perform a **jump** if it changes the *flow of control* irreversibly.
+A command is said to perform a *jump* if it changes the *flow of control* irreversibly.
 
-A command is said to call a **subroutine** if it changes the *flow of control* but saves the current *program counter* in a stack to be restored later.
+A command is said to call a *subroutine* if it changes the *flow of control* but saves the current *program counter* in a stack to be restored later.
 
-A command is said to **terminate** a script if it halts and reclaims storage of such a script.
+A command is said to *terminate* a script if it halts and reclaims storage of such a script.
 
 ### Script Files
 
-A **script file** is a source file containing a sequence of commands. Those commands may be executed concurrently by multiple scripts.
+A *script file* is a source file containing a sequence of commands. Those commands are executed concurrently by multiple scripts.
 
-The **multi-file** is a collection of *script files*. Hereafter being the collection of *script files* being translated.
+The *multi-file* is a collection of *script files*. Hereafter being the collection of *script files* being translated.
 
-The **main script file** is the entry script file. This is where the first script (called the **main script**) starts execution. Translation begins here.
+The *main script file* is the entry script file. This is where the first script (called the *main script*) starts execution. Translation begins here.
 
-Other script files are **required** to become part of the *multi-file* by the means of require statements within the *main script file*. Many kinds of script files may be *required*.
+Other script files are *required* to become part of the *multi-file* by the means of require statements within the *main script file*. Many kinds of script files can be *required*.
 
-A **main extension file** (or **foreign gosub file**) is a script file required by the means of a *GOSUB_FILE statement*. Other script files may be required from here as well.
+A *main extension file* (or *foreign gosub file*) is a script file required by the means of a *GOSUB_FILE statement*. Other script files can be required from here as well.
 
-A **subscript file** is a script file required by the means of the *LAUNCH_MISSION statement*. A **subscript** is a script started by the same statement.
+A *subscript file* is a script file required by the means of the *LAUNCH_MISSION statement*. A *subscript* is a script started by the same statement.
 
-A **mission script file** is a script file required by the means of the *LOAD_AND_LAUNCH_MISSION statement*. A **mission script** is a script started by the same statement. Only a single *mission script* may be running at once.
+A *mission script file* is a script file required by the means of the *LOAD_AND_LAUNCH_MISSION statement*. A *mission script* is a script started by the same statement. Only a single *mission script* can be running at once.
 
 Commands in the *main script file*, *main extension files* and *subscript files* shall not refer to labels in *mission script files*. A *mission script file* shall not refer to labels in other *mission script files*.
 
-The *main script file* is found in a unspecified manner. The other *script files* are found by recursively searching a directory with the same filename (excluding extension) as the *main script file*. This directory is in the same path as the *main script file*. The search for the *script files* should be case-insensitive. All *script files* must have a `.sc` extension. If multiple script files with the same name are found, behaviour is unspecified.
+The *main script file* is found in a unspecified manner. The other *script files* are found by recursively searching a directory with the same filename (excluding extension) as the *main script file*. This directory is in the same path as the *main script file*. The search for the *script files* shall be case-insensitive. All *script files* must have a `.sc` extension. If multiple script files with the same name are found, behaviour is unspecified.
 
 ### Types
 
-An **integer** is a binary signed two's-complement integral number. It represents 32 bits of data and the range of values *-2147483648* through *2147483647*.
+An *integer* is a binary signed two's-complement integral number. It represents 32 bits of data and the range of values *-2147483648* through *2147483647*.
 
-A **floating-point** is a representation of a real number. Its exact representation, precision and range of values is implementation-defined.
+A *floating-point* is a representation of a real number. Its exact representation, precision and range of values is implementation-defined.
 
-A **label** is a name specifying the location of a command.
+A *label* is a name specifying the location of a command.
 
-A **text label** is a name whose value is only known in the execution environment.
+A *text label* is a name whose value is only known in the execution environment.
 
-A **string** is a sequence of zero or more characters.
+A *string* is a sequence of zero or more characters.
 
-An **array** is a collection of one or more elements of the same type. Each element is indexed by an integer key.
+An *array* is a collection of one or more elements of the same type. Each element is indexed by an integer key.
 
 Elements
 ---------------------
@@ -150,7 +178,7 @@ ascii_control := '\n' | '\t' | '\r' ;
 
 Carriage returns should appear only before a line feed.
 
-Lowercase letters in the stream should be interpreted as its uppercase equivalent.
+Lowercase letters in the stream shall be interpreted as its uppercase equivalent.
 
 Space, horizontal tab, parentheses and comma are defined as whitespace characters.
 
@@ -204,7 +232,7 @@ Comments cannot start inside string literals.
 
 ### Commands
 
-A command describes an operation a script should perform.
+A command describes an operation for a script to perform.
 
 ```
 command_name := token_char {token_char} ;
@@ -229,7 +257,7 @@ integer := ['-'] digit {digit} ;
 
 A *integer literal* is a sequence of digits optionally preceded by a minus sign.
 
-If the literal begins with a minus, the number following it should be negated.
+If the literal begins with a minus, the number following it shall be negated.
 
 ### Floating-Point Literals
 
@@ -241,9 +269,9 @@ floating := ['-'] (floating_form1 | floating_form2) ;
 
 A *floating-point literal* is a nonempty sequence of digits which must contain at least one occurrence of the characters `.` or `F`.
 
-Once the `F` characters is found, all characters including and following it should be ignored. The same should happen when the character `.` is found a second time.
+Once the `F` characters is found, all characters including and following it shall be ignored. The same shall happen when the character `.` is found a second time.
 
-The literal may be preceded by a minus sign, which should negate the floating-point number.
+The literal can be preceded by a minus sign, which shall negate the floating-point number.
 
 The following are examples of valid and invalid literals:
 
@@ -271,7 +299,7 @@ An *identifier* is a sequence of token characters beggining with a dollar or alp
 
 **Constraints**
 
-An identifier should not end with a `:` character.
+An identifier shall not end with a `:` character.
 
 ### String Literals
 
@@ -290,18 +318,22 @@ variable_char := token_char - ('[' | ']') ;
 variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ```
 
-A *variable reference* is a variable name optionally followed by an array subscript. Any character following the subscript should be ignored. A subscript shall not happen more than once.
+A *variable reference* is a variable name optionally followed by an array subscript. Any character following the subscript shall be ignored. A subscript shall not happen more than once.
 
 ```
 subscript := '[' (variable_name | integer) ']' ;
 variable := variable_name [ subscript {variable_char} ] ;
 ```
 
-The subscript may use a integer literal or another variable name of integer type. The indexing is zero-based.
+The type of a variable reference is the inner type of the variable name being referenced.
+
+The subscript uses an integer literal or another variable name of integer type for indexing.
+
+The indexing is zero-based.
 
 The integer literal in a subscript must be positive.
 
-The type of a variable reference is the inner type of the variable name being referenced.
+The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.
 
 Parameters
 -----------------------
@@ -318,9 +350,9 @@ A *string constant* is a name associated with an integer value. Such association
 
 An *enumeration* is a collection of string constants.
 
-A parameter definition may have an associated enumeration. A string constant is said to be a match if an identifier in an argument refers to a name in its parameter's enumeration.
+A parameter definition can have an associated enumeration. A string constant is said to be a match if an identifier in an argument refers to a name in its parameter's enumeration.
 
-There is an special enumeration called the *global string constants enumeration* which semantics are defined along this specification. Other enumerations may be defined by an implementation.
+There is an special enumeration called the *global string constants enumeration* which semantics are defined along this specification. Other enumerations can be defined by an implementation.
 
 If a parameter definition specifies an enumeration, the global string constants enumeration cannot be matched in the said parameter.
 
@@ -431,7 +463,7 @@ An expression is a shortcut to one or more command selectors.
 
 **Constraints**
 
-No argument in an expression can be a string literal.
+An argument in an expression cannot be a string literal.
 
 The name of commands used to require script files (e.g. `GOSUB_FILE`) and its directive commands (i.e. `MISSION_START` and `MISSION_END`) cannot be on the left hand side of a expression.
 
@@ -455,11 +487,11 @@ assignment_expression := expr_assign_unary
                        | expr_assign_abs ;
 ```
 
-The unary assignments `++a` and `a++` should behave as if `ADD_THING_TO_THING a 1` was executed.
+The unary assignments `++a` and `a++` behaves as if `ADD_THING_TO_THING a 1` was executed.
 
-The unary assignments `--a` and `a--` should behave as if `SUB_THING_FROM_THING a 1` was executed.
+The unary assignments `--a` and `a--`  behaves as if `SUB_THING_FROM_THING a 1` was executed.
 
-The binary assignment expressions should behave as if the following was executed:
+The binary assignment expressions behaves as if the following was executed:
 
 | Expression | Behaves As If                                  |
 | ---------- | ---------------------------------------------- |
@@ -472,28 +504,28 @@ The binary assignment expressions should behave as if the following was executed
 | `a +=@ b`  | `ADD_THING_TO_THING_TIMED a b`                 |
 | `a -=@ b`  | `SUB_THING_FROM_THING_TIMED a b`               |
 
-The absolute assignment `a = ABS b` should behave as if the following was executed:
+The absolute assignment `a = ABS b` behaves as if the following was executed:
 
  + `ABS a` if the name `a` is the same as the name `b`.
  + `SET a b` followed by `ABS a` otherwise.
 
-The ternary assignment `a = b + c` should behave as if the following was executed:
+The ternary assignment `a = b + c` behaves as if the following was executed:
  
  + `ADD_THING_TO_THING a c` if the name `a` is the same as the name `b`.
  + `ADD_THING_TO_THING a b` if the name `a` is the same as the name `c`.
  + `SET a b` followed by `ADD_THING_TO_THING a c` otherwise.
 
-The ternary assignment `a = b - c` should behave as if the following was executed:
+The ternary assignment `a = b - c` behaves as if the following was executed:
 
  + `SUB_THING_FROM_THING a c` if the name `a` is the same as the name `b`.
  + Implementation-defined if `a` is the same name as `c`.
  + `SET a b` followed by `SUB_THING_BY_THING a c` otherwise.
 
-The ternary assignment `a = b * c` should behave as if `a = b + c`, except by using `MULT_THING_BY_THING` instead of `ADD_THING_TO_THING`.
+The ternary assignment `a = b * c` behaves as if `a = b + c`, except by using `MULT_THING_BY_THING` instead of `ADD_THING_TO_THING`.
 
-The ternary assignment `a = b / c` should behave as if `a = b - c`, except by using `DIV_THING_BY_THING` instead of `SUB_THING_FROM_THING`.
+The ternary assignment `a = b / c` behaves as if `a = b - c`, except by using `DIV_THING_BY_THING` instead of `SUB_THING_FROM_THING`.
 
-The ternary assignments `a = b +@ c` and `a = b -@ c` should behave as if `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
+The ternary assignments `a = b +@ c` and `a = b -@ c` behaves as if `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
 
 ### Conditional Expressions
 
@@ -502,7 +534,7 @@ relop := '=' | '<' | '>' | '>=' | '<=' ;
 conditional_expression := argument {whitespace} relop {whitespace} argument ;
 ```
 
-These expressions should behave as if the following was executed:
+These expressions behaves as if the following was executed:
 
 | Expression | Behaves As If                                  |
 | ---------- | ---------------------------------------------- |
@@ -524,7 +556,7 @@ statement := labeled_statement
 
 ### Labeled Statements
 
-Statements may be prefixed with a label.
+Statements can be prefixed with a label.
 
 ```
 label_def := identifier ':' ;
@@ -542,7 +574,7 @@ The name of a label must be unique across the multi-file.
 
 This declares a label named after the given identifier.
 
-The label may be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
+The label can be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
 
 ### Empty Statements
 
@@ -647,7 +679,7 @@ Global variable names must be unique across the multi-file.
 
 Local variables must be declared inside a lexical scope.
 
-Local variables may have identical names as long as they are in different lexical scopes.
+Local variables can have identical names as long as they are in different lexical scopes.
 
 Local variables shall not have the same name as any global variable.
 
@@ -849,7 +881,7 @@ command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;
 
 **Constraints**
 
-Only a single *mission script* may be running at once.
+Only a single *mission script* can be running at once.
 
 **Semantics**
 
@@ -890,7 +922,7 @@ subscript_file := 'MISSION_START' eol
                   {statement} ;
 ```
 
-A subscript file is a sequence of zero or more statements in a `MISSION_START` and `MISSION_END` block. More statements may follow.
+A subscript file is a sequence of zero or more statements in a `MISSION_START` and `MISSION_END` block. More statements can follow.
 
 **Constraints**
 
@@ -898,7 +930,7 @@ The `MISSION_START` command shall be the very first line of the subscript file a
 
 **Semantics**
 
-The `MISSION_END` command should behaviour as if by executing the `TERMINATE_THIS_SCRIPT` command.
+The `MISSION_END` command behaves as if by executing the `TERMINATE_THIS_SCRIPT` command.
 
 ### Mission Script Files
 
@@ -912,9 +944,7 @@ A mission script file has the same structure of a subscript file.
 Supporting Commands
 -----------------------
 
-In order to perform useful computation the following supporting commands are defined.
-
-An implementation is not required to provide support to any of these commands.
+In order to perform useful computation the following supporting commands may be available in an implementation.
 
 ### WAIT
 
@@ -1053,7 +1083,7 @@ Supporting Command Selectors
 
 To further enchance the set of minimal commands for useful computation, the following command selectors and its supportive alternatives are defined.
 
-An implementation is required to support these selectors, but not all of its alternative commands.
+An implementation is required to support these selectors, but it may not support all of its alternatives.
 
 ### SET
 
@@ -1596,7 +1626,6 @@ we don't really what are these, so we won't specify them.
 
 
 
-TODO shall should must cannot could may etc
 TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES 
 TODO scripts subscripts mission script and such (what are the execution differences)
 TODO translation limits
@@ -1605,7 +1634,6 @@ TODO timera timerb (remember, only within scope; cannot declare var with same na
 TODO better name for what we are calling require statements
 TODO interesting NOP is not compiled
 TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
-TODO specify array access pattern (is first index 0? is a[0] valid for non-array? for sure a[2] does not if out-of-bounds)
 TODO SAVE_VAR_INT
 TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
 TODO maybe move the semantic definition that we cannot use mission script labels from outside it from concepts to the script file structure section
@@ -1614,16 +1642,13 @@ TODO read gta3sc issues and source for quirks
 TODO re-read Wesser's PM
 TODO fix AND OR NOT defect?
 TODO list of special command names (user cannot write these)
-TODO creating packages and such are declarations too (not only var decls)
 TODO correctly specify that a[1] = a[1]abc + 2 is not the same as a[1] = a[1] + 2
-TODO unclosed nested comments is a error
 TODO talk about repetion of filenames and using in different script types
-TODO no duplicate script name
 TODO define semantics for `arr` (no brackets)
+TODO creating packages and such are declarations too (not only var decls)
 TODO declarations, entities and variable usage
 TODO label semantics of start new script (GTA3 allows label: {})
 TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
-
 LIMITS
 TODO gxtsema gxt key length <8
 TODO gxtsema filename (excluding extension must be) <16
