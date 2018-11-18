@@ -79,7 +79,7 @@ Concepts
 
 A **script** is a unit of execution which contains its own *program counter*, *local variables* and *compare flag*.
 
-A **program** is a collection of scripts running concurrently.
+A **program** is a collection of scripts running concurrently in a cooperative fashion.
 
 A **variable** is a named storage location. This location holds a value of specific type.
 
@@ -370,9 +370,9 @@ An *OUTPUT_FLOAT parameter* accepts an argument only if it is a identifier refer
 
 A *LABEL parameter* accepts an argument only if it is an identifier whose name is a label in the multi-file.
 
-#### INPUT_TEXT_LABEL
+#### TEXT_LABEL
 
-An *INPUT_TEXT_LABEL parameter* accepts an argument only if it is an identifier. If the identifier begins with a dollar character (`$`), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
+An *TEXT_LABEL parameter* accepts an argument only if it is an identifier. If the identifier begins with a dollar character (`$`), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
 
 #### VAR_TEXT_LABEL
 
@@ -420,7 +420,7 @@ A *matching alternative* is the first command in the alternative sequence to hav
   2. If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) *VAR_INT*, *VAR_FLOAT* or *VAR_TEXT_LABEL*.
   3. If the identifier references a local variable, the same rule as above applies, except by using *LVAR_INT*, *LVAR_FLOAT* and *LVAR_TEXT_LABEL*.
   4. If the identifier matches any string constant in any enumeration, the parameter type must be *INPUT_INT* and the argument shall behave as if it was rewritten as an integer literal corresponding to the string constant's value.
-  5. Otherwise, the parameter type must be *INPUT_TEXT_LABEL*.
+  5. Otherwise, the parameter type must be *TEXT_LABEL*.
 
 If no matching alternative is found, the program is ill-formed.
 
@@ -912,113 +912,400 @@ A mission script file has the same structure of a subscript file.
 Supporting Commands
 -----------------------
 
-In order to perform useful computations the following supporting commands are defined.
+In order to perform useful computation the following supporting commands are defined.
 
 An implementation is not required to provide support to any of these commands.
 
 ### WAIT
 
-TODO
+**Parameters**
+
+```
+WAIT INPUT_INT
+```
+
+**Side-effects**
+
+Yields control to another script. The current script is not resumed for at least the specified number of milliseconds.
+
+This command is useful due to the cooperative multitasking nature of the execution environment.
 
 ### GOTO
 
-TODO
+**Parameters**
+
+```
+GOTO LABEL
+```
+
+**Side-effects**
+
+Performs a jump to the specified location.
 
 ### GOSUB
 
-TODO
+**Parameters**
 
-### GOSUB_FILE
+```
+GOSUB LABEL
+```
 
-TODO (hmm already defined)
+**Side-effects**
+
+Calls the subroutine in the specified location.
 
 ### RETURN
 
-TODO
+**Parameters**
+
+```
+RETURN
+```
+
+**Side-effects**
+
+Returns from the last called subroutine.
+
+The behaviour is undefined if there is no active subroutine.
 
 ### RETURN_TRUE
 
-TODO
+**Parameters**
+
+```
+RETURN_TRUE
+```
+
+**Side-effects**
+
+Returns true (as in any command updating the compare flag to true).
 
 ### RETURN_FALSE
 
-TODO
+**Parameters**
 
-### START_NEW_SCRIPT
+```
+RETURN_FALSE
+```
 
-TODO
+**Side-effects**
 
-### LAUNCH_MISSION
-
-TODO (hmm already defined)
-
-### LOAD_AND_LAUNCH_MISSION
-
-TODO (hmm already defined)
-
-### TERMINATE_THIS_SCRIPT
-
-TODO
+Returns false (as in any command updating the compare flag to false).
 
 ### SCRIPT_NAME
 
-TODO
+**Parameters**
+
+```
+SCRIPT_NAME TEXT_LABEL
+```
+
+**Side-effects**
+
+Associates a name to the executing script.
+
+**Constraints**
+
+The translation environment must enforce the following constraints.
+
+The name of a script must be unique across the multi-file.
+
+The behaviour of the translation is unspecified if the name is given by a text label variable.
+
+### TERMINATE_THIS_SCRIPT
+
+**Parameters**
+
+```
+TERMINATE_THIS_SCRIPT
+```
+
+**Side-effects**
+
+Terminates the executing script.
+
+### START_NEW_SCRIPT
+
+**Parameters**
+
+```
+START_NEW_SCRIPT LABEL INPUT_OPT...
+```
+
+**Side-effects**
+
+Creates a script and sets its program counter to the specified label location.
+
+The first few local variables at the scope of the target label are set to the values of the optional input arguments. That is, the first declared local variable is set to the first optional argument. The second variable to the second optional argument, and so on.
+
+**Constraints**
+
+The translation environment must enforce the following constraints.
+
+The specified label location must be within a scope.
+
+The type of a local variable and its respective input argument must match. For instance, if an input argument is an integer literal or variable of integer type, its corresponding local variable in the target scope must be of integer type.
+
+If there are not enough local variables in the target scope to accomodate the input arguments the program is ill-formed.
 
 Supporting Command Selectors
 -------------------------------
 
+To further enchance the set of minimal commands for useful computation, the following command selectors and its supportive alternatives are defined.
+
+An implementation is required to support these selectors, but not all of its alternative commands.
+
 ### SET
 
-TODO
+**Alternatives**
 
-### ADD_THING_TO_THING
+    SET_VAR_INT VAR_INT INT
+    SET_VAR_FLOAT VAR_FLOAT INT
+    SET_LVAR_INT LVAR_INT INT
+    SET_LVAR_FLOAT LVAR_FLOAT FLOAT
+    SET_VAR_INT_TO_VAR_INT VAR_INT TVAR_INT
+    SET_LVAR_INT_TO_LVAR_INT LVAR_INT LVAR_INT
+    SET_VAR_FLOAT_TO_VAR_FLOAT VAR_FLOAT VAR_FLOAT
+    SET_LVAR_FLOAT_TO_LVAR_FLOAT LVAR_FLOAT LVAR_FLOAT
+    SET_VAR_FLOAT_TO_LVAR_FLOAT VAR_FLOAT LVAR_FLOAT
+    SET_LVAR_FLOAT_TO_VAR_FLOAT LVAR_FLOAT VAR_FLOAT
+    SET_VAR_INT_TO_LVAR_INT VAR_INT LVAR_INT
+    SET_LVAR_INT_TO_VAR_INT LVAR_INT VAR_INT
+    SET_VAR_INT_TO_CONSTANT VAR_INT ANY_INT
+    SET_LVAR_INT_TO_CONSTANT VAR_INT ANY_INT
+    SET_VAR_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+    SET_LVAR_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
 
-TODO
+**Side-effects**
 
-### SUB_THING_FROM_THING
-
-TODO
-
-### MULT_THING_BY_THING
-
-TODO
-
-### DIV_THING_BY_THING
-
-TODO
-
-### IS_THING_GREATER_THAN_THING
-
-TODO
-
-### IS_THING_GREATER_OR_EQUAL_TO_THING
-
-TODO
-
-### IS_THING_EQUAL_TO_THING
-
-TODO
-
-### IS_THING_NOT_EQUAL_TO_THING
-
-TODO
-
-### ADD_THING_TO_THING_TIMED
-
-TODO
-
-### SUB_THING_FROM_THING_TIMED
-
-TODO
+Sets the variable on the left to the value on the right.
 
 ### CSET
 
-TODO
+**Alternatives**
+
+    CSET_VAR_INT_TO_VAR_FLOAT VAR_INT VAR_FLOAT
+    CSET_VAR_FLOAT_TO_VAR_INT VAR_FLOAT VAR_INT 
+    CSET_LVAR_INT_TO_VAR_FLOAT LVAR_INT VAR_FLOAT 
+    CSET_LVAR_FLOAT_TO_VAR_INT LVAR_FLOAT VAR_INT 
+    CSET_VAR_INT_TO_LVAR_FLOAT VAR_INT LVAR_FLOAT 
+    CSET_VAR_FLOAT_TO_LVAR_INT VAR_FLOAT LVAR_INT 
+    CSET_LVAR_INT_TO_LVAR_FLOAT LVAR_INT LVAR_FLOAT 
+    CSET_LVAR_FLOAT_TO_LVAR_INT LVAR_FLOAT LVAR_INT 
+
+**Side-effects**
+
+Sets the variable on the left to the value of the variable on the right converted to the left type.
+
+### ADD_THING_TO_THING
+
+**Alternatives**
+
+    ADD_VAL_TO_INT_VAR VAR_INT INT
+    ADD_VAL_TO_FLOAT_VAR VAR_FLOAT FLOAT
+    ADD_VAL_TO_INT_LVAR LVAR_INT INT
+    ADD_VAL_TO_FLOAT_LVAR LVAR_FLOAT FLOAT
+    ADD_INT_VAR_TO_INT_VAR VAR_INT VAR_INT
+    ADD_FLOAT_VAR_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    ADD_INT_LVAR_TO_INT_LVAR LVAR_INT LVAR_INT
+    ADD_FLOAT_LVAR_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    ADD_INT_VAR_TO_INT_LVAR LVAR_INT VAR_INT
+    ADD_FLOAT_VAR_TO_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT
+    ADD_INT_LVAR_TO_INT_VAR VAR_INT LVAR_INT
+    ADD_FLOAT_LVAR_TO_FLOAT_VAR VAR_FLOAT LVAR_FLOAT
+
+**Side-effects**
+
+Adds the value on the right to the variable on the left.
+
+### SUB_THING_FROM_THING
+
+**Alternatives**
+
+    SUB_VAL_FROM_INT_VAR VAR_INT INT
+    SUB_VAL_FROM_FLOAT_VAR VAR_FLOAT FLOAT
+    SUB_VAL_FROM_INT_LVAR LVAR_INT INT
+    SUB_VAL_FROM_FLOAT_LVAR LVAR_FLOAT FLOAT
+    SUB_INT_VAR_FROM_INT_VAR VAR_INT VAR_INT
+    SUB_FLOAT_VAR_FROM_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    SUB_INT_LVAR_FROM_INT_LVAR LVAR_INT LVAR_INT
+    SUB_FLOAT_LVAR_FROM_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    SUB_INT_VAR_FROM_INT_LVAR LVAR_INT VAR_INT
+    SUB_FLOAT_VAR_FROM_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT
+    SUB_INT_LVAR_FROM_INT_VAR VAR_INT LVAR_INT
+    SUB_FLOAT_LVAR_FROM_FLOAT_VAR VAR_FLOAT LVAR_FLOAT
+
+**Side-effects**
+
+Substracts the value on the right from the variable on the left.
+
+### MULT_THING_BY_THING
+
+**Alternatives**
+
+    MULT_INT_VAR_BY_VAL VAR_INT INT
+    MULT_FLOAT_VAR_BY_VAL VAR_FLOAT FLOAT
+    MULT_INT_LVAR_BY_VAL LVAR_INT INT
+    MULT_FLOAT_LVAR_BY_VAL LVAR_FLOAT FLOAT
+    MULT_INT_VAR_BY_INT_VAR VAR_INT VAR_INT
+    MULT_FLOAT_VAR_BY_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    MULT_INT_LVAR_BY_INT_LVAR LVAR_INT LVAR_INT
+    MULT_FLOAT_LVAR_BY_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    MULT_INT_VAR_BY_INT_LVAR VAR_INT LVAR_INT
+    MULT_FLOAT_VAR_BY_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+    MULT_INT_LVAR_BY_INT_VAR LVAR_INT VAR_INT
+    MULT_FLOAT_LVAR_BY_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+
+**Side-effects**
+
+Multiplites the variable on the left by the value on the right.
+
+### DIV_THING_BY_THING
+
+**Alternatives**
+
+    DIV_INT_VAR_BY_VAL VAR_INT INT
+    DIV_FLOAT_VAR_BY_VAL VAR_FLOAT FLOAT
+    DIV_INT_LVAR_BY_VAL LVAR_INT INT
+    DIV_FLOAT_LVAR_BY_VAL LVAR_FLOAT FLOAT
+    DIV_INT_VAR_BY_INT_VAR VAR_INT VAR_INT
+    DIV_FLOAT_VAR_BY_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    DIV_INT_LVAR_BY_INT_LVAR LVAR_INT LVAR_INT
+    DIV_FLOAT_LVAR_BY_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    DIV_INT_VAR_BY_INT_LVAR VAR_INT LVAR_INT
+    DIV_FLOAT_VAR_BY_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+    DIV_INT_LVAR_BY_INT_VAR LVAR_INT VAR_INT
+    DIV_FLOAT_LVAR_BY_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+
+**Side-effects**
+
+Divides the variable on the left by the value on the right.
 
 ### ABS
 
-TODO
+**Alternatives**
 
+    ABS_VAR_INT VAR_INT
+    ABS_LVAR_INT LVAR_INT
+    ABS_VAR_FLOAT VAR_FLOAT
+    ABS_LVAR_FLOAT LVAR_FLOAT
+
+**Side-effects**
+
+Computes the absolute value of a variable's value and store the result in the same variable.
+
+### ADD_THING_TO_THING_TIMED
+
+**Alternatives**
+
+    ADD_TIMED_VAL_TO_FLOAT_VAR VAR_FLOAT FLOAT
+    ADD_TIMED_VAL_TO_FLOAT_LVAR LVAR_FLOAT FLOAT
+    ADD_TIMED_FLOAT_VAR_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    ADD_TIMED_FLOAT_LVAR_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    ADD_TIMED_FLOAT_LVAR_TO_FLOAT_VAR VAR_FLOAT LVAR_FLOAT
+    ADD_TIMED_FLOAT_VAR_TO_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT
+
+**Side-effects**
+
+Adds the value on the right multipled by the frame delta time to the variable on the left.
+
+### SUB_THING_FROM_THING_TIMED
+
+**Alternatives**
+
+    SUB_TIMED_VAL_FROM_FLOAT_VAR VAR_FLOAT FLOAT
+    SUB_TIMED_VAL_FROM_FLOAT_LVAR LVAR_FLOAT FLOAT
+    SUB_TIMED_FLOAT_VAR_FROM_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    SUB_TIMED_FLOAT_LVAR_FROM_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    SUB_TIMED_FLOAT_LVAR_FROM_FLOAT_VAR VAR_FLOAT LVAR_FLOAT
+    SUB_TIMED_FLOAT_VAR_FROM_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT
+
+**Side-effects**
+
+Substracts the value on the right multipled by the frame delta time from the variable on the left.
+
+### IS_THING_EQUAL_TO_THING
+
+**Alternatives**
+
+    IS_INT_VAR_EQUAL_TO_NUMBER VAR_INT INT
+    IS_INT_LVAR_EQUAL_TO_NUMBER LVAR_INT INT
+    IS_INT_VAR_EQUAL_TO_INT_VAR VAR_INT VAR_INT
+    IS_INT_LVAR_EQUAL_TO_INT_LVAR LVAR_INT LVAR_INT
+    IS_INT_VAR_EQUAL_TO_INT_LVAR VAR_INT LVAR_INT
+    IS_FLOAT_VAR_EQUAL_TO_NUMBER VAR_FLOAT FLOAT
+    IS_FLOAT_LVAR_EQUAL_TO_NUMBER LVAR_FLOAT FLOAT
+    IS_FLOAT_VAR_EQUAL_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    IS_FLOAT_LVAR_EQUAL_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    IS_FLOAT_VAR_EQUAL_TO_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+    IS_INT_VAR_EQUAL_TO_CONSTANT VAR_INT ANY_INT
+    IS_INT_LVAR_EQUAL_TO_CONSTANT LVAR_INT ANY_INT
+    IS_VAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+    IS_LVAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
+    IS_INT_LVAR_EQUAL_TO_INT_VAR LVAR_INT VAR_INT
+    IS_FLOAT_LVAR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+
+**Side-effects**
+
+Returns whether the value on the left is equal the value on the right.
+
+### IS_THING_GREATER_THAN_THING
+
+**Alternatives**
+
+    IS_INT_VAR_GREATER_THAN_NUMBER VAR_INT INT
+    IS_INT_LVAR_GREATER_THAN_NUMBER LVAR_INT INT
+    IS_NUMBER_GREATER_THAN_INT_VAR INT VAR_INT
+    IS_NUMBER_GREATER_THAN_INT_LVAR INT LVAR_INT
+    IS_INT_VAR_GREATER_THAN_INT_VAR VAR_INT VAR_INT
+    IS_INT_LVAR_GREATER_THAN_INT_LVAR LVAR_INT LVAR_INT
+    IS_INT_VAR_GREATER_THAN_INT_LVAR VAR_INT LVAR_INT
+    IS_INT_LVAR_GREATER_THAN_INT_VAR LVAR_INT VAR_INT
+    IS_FLOAT_VAR_GREATER_THAN_NUMBER VAR_FLOAT FLOAT
+    IS_FLOAT_LVAR_GREATER_THAN_NUMBER LVAR_FLOAT FLOAT
+    IS_NUMBER_GREATER_THAN_FLOAT_VAR FLOAT VAR_FLOAT
+    IS_NUMBER_GREATER_THAN_FLOAT_LVAR FLOAT LVAR_FLOAT
+    IS_FLOAT_VAR_GREATER_THAN_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    IS_FLOAT_LVAR_GREATER_THAN_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    IS_FLOAT_VAR_GREATER_THAN_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+    IS_FLOAT_LVAR_GREATER_THAN_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+    IS_INT_VAR_GREATER_THAN_CONSTANT VAR_INT ANY_INT
+    IS_INT_LVAR_GREATER_THAN_CONSTANT LVAR_INT ANY_INT
+    IS_CONSTANT_GREATER_THAN_INT_VAR ANY_INT VAR_INT
+    IS_CONSTANT_GREATER_THAN_INT_LVAR ANY_INT LVAR_INT
+
+**Side-effects**
+
+Returns whether the value on the left is greater than the value on the right.
+
+### IS_THING_GREATER_OR_EQUAL_TO_THING
+
+**Alternatives**
+
+    IS_INT_VAR_GREATER_OR_EQUAL_TO_NUMBER VAR_INT INT
+    IS_INT_LVAR_GREATER_OR_EQUAL_TO_NUMBER LVAR_INT INT
+    IS_NUMBER_GREATER_OR_EQUAL_TO_INT_VAR INT VAR_INT
+    IS_NUMBER_GREATER_OR_EQUAL_TO_INT_LVAR INT LVAR_INT
+    IS_INT_VAR_GREATER_OR_EQUAL_TO_INT_VAR VAR_INT VAR_INT
+    IS_INT_LVAR_GREATER_OR_EQUAL_TO_INT_LVAR LVAR_INT LVAR_INT
+    IS_INT_VAR_GREATER_OR_EQUAL_TO_INT_LVAR VAR_INT LVAR_INT
+    IS_INT_LVAR_GREATER_OR_EQUAL_TO_INT_VAR LVAR_INT VAR_INT
+    IS_FLOAT_VAR_GREATER_OR_EQUAL_TO_NUMBER VAR_FLOAT FLOAT
+    IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_NUMBER LVAR_FLOAT FLOAT
+    IS_NUMBER_GREATER_OR_EQUAL_TO_FLOAT_VAR FLOAT VAR_FLOAT
+    IS_NUMBER_GREATER_OR_EQUAL_TO_FLOAT_LVAR FLOAT LVAR_FLOAT
+    IS_FLOAT_VAR_GREATER_OR_EQUAL_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+    IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+    IS_FLOAT_VAR_GREATER_OR_EQUAL_TO_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+    IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+    IS_INT_VAR_GREATER_OR_EQUAL_TO_CONSTANT VAR_INT ANY_INT
+    IS_INT_LVAR_GREATER_OR_EQUAL_TO_CONSTANT LVAR_INT ANY_INT
+    IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_VAR ANY_INT VAR_INT
+    IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR ANY_INT LVAR_INT
+
+**Side-effects**
+
+Returns whether the value on the left is greater than or equal to the value on the right.
 
 Appendix
 ------------
@@ -1334,7 +1621,7 @@ TODO talk about repetion of filenames and using in different script types
 TODO no duplicate script name
 TODO define semantics for `arr` (no brackets)
 TODO declarations, entities and variable usage
-TODO start new script and its label semantics
+TODO label semantics of start new script (GTA3 allows label: {})
 TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
 
 LIMITS
