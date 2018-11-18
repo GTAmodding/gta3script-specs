@@ -121,13 +121,7 @@ The *main script file* is found in a unspecified manner. The other *script files
 
 ### Types
 
-Due to the command-driven nature of the language, typing rules are applied to *argument* and *parameters* of commands.
-
-The language is statically typed. The type of every *argument* and *parameter* is known by the translator.
-
-The language is strongly typed. One type of *argument* cannot be converted to another in order to fit the requirement of a *parameter*.
-
-An **integer** is a binary, signed integral number. It represents 32 bits of data and the range of values *-2147483648* through *2147483647*.
+An **integer** is a binary signed two's-complement integral number. It represents 32 bits of data and the range of values *-2147483648* through *2147483647*.
 
 A **floating-point** is a representation of a real number. Its exact representation, precision and range of values is implementation-defined.
 
@@ -356,29 +350,29 @@ A *LVAR_INT parameter* accepts an argument only if it is an identifier referenci
 
 A *LVAR_FLOAT parameter* accepts an argument only if it is an identifier referencing a local variable of floating-point type.
 
-#### VAR_LVAR_INT
+#### INPUT_INT
 
-A *VAR_LVAR_INT parameter* accepts an argument only if it is an identifier referencing a variable of integer type.
+An *INPUT_INT parameter* accepts an argument only if it is an integer literal or an identifier either matching a string constant, global string constant or referencing a variable of integer type (in this order).
 
-#### VAR_LVAR_FLOAT
+#### INPUT_FLOAT
 
-A *VAR_LVAR_FLOAT parameter* accepts an argument only if it is a identifier referencing a variable of floating-point type.
+An *INPUT_FLOAT parameter* accepts an argument only if it is an floating-point literal or an identifier referencing a variable of floating-point type.
 
-#### ANY_INT
+#### OUTPUT_INT
 
-An *ANY_INT parameter* accepts an argument only if it is an integer literal or an identifier either matching a string constant, global string constant or referencing a variable of integer type (in this order).
+An *OUTPUT_INT parameter* accepts an argument only if it is an identifier referencing a variable of integer type.
 
-#### ANY_FLOAT
+#### OUTPUT_FLOAT
 
-An *ANY_FLOAT parameter* accepts an argument only if it is an floating-point literal or an identifier referencing a variable of floating-point type.
+An *OUTPUT_FLOAT parameter* accepts an argument only if it is a identifier referencing a variable of floating-point type.
 
 #### LABEL
 
 A *LABEL parameter* accepts an argument only if it is an identifier whose name is a label in the multi-file.
 
-#### TEXT_LABEL
+#### INPUT_TEXT_LABEL
 
-A *TEXT_LABEL parameter* accepts an argument only if it is an identifier. If the identifier begins with a dollar character (`$`), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
+An *INPUT_TEXT_LABEL parameter* accepts an argument only if it is an identifier. If the identifier begins with a dollar character (`$`), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
 
 #### VAR_TEXT_LABEL
 
@@ -402,11 +396,11 @@ Additionally, the following parameters are defined as behaving equivalently to t
  + *LVAR_FLOAT_OPT*
  + *VAR_TEXT_LABEL_OPT*
  + *LVAR_TEXT_LABEL_OPT*
- + *NUMERIC_OPT*
+ + *INPUT_OPT*
 
 Such parameters are always trailing parameters.
 
-The *NUMERIC_OPT parameter* accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer or floating-point type.
+The *INPUT_OPT parameter* accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer, floating-point or text label type.
 
 Command Selectors
 ------------------------
@@ -425,8 +419,8 @@ A *matching alternative* is the first command in the alternative sequence to hav
   1. If the identifier matches a global string constant, the parameter type must be *INT*.
   2. If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) *VAR_INT*, *VAR_FLOAT* or *VAR_TEXT_LABEL*.
   3. If the identifier references a local variable, the same rule as above applies, except by using *LVAR_INT*, *LVAR_FLOAT* and *LVAR_TEXT_LABEL*.
-  4. If the identifier matches any string constant in any enumeration, the parameter type must be *ANY_INT* and the argument shall behave as if it was rewritten as an integer literal corresponding to the string constant's value.
-  5. Otherwise, the parameter type must be *TEXT_LABEL*.
+  4. If the identifier matches any string constant in any enumeration, the parameter type must be *INPUT_INT* and the argument shall behave as if it was rewritten as an integer literal corresponding to the string constant's value.
+  5. Otherwise, the parameter type must be *INPUT_TEXT_LABEL*.
 
 If no matching alternative is found, the program is ill-formed.
 
@@ -437,7 +431,7 @@ An expression is a shortcut to one or more command selectors.
 
 **Constraints**
 
-No argument in an expression can be a string literals.
+No argument in an expression can be a string literal.
 
 The name of commands used to require script files (e.g. `GOSUB_FILE`) and its directive commands (i.e. `MISSION_START` and `MISSION_END`) cannot be on the left hand side of a expression.
 
@@ -1338,10 +1332,10 @@ TODO correctly specify that a[1] = a[1]abc + 2 is not the same as a[1] = a[1] + 
 TODO unclosed nested comments is a error
 TODO talk about repetion of filenames and using in different script types
 TODO no duplicate script name
-TODO IS VAR_LVAR_INT(FLOAT) types something like INPUT_INT / OUTPUT_INT?
 TODO define semantics for `arr` (no brackets)
 TODO declarations, entities and variable usage
 TODO start new script and its label semantics
+TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
 
 LIMITS
 TODO gxtsema gxt key length <8
