@@ -135,7 +135,9 @@ The *multi-file* is a collection of *script files*. Hereafter being the collecti
 
 The *main script file* is the entry script file. This is where the first script (called the *main script*) starts execution. Translation begins here.
 
-Other script files are *required* to become part of the *multi-file* by the means of require statements within the *main script file*. Many kinds of script files can be *required*.
+Other script files are *required* to become part of the *multi-file* by the means of require statements within the *main script file*. The *main script file* itself is required from the translation environment.
+
+Many kinds of script files can be *required*.
 
 A *main extension file* (or *foreign gosub file*) is a script file required by the means of a *GOSUB_FILE statement*. Other script files can be required from here as well.
 
@@ -146,6 +148,21 @@ A *mission script file* is a script file required by the means of the *LOAD_AND_
 Commands in the *main script file*, *main extension files* and *subscript files* shall not refer to labels in *mission script files*. A *mission script file* shall not refer to labels in other *mission script files*.
 
 The *main script file* is found in a unspecified manner. The other *script files* are found by recursively searching a directory with the same filename (excluding extension) as the *main script file*. This directory is in the same path as the *main script file*. The search for the *script files* shall be case-insensitive. All *script files* must have a `.sc` extension. If multiple script files with the same name are found, behaviour is unspecified.
+
+A script type is said to come before another script type under the following total order:
+
+ 1. Main script.
+ 2. Main extension script.
+ 3. Subscript.
+ 4. Mission script.
+
+A script file *A* (first required from *X*) is said to come before a script file *B* (first required from *Y*) under the following total order:
+
+ 1. If *A*'s script type is not the same as *B*'s, then *A* comes before *B* if and only if *A*'s script type comes before *B*'s script type.
+ 2. Otherwise, if *X* is not the same as *Y*, *A* comes before *B* if and only if *X* comes before *Y*.
+ 3. Otherwise, *A* comes before *B* if and only if the line on which *A* is first required from (in *X*) comes before the line on which *B* is first required from.
+
+A line of code *A* in a script file *X* is said to come before a line *B* in a script file *Y* different from *X* if and only if *X* comes before *Y*.
 
 ### Types
 
@@ -164,7 +181,7 @@ An *array* is a collection of one or more elements of the same type. Each elemen
 Elements
 ---------------------
 
-The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements will be presented together.
+The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.
 
 ### Source Code
 
@@ -192,7 +209,7 @@ A *line* is a sequence of characters delimited by a newline. The start of the st
 newline := ['\r'] `\n` ;
 ```
 
-Each line should be interpreted as if there was no whitespaces in either ends of the line.
+Each line should be interpreted as if there is no whitespaces in either ends of the line.
 
 A *token character* is any character capable of forming a single token.
 
@@ -201,7 +218,7 @@ graph_char := ascii_printable - (whitespace | '"') ;
 token_char := graph_char - ('+' | '-' | '*' | '/' | '=' | '<' | '>') ;
 ```
 
-To simplify future definitions, we define the productions `eol` as the end of a line, and `sep` as a token separator.
+To simplify future definitions, the productions `eol` (end of line) and `sep` (token separator) are defined.
 
 ```
 sep := whitespace {whitespace} ;
@@ -223,7 +240,7 @@ There are two forms:
  + *Line comments* starts with the character sequence `//` and stop at the end of the line.
  + *Block comments* starts with the character sequence `/*` and stop with its matching `*/`. Block comments can be nested inside each other.
 
-The contents of comments shall be interpreted as if it were whitespaces in the source code. More specifically: 
+The contents of a comment shall be interpreted as if it is whitespaces in the source code. More specifically: 
 
  + A line comment should be interpreted as an `eol`.
  + A single, nested, block comment should be interpreted as an `eol` on each line boundary it crosses. On its last line (i.e. the one it does not cross), it should be interpreted as one or more whitespace characters.
@@ -344,6 +361,8 @@ A *parameter definition* is a set of definitions regarding a single parameter fo
 
 A command must have the same amount of arguments as its amount of parameter definitions, unless the missing arguments correspond to *optional parameters* (defined below).
 
+If a variable is used in the same command both as an input and as an output, the input shall be evaluated before any output is assigned to the variable.
+
 ### String Constants
 
 A *string constant* is a name associated with an integer value. Such association is known in the translation environment.
@@ -356,6 +375,18 @@ There is an special enumeration called the *global string constants enumeration*
 
 If a parameter definition specifies an enumeration, the global string constants enumeration cannot be matched in the said parameter.
 
+### Entities
+
+An *entity* is an object of the execution environment. Each entity has an *entity type*, which defines its purposes.
+
+A parameter definition can have an associated entity type.
+
+An entity can be assigned to a variable. In such case, the variable is said to be of that specific entity type from that line of code on. Previous lines of code are not affected.
+
+If an entity type is associated with an parameter and a variable is used as argument, the variable must have the same entity type as the parameter.
+
+Further semantics for entities are defined along this document.
+
 ### Parameter Types
 
 #### INT
@@ -364,7 +395,7 @@ An *INT parameter* accepts an argument only if it is an integer literal or an id
 
 ### FLOAT
 
-A *FLOAT parameter* accepts an argument only if it is an floating-point literal.
+A *FLOAT parameter* accepts an argument only if it is a floating-point literal.
 
 #### VAR_INT
 
@@ -388,11 +419,13 @@ An *INPUT_INT parameter* accepts an argument only if it is an integer literal or
 
 #### INPUT_FLOAT
 
-An *INPUT_FLOAT parameter* accepts an argument only if it is an floating-point literal or an identifier referencing a variable of floating-point type.
+An *INPUT_FLOAT parameter* accepts an argument only if it is a floating-point literal or an identifier referencing a variable of floating-point type.
 
 #### OUTPUT_INT
 
 An *OUTPUT_INT parameter* accepts an argument only if it is an identifier referencing a variable of integer type.
+
+If an entity type is associated with the parameter, the variable must have the same entity type as the parameter, unless there is no entity type associated with the variable. In the latter case, the parameter's entity type is assigned to the variable.
 
 #### OUTPUT_FLOAT
 
@@ -404,7 +437,7 @@ A *LABEL parameter* accepts an argument only if it is an identifier whose name i
 
 #### TEXT_LABEL
 
-An *TEXT_LABEL parameter* accepts an argument only if it is an identifier. If the identifier begins with a dollar character (`$`), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
+A *TEXT_LABEL parameter* accepts an argument only if it is an identifier. If the identifier begins with a dollar character (`$`), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
 
 #### VAR_TEXT_LABEL
 
@@ -420,7 +453,7 @@ A *STRING parameter* accepts an argument only if it is a string literal.
 
 #### Optional Parameters
 
-Additionally, the following parameters are defined as behaving equivalently to their correspondent parameters above, except that in case an argument is absent, parameter matching stops as if there are no more parameters.
+Additionally, the following parameters are defined as behaving equivalently to their correspondent parameters above, except that in case an argument is absent, parameter checking stops as if there are no more parameters to be checked.
 
  + *VAR_INT_OPT*
  + *VAR_FLOAT_OPT*
@@ -441,7 +474,7 @@ A *command selector* (or *alternator*) is a kind of command which gets rewritten
 
 A command selector consists of a name and a finite sequence of commands which are alternatives for replacement.
 
-A command name which is the name of a selector shall behave as if its command name was rewritten as a *matching alternative* before any parameter checking takes place.
+A command name which is the name of a selector shall behave as if its command name is rewritten as a *matching alternative* before any parameter checking takes place.
 
 A *matching alternative* is the first command in the alternative sequence to have the same amount of parameters as arguments in the actual command, and to obey the following rules for every argument and its corresponding parameter:
 
@@ -451,15 +484,13 @@ A *matching alternative* is the first command in the alternative sequence to hav
   1. If the identifier matches a global string constant, the parameter type must be *INT*.
   2. If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) *VAR_INT*, *VAR_FLOAT* or *VAR_TEXT_LABEL*.
   3. If the identifier references a local variable, the same rule as above applies, except by using *LVAR_INT*, *LVAR_FLOAT* and *LVAR_TEXT_LABEL*.
-  4. If the identifier matches any string constant in any enumeration, the parameter type must be *INPUT_INT* and the argument shall behave as if it was rewritten as an integer literal corresponding to the string constant's value.
+  4. If the identifier matches any string constant in any enumeration, the parameter type must be *INPUT_INT* and the argument shall behave as if rewritten as an integer literal corresponding to the string constant's value.
   5. Otherwise, the parameter type must be *TEXT_LABEL*.
 
 If no matching alternative is found, the program is ill-formed.
 
 Expressions
 -------------------------
-
-An expression is a shortcut to one or more command selectors.
 
 **Constraints**
 
@@ -487,11 +518,11 @@ assignment_expression := expr_assign_unary
                        | expr_assign_abs ;
 ```
 
-The unary assignments `++a` and `a++` behaves as if `ADD_THING_TO_THING a 1` was executed.
+The unary assignments `++a` and `a++` behaves as if `ADD_THING_TO_THING a 1` is executed.
 
-The unary assignments `--a` and `a--`  behaves as if `SUB_THING_FROM_THING a 1` was executed.
+The unary assignments `--a` and `a--`  behaves as if `SUB_THING_FROM_THING a 1` is executed.
 
-The binary assignment expressions behaves as if the following was executed:
+The binary assignment expressions behaves as if the following is executed:
 
 | Expression | Behaves As If                                  |
 | ---------- | ---------------------------------------------- |
@@ -504,18 +535,18 @@ The binary assignment expressions behaves as if the following was executed:
 | `a +=@ b`  | `ADD_THING_TO_THING_TIMED a b`                 |
 | `a -=@ b`  | `SUB_THING_FROM_THING_TIMED a b`               |
 
-The absolute assignment `a = ABS b` behaves as if the following was executed:
+The absolute assignment `a = ABS b` behaves as if the following is executed:
 
  + `ABS a` if the name `a` is the same as the name `b`.
  + `SET a b` followed by `ABS a` otherwise.
 
-The ternary assignment `a = b + c` behaves as if the following was executed:
+The ternary assignment `a = b + c` behaves as if the following is executed:
  
  + `ADD_THING_TO_THING a c` if the name `a` is the same as the name `b`.
  + `ADD_THING_TO_THING a b` if the name `a` is the same as the name `c`.
  + `SET a b` followed by `ADD_THING_TO_THING a c` otherwise.
 
-The ternary assignment `a = b - c` behaves as if the following was executed:
+The ternary assignment `a = b - c` behaves as if the following is executed:
 
  + `SUB_THING_FROM_THING a c` if the name `a` is the same as the name `b`.
  + Implementation-defined if `a` is the same name as `c`.
@@ -534,7 +565,7 @@ relop := '=' | '<' | '>' | '>=' | '<=' ;
 conditional_expression := argument {whitespace} relop {whitespace} argument ;
 ```
 
-These expressions behaves as if the following was executed:
+These expressions behave as if the following is executed:
 
 | Expression | Behaves As If                                  |
 | ---------- | ---------------------------------------------- |
@@ -944,7 +975,7 @@ A mission script file has the same structure of a subscript file.
 Supporting Commands
 -----------------------
 
-In order to perform useful computation the following supporting commands may be available in an implementation.
+In order to perform useful computation the following supporting commands may be available.
 
 ### WAIT
 
@@ -1066,7 +1097,7 @@ START_NEW_SCRIPT LABEL INPUT_OPT...
 
 Creates a script and sets its program counter to the specified label location.
 
-The first few local variables at the scope of the target label are set to the values of the optional input arguments. That is, the first declared local variable is set to the first optional argument. The second variable to the second optional argument, and so on.
+The first few local variables at the scope of the target label are assigned the values of the optional input arguments. That is, the first declared local variable is set to the first optional argument, the second variable to the second optional argument, and so on.
 
 **Constraints**
 
@@ -1077,6 +1108,8 @@ The specified label location must be within a scope.
 The type of a local variable and its respective input argument must match. For instance, if an input argument is an integer literal or variable of integer type, its corresponding local variable in the target scope must be of integer type.
 
 If there are not enough local variables in the target scope to accomodate the input arguments the program is ill-formed.
+
+If an input argument is a variable, the value assignment to the variable in the target scope shall obey the same constraints as specified in the SET alternator.
 
 Supporting Command Selectors
 -------------------------------
@@ -1101,14 +1134,20 @@ An implementation is required to support these selectors, but it may not support
     SET_LVAR_FLOAT_TO_VAR_FLOAT LVAR_FLOAT VAR_FLOAT
     SET_VAR_INT_TO_LVAR_INT VAR_INT LVAR_INT
     SET_LVAR_INT_TO_VAR_INT LVAR_INT VAR_INT
-    SET_VAR_INT_TO_CONSTANT VAR_INT ANY_INT
-    SET_LVAR_INT_TO_CONSTANT VAR_INT ANY_INT
+    SET_VAR_INT_TO_CONSTANT VAR_INT INPUT_INT
+    SET_LVAR_INT_TO_CONSTANT VAR_INT INPUT_INT
     SET_VAR_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
     SET_LVAR_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
 
 **Side-effects**
 
 Sets the variable on the left to the value on the right.
+
+**Constraints**
+
+The translation environment must enforce the following constraints.
+
+A variable cannot be assigned to another variable of different entity type. If the right variable has no entity type but the left one does, the program is ill-formed. If the left variable has no entity type, the entity type of the right variable is assigned to it.
 
 ### CSET
 
@@ -1268,8 +1307,8 @@ Substracts the value on the right multipled by the frame delta time from the var
     IS_FLOAT_VAR_EQUAL_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
     IS_FLOAT_LVAR_EQUAL_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
     IS_FLOAT_VAR_EQUAL_TO_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
-    IS_INT_VAR_EQUAL_TO_CONSTANT VAR_INT ANY_INT
-    IS_INT_LVAR_EQUAL_TO_CONSTANT LVAR_INT ANY_INT
+    IS_INT_VAR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+    IS_INT_LVAR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
     IS_VAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
     IS_LVAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
     IS_INT_LVAR_EQUAL_TO_INT_VAR LVAR_INT VAR_INT
@@ -1299,10 +1338,10 @@ Returns whether the value on the left is equal the value on the right.
     IS_FLOAT_LVAR_GREATER_THAN_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
     IS_FLOAT_VAR_GREATER_THAN_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
     IS_FLOAT_LVAR_GREATER_THAN_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
-    IS_INT_VAR_GREATER_THAN_CONSTANT VAR_INT ANY_INT
-    IS_INT_LVAR_GREATER_THAN_CONSTANT LVAR_INT ANY_INT
-    IS_CONSTANT_GREATER_THAN_INT_VAR ANY_INT VAR_INT
-    IS_CONSTANT_GREATER_THAN_INT_LVAR ANY_INT LVAR_INT
+    IS_INT_VAR_GREATER_THAN_CONSTANT VAR_INT INPUT_INT
+    IS_INT_LVAR_GREATER_THAN_CONSTANT LVAR_INT INPUT_INT
+    IS_CONSTANT_GREATER_THAN_INT_VAR INPUT_INT VAR_INT
+    IS_CONSTANT_GREATER_THAN_INT_LVAR INPUT_INT LVAR_INT
 
 **Side-effects**
 
@@ -1328,10 +1367,10 @@ Returns whether the value on the left is greater than the value on the right.
     IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
     IS_FLOAT_VAR_GREATER_OR_EQUAL_TO_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
     IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
-    IS_INT_VAR_GREATER_OR_EQUAL_TO_CONSTANT VAR_INT ANY_INT
-    IS_INT_LVAR_GREATER_OR_EQUAL_TO_CONSTANT LVAR_INT ANY_INT
-    IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_VAR ANY_INT VAR_INT
-    IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR ANY_INT LVAR_INT
+    IS_INT_VAR_GREATER_OR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+    IS_INT_LVAR_GREATER_OR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
+    IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_VAR INPUT_INT VAR_INT
+    IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR INPUT_INT LVAR_INT
 
 **Side-effects**
 
@@ -1623,6 +1662,13 @@ it is very interesting actually, but clearly a language bug (would not say a imp
 **exclusive scripts**
 
 we don't really what are these, so we won't specify them.
+
+**entities**
+
+```
+VAR_INT vcar
+COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar // this spec gives an error, miss2 recognizes (does not look like intended behaviour?)
+```
 
 
 
