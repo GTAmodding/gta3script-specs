@@ -41,6 +41,8 @@ def main():
         elif line.startswith('#'):
             name = line.lstrip('#')
             depth = len(line) - len(name)
+            if depth == 1 and 'Regular' in line: # HACK
+                continue
             lower_right(root, depth).add_child(name=name.strip())
         else:
             last_line = line.strip()

@@ -1,0 +1,9 @@
+Scope
+=====================
+
+This document is targeted at implementation writers and perhaps curious community members.
+
+This document specifies the syntax, constraints and semantic rules of the GTA3script language.
+
+This document does not specify a runtime system nor does it specify mechanisms by which the language is transformed for use by such a system.
+
