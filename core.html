@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>GTA3script Specification</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="pandoc.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">GTA3script Specification</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#scope"><span class="toc-section-number">2</span> Scope</a></li>
+<li><a href="#terms-and-definitions"><span class="toc-section-number">3</span> Terms and Definitions</a></li>
+<li><a href="#notation"><span class="toc-section-number">4</span> Notation</a></li>
+<li><a href="#concepts"><span class="toc-section-number">5</span> Concepts</a><ul>
+<li><a href="#scripts"><span class="toc-section-number">5.1</span> Scripts</a></li>
+<li><a href="#script-files"><span class="toc-section-number">5.2</span> Script Files</a></li>
+<li><a href="#types"><span class="toc-section-number">5.3</span> Types</a></li>
+</ul></li>
+<li><a href="#elements"><span class="toc-section-number">6</span> Elements</a><ul>
+<li><a href="#source-code"><span class="toc-section-number">6.1</span> Source Code</a></li>
+<li><a href="#comments"><span class="toc-section-number">6.2</span> Comments</a></li>
+<li><a href="#commands"><span class="toc-section-number">6.3</span> Commands</a></li>
+<li><a href="#integer-literals"><span class="toc-section-number">6.4</span> Integer Literals</a></li>
+<li><a href="#floating-point-literals"><span class="toc-section-number">6.5</span> Floating-Point Literals</a></li>
+<li><a href="#identifiers"><span class="toc-section-number">6.6</span> Identifiers</a></li>
+<li><a href="#string-literals"><span class="toc-section-number">6.7</span> String Literals</a></li>
+<li><a href="#variable-references"><span class="toc-section-number">6.8</span> Variable References</a></li>
+</ul></li>
+<li><a href="#parameters"><span class="toc-section-number">7</span> Parameters</a><ul>
+<li><a href="#string-constants"><span class="toc-section-number">7.1</span> String Constants</a></li>
+<li><a href="#entities"><span class="toc-section-number">7.2</span> Entities</a></li>
+<li><a href="#parameter-types"><span class="toc-section-number">7.3</span> Parameter Types</a><ul>
+<li><a href="#int"><span class="toc-section-number">7.3.1</span> INT</a></li>
+<li><a href="#float"><span class="toc-section-number">7.3.2</span> FLOAT</a></li>
+<li><a href="#var_int"><span class="toc-section-number">7.3.3</span> VAR_INT</a></li>
+<li><a href="#var_float"><span class="toc-section-number">7.3.4</span> VAR_FLOAT</a></li>
+<li><a href="#lvar_int"><span class="toc-section-number">7.3.5</span> LVAR_INT</a></li>
+<li><a href="#lvar_float"><span class="toc-section-number">7.3.6</span> LVAR_FLOAT</a></li>
+<li><a href="#input_int"><span class="toc-section-number">7.3.7</span> INPUT_INT</a></li>
+<li><a href="#input_float"><span class="toc-section-number">7.3.8</span> INPUT_FLOAT</a></li>
+<li><a href="#output_int"><span class="toc-section-number">7.3.9</span> OUTPUT_INT</a></li>
+<li><a href="#output_float"><span class="toc-section-number">7.3.10</span> OUTPUT_FLOAT</a></li>
+<li><a href="#label"><span class="toc-section-number">7.3.11</span> LABEL</a></li>
+<li><a href="#text_label"><span class="toc-section-number">7.3.12</span> TEXT_LABEL</a></li>
+<li><a href="#var_text_label"><span class="toc-section-number">7.3.13</span> VAR_TEXT_LABEL</a></li>
+<li><a href="#lvar_text_label"><span class="toc-section-number">7.3.14</span> LVAR_TEXT_LABEL</a></li>
+<li><a href="#string"><span class="toc-section-number">7.3.15</span> STRING</a></li>
+<li><a href="#optional-parameters"><span class="toc-section-number">7.3.16</span> Optional Parameters</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#command-selectors"><span class="toc-section-number">8</span> Command Selectors</a></li>
+<li><a href="#expressions"><span class="toc-section-number">9</span> Expressions</a><ul>
+<li><a href="#assignment-expressions"><span class="toc-section-number">9.1</span> Assignment Expressions</a></li>
+<li><a href="#conditional-expressions"><span class="toc-section-number">9.2</span> Conditional Expressions</a></li>
+</ul></li>
+<li><a href="#statements"><span class="toc-section-number">10</span> Statements</a><ul>
+<li><a href="#labeled-statements"><span class="toc-section-number">10.1</span> Labeled Statements</a></li>
+<li><a href="#empty-statements"><span class="toc-section-number">10.2</span> Empty Statements</a></li>
+<li><a href="#embedded-statements"><span class="toc-section-number">10.3</span> Embedded Statements</a></li>
+<li><a href="#command-statements"><span class="toc-section-number">10.4</span> Command Statements</a></li>
+<li><a href="#expression-statements"><span class="toc-section-number">10.5</span> Expression Statements</a></li>
+<li><a href="#scope-statements"><span class="toc-section-number">10.6</span> Scope Statements</a></li>
+<li><a href="#variable-declaration-statements"><span class="toc-section-number">10.7</span> Variable Declaration Statements</a></li>
+<li><a href="#conditional-statements"><span class="toc-section-number">10.8</span> Conditional Statements</a></li>
+<li><a href="#selection-statements"><span class="toc-section-number">10.9</span> Selection Statements</a><ul>
+<li><a href="#if-statement"><span class="toc-section-number">10.9.1</span> IF Statement</a></li>
+<li><a href="#ifnot-statement"><span class="toc-section-number">10.9.2</span> IFNOT Statement</a></li>
+<li><a href="#if-goto-statement"><span class="toc-section-number">10.9.3</span> IF GOTO Statement</a></li>
+<li><a href="#ifnot-goto-statement"><span class="toc-section-number">10.9.4</span> IFNOT GOTO Statement</a></li>
+</ul></li>
+<li><a href="#iteration-statements"><span class="toc-section-number">10.10</span> Iteration Statements</a><ul>
+<li><a href="#while-statement"><span class="toc-section-number">10.10.1</span> WHILE Statement</a></li>
+<li><a href="#whilenot-statement"><span class="toc-section-number">10.10.2</span> WHILENOT Statement</a></li>
+<li><a href="#repeat-statement"><span class="toc-section-number">10.10.3</span> REPEAT Statement</a></li>
+</ul></li>
+<li><a href="#require-statements"><span class="toc-section-number">10.11</span> Require Statements</a><ul>
+<li><a href="#gosub_file-statement"><span class="toc-section-number">10.11.1</span> GOSUB_FILE Statement</a></li>
+<li><a href="#launch_mission-statement"><span class="toc-section-number">10.11.2</span> LAUNCH_MISSION Statement</a></li>
+<li><a href="#load_and_launch_mission-statement"><span class="toc-section-number">10.11.3</span> LOAD_AND_LAUNCH_MISSION Statement</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#script-file-structure"><span class="toc-section-number">11</span> Script File Structure</a><ul>
+<li><a href="#main-script-files"><span class="toc-section-number">11.1</span> Main Script Files</a></li>
+<li><a href="#main-extension-files"><span class="toc-section-number">11.2</span> Main Extension Files</a></li>
+<li><a href="#subscript-files"><span class="toc-section-number">11.3</span> Subscript Files</a></li>
+<li><a href="#mission-script-files"><span class="toc-section-number">11.4</span> Mission Script Files</a></li>
+</ul></li>
+<li><a href="#supporting-commands"><span class="toc-section-number">12</span> Supporting Commands</a><ul>
+<li><a href="#wait"><span class="toc-section-number">12.1</span> WAIT</a></li>
+<li><a href="#goto"><span class="toc-section-number">12.2</span> GOTO</a></li>
+<li><a href="#gosub"><span class="toc-section-number">12.3</span> GOSUB</a></li>
+<li><a href="#return"><span class="toc-section-number">12.4</span> RETURN</a></li>
+<li><a href="#return_true"><span class="toc-section-number">12.5</span> RETURN_TRUE</a></li>
+<li><a href="#return_false"><span class="toc-section-number">12.6</span> RETURN_FALSE</a></li>
+<li><a href="#script_name"><span class="toc-section-number">12.7</span> SCRIPT_NAME</a></li>
+<li><a href="#terminate_this_script"><span class="toc-section-number">12.8</span> TERMINATE_THIS_SCRIPT</a></li>
+<li><a href="#start_new_script"><span class="toc-section-number">12.9</span> START_NEW_SCRIPT</a></li>
+</ul></li>
+<li><a href="#supporting-command-selectors"><span class="toc-section-number">13</span> Supporting Command Selectors</a><ul>
+<li><a href="#set"><span class="toc-section-number">13.1</span> SET</a></li>
+<li><a href="#cset"><span class="toc-section-number">13.2</span> CSET</a></li>
+<li><a href="#add_thing_to_thing"><span class="toc-section-number">13.3</span> ADD_THING_TO_THING</a></li>
+<li><a href="#sub_thing_from_thing"><span class="toc-section-number">13.4</span> SUB_THING_FROM_THING</a></li>
+<li><a href="#mult_thing_by_thing"><span class="toc-section-number">13.5</span> MULT_THING_BY_THING</a></li>
+<li><a href="#div_thing_by_thing"><span class="toc-section-number">13.6</span> DIV_THING_BY_THING</a></li>
+<li><a href="#abs"><span class="toc-section-number">13.7</span> ABS</a></li>
+<li><a href="#add_thing_to_thing_timed"><span class="toc-section-number">13.8</span> ADD_THING_TO_THING_TIMED</a></li>
+<li><a href="#sub_thing_from_thing_timed"><span class="toc-section-number">13.9</span> SUB_THING_FROM_THING_TIMED</a></li>
+<li><a href="#is_thing_equal_to_thing"><span class="toc-section-number">13.10</span> IS_THING_EQUAL_TO_THING</a></li>
+<li><a href="#is_thing_greater_than_thing"><span class="toc-section-number">13.11</span> IS_THING_GREATER_THAN_THING</a></li>
+<li><a href="#is_thing_greater_or_equal_to_thing"><span class="toc-section-number">13.12</span> IS_THING_GREATER_OR_EQUAL_TO_THING</a></li>
+</ul></li>
+<li><a href="#appendix"><span class="toc-section-number">14</span> Appendix</a><ul>
+<li><a href="#regular-lexical-grammar"><span class="toc-section-number">14.1</span> Regular Lexical Grammar</a></li>
+<li><a href="#ambiguity"><span class="toc-section-number">14.2</span> Ambiguity</a><ul>
+<li><a href="#if-goto"><span class="toc-section-number">14.2.1</span> IF GOTO</a></li>
+<li><a href="#ternary-minus-one"><span class="toc-section-number">14.2.2</span> Ternary Minus One</a></li>
+</ul></li>
+<li><a href="#how-to-miss2"><span class="toc-section-number">14.3</span> How to MISS2</a></li>
+</ul></li>
+<li><a href="#arachniography"><span class="toc-section-number">15</span> Arachniography</a></li>
+</ul>
+</nav>
+<p><strong>Note:</strong> This is a draft. It may be wrong, incomplete and subject to change.</p>
+<h1 id="introduction"><span class="header-section-number">1</span> Introduction</h1>
+<p>This is an attempt to produce a formal language specification for the GTA3script language.</p>
+<p>GTA3script is an imperative, strong and statically typed scripting language built by DMA Design (now Rockstar North) to design the mission scripts in Grand Theft Auto.</p>
+<p>The DMA Design compiler is very basic and contains a huge amount of bugs. These bugs introduce a lot of inconsistencies and quirks to the language. This document attempts to resolve these issues and set a coherent language.</p>
+<p>The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A non-exhaustive list of differences is presented on the appendix.</p>
+<h1 id="scope"><span class="header-section-number">2</span> Scope</h1>
+<p>This document is targeted at implementation writers and perhaps curious community members.</p>
+<p>This document specifies the syntax, constraints and semantic rules of the GTA3script language.</p>
+<p>This document does not specify a runtime system nor does it specify mechanisms by which the language is transformed for use by such a system.</p>
+<h1 id="terms-and-definitions"><span class="header-section-number">3</span> Terms and Definitions</h1>
+<p><strong>behaviour</strong></p>
+<p>external appearance or action.</p>
+<p><strong>behaviour, implementation-defined</strong></p>
+<p>behavior specific to an implementation, where that implementation must document that behavior.</p>
+<p><strong>behaviour, undefined</strong></p>
+<p>behavior which is not guaranteed to produce any specific result.</p>
+<p><strong>behaviour, unspecified</strong></p>
+<p>behavior for which this specification provides no requirements.</p>
+<p><strong>constraint</strong></p>
+<p>restriction, either syntactic or semantic, on how language elements can be used.</p>
+<p><strong>must</strong></p>
+<p>describes an absolute requirement of the specification. synonymous with <strong>shall</strong>.</p>
+<p><strong>must not</strong></p>
+<p>describes an absolute prohibition of the specification. synonymous with <strong>shall not</strong>.</p>
+<p><strong>should</strong></p>
+<p>describes a recommended but not absolutely necessary requirement of the specification.</p>
+<p><strong>should not</strong></p>
+<p>describes an unrecommended but not absolutely necessary requirement of the specifcation.</p>
+<p><strong>may</strong></p>
+<p>describes an optional feature or behaviour of the specification.</p>
+<p><strong>execution environment</strong></p>
+<p>the software on which the result of translation is executed on.</p>
+<p><strong>translation environment</strong></p>
+<p>the software on which the language is translated for use by an execution environment.</p>
+<p><strong>implementation</strong></p>
+<p>particular set of software, running in a particular translation environment under particular control options, that performs translation of programs for, and supports execution of commands in, a particular execution environment.</p>
+<p><strong>ill-formed program</strong></p>
+<p>program that is not well-formed. translators should produce diagnostic messages for such programs.</p>
+<p><strong>well-formed program</strong></p>
+<p>program constructed according to the synctatic and semantic rules as defined by this specification.</p>
+<p><strong>value</strong></p>
+<p>precise meaning of the contents of an name when interpreted as having a specific type.</p>
+<p><strong>argument</strong></p>
+<p>a value passed to a command that is intended to map to a corresponding parameter.</p>
+<p><strong>parameter</strong></p>
+<p>the value to be received in a specific argument position of a command.</p>
+<h1 id="notation"><span class="header-section-number">4</span> Notation</h1>
+<p>TODO</p>
+<h1 id="concepts"><span class="header-section-number">5</span> Concepts</h1>
+<h2 id="scripts"><span class="header-section-number">5.1</span> Scripts</h2>
+<p>A <em>script</em> is a unit of execution which contains its own <em>program counter</em>, <em>local variables</em> and <em>compare flag</em>.</p>
+<p>A <em>program</em> is a collection of scripts running concurrently in a cooperative fashion.</p>
+<p>A <em>variable</em> is a named storage location. This location holds a value of specific type.</p>
+<p>There are global and local variables. <em>Global variables</em> are stored in a way they are accessible from any script. <em>Local variables</em> are said to pertain to the particular script and only accessible from it.</p>
+<p>The lifetime of a <em>global variable</em> is the same as of the execution of all scripts. The lifetime of a <em>local variable</em> is the same as its script and lexical scope.</p>
+<p>A <em>command</em> is an operation to be performed by a script. Commands produces <em>side-effects</em> which are described by each command description.</p>
+<p>A possible side-effect of executing a command is the updating of the <em>compare flag</em>. The <em>compare flag</em> of a command is the boolean result it produces. The <em>compare flag of a script</em> is the <em>compare flag</em> of the its last executed command. The <em>compare flag</em> is useful for conditionally changing the <em>flow of control</em>.</p>
+<p>The <em>program counter</em> of a script indicates its currently executing command. Unless one of the <em>side-effects</em> of a command is to change the <em>program counter</em>, the counter goes from the current command to the next sequentially. An explicit change in the <em>program counter</em> is said to be a change in the <em>flow of control</em>.</p>
+<p>A command is said to perform a <em>jump</em> if it changes the <em>flow of control</em> irreversibly.</p>
+<p>A command is said to call a <em>subroutine</em> if it changes the <em>flow of control</em> but saves the current <em>program counter</em> in a stack to be restored later.</p>
+<p>A command is said to <em>terminate</em> a script if it halts and reclaims storage of such a script.</p>
+<h2 id="script-files"><span class="header-section-number">5.2</span> Script Files</h2>
+<p>A <em>script file</em> is a source file containing a sequence of commands. Those commands are executed concurrently by multiple scripts.</p>
+<p>The <em>multi-file</em> is a collection of <em>script files</em>. Hereafter being the collection of <em>script files</em> being translated.</p>
+<p>The <em>main script file</em> is the entry script file. This is where the first script (called the <em>main script</em>) starts execution. Translation begins here.</p>
+<p>Other script files are <em>required</em> to become part of the <em>multi-file</em> by the means of require statements within the <em>main script file</em>. The <em>main script file</em> itself is required from the translation environment.</p>
+<p>Many kinds of script files can be <em>required</em>.</p>
+<p>A <em>main extension file</em> (or <em>foreign gosub file</em>) is a script file required by the means of a <em>GOSUB_FILE statement</em>. Other script files can be required from here as well.</p>
+<p>A <em>subscript file</em> is a script file required by the means of the <em>LAUNCH_MISSION statement</em>. A <em>subscript</em> is a script started by the same statement.</p>
+<p>A <em>mission script file</em> is a script file required by the means of the <em>LOAD_AND_LAUNCH_MISSION statement</em>. A <em>mission script</em> is a script started by the same statement. Only a single <em>mission script</em> can be running at once.</p>
+<p>Commands in the <em>main script file</em>, <em>main extension files</em> and <em>subscript files</em> shall not refer to labels in <em>mission script files</em>. A <em>mission script file</em> shall not refer to labels in other <em>mission script files</em>.</p>
+<p>The <em>main script file</em> is found in a unspecified manner. The other <em>script files</em> are found by recursively searching a directory with the same filename (excluding extension) as the <em>main script file</em>. This directory is in the same path as the <em>main script file</em>. The search for the <em>script files</em> shall be case-insensitive. All <em>script files</em> must have a <code>.sc</code> extension. If multiple script files with the same name are found, behaviour is unspecified.</p>
+<p>A script type is said to come before another script type under the following total order:</p>
+<ol type="1">
+<li>Main script.</li>
+<li>Main extension script.</li>
+<li>Subscript.</li>
+<li>Mission script.</li>
+</ol>
+<p>A script file <em>A</em> (first required from <em>X</em>) is said to come before a script file <em>B</em> (first required from <em>Y</em>) under the following total order:</p>
+<ol type="1">
+<li>If <em>A</em>’s script type is not the same as <em>B</em>’s, then <em>A</em> comes before <em>B</em> if and only if <em>A</em>’s script type comes before <em>B</em>’s script type.</li>
+<li>Otherwise, if <em>X</em> is not the same as <em>Y</em>, <em>A</em> comes before <em>B</em> if and only if <em>X</em> comes before <em>Y</em>.</li>
+<li>Otherwise, <em>A</em> comes before <em>B</em> if and only if the line on which <em>A</em> is first required from (in <em>X</em>) comes before the line on which <em>B</em> is first required from.</li>
+</ol>
+<p>A line of code <em>A</em> in a script file <em>X</em> is said to come before a line <em>B</em> in a script file <em>Y</em> different from <em>X</em> if and only if <em>X</em> comes before <em>Y</em>.</p>
+<h2 id="types"><span class="header-section-number">5.3</span> Types</h2>
+<p>An <em>integer</em> is a binary signed two’s-complement integral number. It represents 32 bits of data and the range of values <em>-2147483648</em> through <em>2147483647</em>.</p>
+<p>A <em>floating-point</em> is a representation of a real number. Its exact representation, precision and range of values is implementation-defined.</p>
+<p>A <em>label</em> is a name specifying the location of a command.</p>
+<p>A <em>text label</em> is a name whose value is only known in the execution environment.</p>
+<p>A <em>string</em> is a sequence of zero or more characters.</p>
+<p>An <em>array</em> is a collection of one or more elements of the same type. Each element is indexed by an integer key.</p>
+<h1 id="elements"><span class="header-section-number">6</span> Elements</h1>
+<p>The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.</p>
+<h2 id="source-code"><span class="header-section-number">6.1</span> Source Code</h2>
+<p><em>Source code</em> is a stream of printable ASCII characters plus the control codes line feed (<code>\n</code>), horizontal tab (<code>\t</code>) and carriage return (<code>\r</code>).</p>
+<pre><code>ascii_char := ascii_printable | ascii_control ;
+ascii_printable := /* printable ASCII characters */ ;
+ascii_control := &#39;\n&#39; | &#39;\t&#39; | &#39;\r&#39; ;</code></pre>
+<p>Carriage returns should appear only before a line feed.</p>
+<p>Lowercase letters in the stream shall be interpreted as its uppercase equivalent.</p>
+<p>Space, horizontal tab, parentheses and comma are defined as whitespace characters.</p>
+<pre><code>whitespace := &#39; &#39; | &#39;\t&#39; | &#39;(&#39; | &#39;)&#39; | &#39;,&#39; ;</code></pre>
+<p>A <em>line</em> is a sequence of characters delimited by a newline. The start of the stream begins a line. The end of the stream finishes a line.</p>
+<pre><code>newline := [&#39;\r&#39;] `\n` ;</code></pre>
+<p>Each line should be interpreted as if there is no whitespaces in either ends of the line.</p>
+<p>A <em>token character</em> is any character capable of forming a single token.</p>
+<pre><code>graph_char := ascii_printable - (whitespace | &#39;&quot;&#39;) ;
+token_char := graph_char - (&#39;+&#39; | &#39;-&#39; | &#39;*&#39; | &#39;/&#39; | &#39;=&#39; | &#39;&lt;&#39; | &#39;&gt;&#39;) ;</code></pre>
+<p>To simplify future definitions, the productions <code>eol</code> (end of line) and <code>sep</code> (token separator) are defined.</p>
+<pre><code>sep := whitespace {whitespace} ;
+eol := newline | EOF ;</code></pre>
+<h2 id="comments"><span class="header-section-number">6.2</span> Comments</h2>
+<p><em>Comments</em> serve as program documentation.</p>
+<pre><code>comment := line_comment | block_comment ;
+line_comment := &#39;//&#39; {ascii_char} eol ;
+block_comment := &#39;/*&#39; {block_comment | ascii_char} &#39;*/&#39; ;</code></pre>
+<p>There are two forms:</p>
+<ul>
+<li><em>Line comments</em> starts with the character sequence <code>//</code> and stop at the end of the line.</li>
+<li><em>Block comments</em> starts with the character sequence <code>/*</code> and stop with its matching <code>*/</code>. Block comments can be nested inside each other.</li>
+</ul>
+<p>The contents of a comment shall be interpreted as if it is whitespaces in the source code. More specifically:</p>
+<ul>
+<li>A line comment should be interpreted as an <code>eol</code>.</li>
+<li>A single, nested, block comment should be interpreted as an <code>eol</code> on each line boundary it crosses. On its last line (i.e. the one it does not cross), it should be interpreted as one or more whitespace characters.</li>
+</ul>
+<p>Comments cannot start inside string literals.</p>
+<h2 id="commands"><span class="header-section-number">6.3</span> Commands</h2>
+<p>A command describes an operation for a script to perform.</p>
+<pre><code>command_name := token_char {token_char} ;
+command := command_name { sep argument } ;</code></pre>
+<p>There are several types of arguments.</p>
+<pre><code>argument := integer
+          | floating 
+          | identifier
+          | string_literal ;</code></pre>
+<h2 id="integer-literals"><span class="header-section-number">6.4</span> Integer Literals</h2>
+<pre><code>digit := &#39;0&#39;..&#39;9&#39; ;
+integer := [&#39;-&#39;] digit {digit} ;</code></pre>
+<p>A <em>integer literal</em> is a sequence of digits optionally preceded by a minus sign.</p>
+<p>If the literal begins with a minus, the number following it shall be negated.</p>
+<h2 id="floating-point-literals"><span class="header-section-number">6.5</span> Floating-Point Literals</h2>
+<pre><code>floating_form1 := &#39;.&#39; digit { digit | &#39;.&#39; | &#39;F&#39; } ;
+floating_form2 := digit { digit } (&#39;.&#39; | &#39;F&#39;) { digit | &#39;.&#39; | &#39;F&#39; } ;
+floating := [&#39;-&#39;] (floating_form1 | floating_form2) ;</code></pre>
+<p>A <em>floating-point literal</em> is a nonempty sequence of digits which must contain at least one occurrence of the characters <code>.</code> or <code>F</code>.</p>
+<p>Once the <code>F</code> characters is found, all characters including and following it shall be ignored. The same shall happen when the character <code>.</code> is found a second time.</p>
+<p>The literal can be preceded by a minus sign, which shall negate the floating-point number.</p>
+<p>The following are examples of valid and invalid literals:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Literal</th>
+<th>Same As</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>invalid</td>
+</tr>
+<tr class="even">
+<td>-1</td>
+<td>invalid</td>
+</tr>
+<tr class="odd">
+<td>1f</td>
+<td>1.0</td>
+</tr>
+<tr class="even">
+<td>1.</td>
+<td>1.0</td>
+</tr>
+<tr class="odd">
+<td>.1</td>
+<td>0.1</td>
+</tr>
+<tr class="even">
+<td>.1f</td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td>.11</td>
+<td>0.11</td>
+</tr>
+<tr class="even">
+<td>.1.9</td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td>1.1</td>
+<td>1.1</td>
+</tr>
+<tr class="even">
+<td>1.f</td>
+<td>1.0</td>
+</tr>
+<tr class="odd">
+<td>1..</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="identifiers"><span class="header-section-number">6.6</span> Identifiers</h2>
+<pre><code>identifier := (&#39;$&#39; | &#39;A&#39;..&#39;Z&#39;) {token_char} ;</code></pre>
+<p>An <em>identifier</em> is a sequence of token characters beggining with a dollar or alphabetic character.</p>
+<p><strong>Constraints</strong></p>
+<p>An identifier shall not end with a <code>:</code> character.</p>
+<h2 id="string-literals"><span class="header-section-number">6.7</span> String Literals</h2>
+<p>A <em>string literal</em> holds a string delimited by quotation marks.</p>
+<pre><code>string_literal := &#39;&quot;&#39; { ascii_char - (newline | &#39;&quot;&#39;) } &#39;&quot;&#39; ;</code></pre>
+<h2 id="variable-references"><span class="header-section-number">6.8</span> Variable References</h2>
+<p>A <em>variable name</em> is a sequence of token characters, except the characters <code>[</code> and <code>]</code> cannot happen.</p>
+<pre><code>variable_char := token_char - (&#39;[&#39; | &#39;]&#39;) ;
+variable_name := (&#39;$&#39; | &#39;A&#39;..&#39;Z&#39;) {variable_char} ;</code></pre>
+<p>A <em>variable reference</em> is a variable name optionally followed by an array subscript. Any character following the subscript shall be ignored. A subscript shall not happen more than once.</p>
+<pre><code>subscript := &#39;[&#39; (variable_name | integer) &#39;]&#39; ;
+variable := variable_name [ subscript {variable_char} ] ;</code></pre>
+<p>The type of a variable reference is the inner type of the variable name being referenced.</p>
+<p>The subscript uses an integer literal or another variable name of integer type for indexing.</p>
+<p>The indexing is zero-based.</p>
+<p>The integer literal in a subscript must be positive.</p>
+<p>The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.</p>
+<h1 id="parameters"><span class="header-section-number">7</span> Parameters</h1>
+<p>A command receives several arguments. Every argument must obey the rules of its corresponding <em>parameter definition</em>.</p>
+<p>A <em>parameter definition</em> is a set of definitions regarding a single parameter for a specific command.</p>
+<p>A command must have the same amount of arguments as its amount of parameter definitions, unless the missing arguments correspond to <em>optional parameters</em> (defined below).</p>
+<p>If a variable is used in the same command both as an input and as an output, the input shall be evaluated before any output is assigned to the variable.</p>
+<h2 id="string-constants"><span class="header-section-number">7.1</span> String Constants</h2>
+<p>A <em>string constant</em> is a name associated with an integer value. Such association is known in the translation environment.</p>
+<p>An <em>enumeration</em> is a collection of string constants.</p>
+<p>A parameter definition can have an associated enumeration. A string constant is said to be a match if an identifier in an argument refers to a name in its parameter’s enumeration.</p>
+<p>There is an special enumeration called the <em>global string constants enumeration</em> which semantics are defined along this specification. Other enumerations can be defined by an implementation.</p>
+<p>If a parameter definition specifies an enumeration, the global string constants enumeration cannot be matched in the said parameter.</p>
+<h2 id="entities"><span class="header-section-number">7.2</span> Entities</h2>
+<p>An <em>entity</em> is an object of the execution environment. Each entity has an <em>entity type</em>, which defines its purposes.</p>
+<p>A parameter definition can have an associated entity type.</p>
+<p>An entity can be assigned to a variable. In such case, the variable is said to be of that specific entity type from that line of code on. Previous lines of code are not affected.</p>
+<p>If an entity type is associated with an parameter and a variable is used as argument, the variable must have the same entity type as the parameter.</p>
+<p>Further semantics for entities are defined along this document.</p>
+<h2 id="parameter-types"><span class="header-section-number">7.3</span> Parameter Types</h2>
+<h3 id="int"><span class="header-section-number">7.3.1</span> INT</h3>
+<p>An <em>INT parameter</em> accepts an argument only if it is an integer literal or an identifier matching a global string constant.</p>
+<h3 id="float"><span class="header-section-number">7.3.2</span> FLOAT</h3>
+<p>A <em>FLOAT parameter</em> accepts an argument only if it is a floating-point literal.</p>
+<h3 id="var_int"><span class="header-section-number">7.3.3</span> VAR_INT</h3>
+<p>A <em>VAR_INT parameter</em> accepts an argument only if it is an identifier referencing a global variable of integer type.</p>
+<h3 id="var_float"><span class="header-section-number">7.3.4</span> VAR_FLOAT</h3>
+<p>A <em>VAR_FLOAT parameter</em> accepts an argument only if it is an identifier referencing a global variable of floating-point type.</p>
+<h3 id="lvar_int"><span class="header-section-number">7.3.5</span> LVAR_INT</h3>
+<p>A <em>LVAR_INT parameter</em> accepts an argument only if it is an identifier referencing a local variable of integer type.</p>
+<h3 id="lvar_float"><span class="header-section-number">7.3.6</span> LVAR_FLOAT</h3>
+<p>A <em>LVAR_FLOAT parameter</em> accepts an argument only if it is an identifier referencing a local variable of floating-point type.</p>
+<h3 id="input_int"><span class="header-section-number">7.3.7</span> INPUT_INT</h3>
+<p>An <em>INPUT_INT parameter</em> accepts an argument only if it is an integer literal or an identifier either matching a string constant, global string constant or referencing a variable of integer type (in this order).</p>
+<h3 id="input_float"><span class="header-section-number">7.3.8</span> INPUT_FLOAT</h3>
+<p>An <em>INPUT_FLOAT parameter</em> accepts an argument only if it is a floating-point literal or an identifier referencing a variable of floating-point type.</p>
+<h3 id="output_int"><span class="header-section-number">7.3.9</span> OUTPUT_INT</h3>
+<p>An <em>OUTPUT_INT parameter</em> accepts an argument only if it is an identifier referencing a variable of integer type.</p>
+<p>If an entity type is associated with the parameter, the variable must have the same entity type as the parameter, unless there is no entity type associated with the variable. In the latter case, the parameter’s entity type is assigned to the variable.</p>
+<h3 id="output_float"><span class="header-section-number">7.3.10</span> OUTPUT_FLOAT</h3>
+<p>An <em>OUTPUT_FLOAT parameter</em> accepts an argument only if it is a identifier referencing a variable of floating-point type.</p>
+<h3 id="label"><span class="header-section-number">7.3.11</span> LABEL</h3>
+<p>A <em>LABEL parameter</em> accepts an argument only if it is an identifier whose name is a label in the multi-file.</p>
+<h3 id="text_label"><span class="header-section-number">7.3.12</span> TEXT_LABEL</h3>
+<p>A <em>TEXT_LABEL parameter</em> accepts an argument only if it is an identifier. If the identifier begins with a dollar character (<code>$</code>), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.</p>
+<h3 id="var_text_label"><span class="header-section-number">7.3.13</span> VAR_TEXT_LABEL</h3>
+<p>A <em>VAR_TEXT_LABEL parameter</em> accepts an argument only if it is an identifier referencing a global variable of text label type.</p>
+<h3 id="lvar_text_label"><span class="header-section-number">7.3.14</span> LVAR_TEXT_LABEL</h3>
+<p>A <em>LVAR_TEXT_LABEL parameter</em> accepts an argument only if it is an identifier referencing a local variable of text label type.</p>
+<h3 id="string"><span class="header-section-number">7.3.15</span> STRING</h3>
+<p>A <em>STRING parameter</em> accepts an argument only if it is a string literal.</p>
+<h3 id="optional-parameters"><span class="header-section-number">7.3.16</span> Optional Parameters</h3>
+<p>Additionally, the following parameters are defined as behaving equivalently to their correspondent parameters above, except that in case an argument is absent, parameter checking stops as if there are no more parameters to be checked.</p>
+<ul>
+<li><em>VAR_INT_OPT</em></li>
+<li><em>VAR_FLOAT_OPT</em></li>
+<li><em>LVAR_INT_OPT</em></li>
+<li><em>LVAR_FLOAT_OPT</em></li>
+<li><em>VAR_TEXT_LABEL_OPT</em></li>
+<li><em>LVAR_TEXT_LABEL_OPT</em></li>
+<li><em>INPUT_OPT</em></li>
+</ul>
+<p>Such parameters are always trailing parameters.</p>
+<p>The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer, floating-point or text label type.</p>
+<h1 id="command-selectors"><span class="header-section-number">8</span> Command Selectors</h1>
+<p>A <em>command selector</em> (or <em>alternator</em>) is a kind of command which gets rewritten by the translator to another command based on the supplied argument types.</p>
+<p>A command selector consists of a name and a finite sequence of commands which are alternatives for replacement.</p>
+<p>A command name which is the name of a selector shall behave as if its command name is rewritten as a <em>matching alternative</em> before any parameter checking takes place.</p>
+<p>A <em>matching alternative</em> is the first command in the alternative sequence to have the same amount of parameters as arguments in the actual command, and to obey the following rules for every argument and its corresponding parameter:</p>
+<ul>
+<li>An integer literal argument must have a parameter of type <em>INT</em>.</li>
+<li>A floating-point literal argument must have a parameter of type <em>FLOAT</em>.</li>
+<li>For identifiers, the following applies (in the given order):
+<ol type="1">
+<li>If the identifier matches a global string constant, the parameter type must be <em>INT</em>.</li>
+<li>If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) <em>VAR_INT</em>, <em>VAR_FLOAT</em> or <em>VAR_TEXT_LABEL</em>.</li>
+<li>If the identifier references a local variable, the same rule as above applies, except by using <em>LVAR_INT</em>, <em>LVAR_FLOAT</em> and <em>LVAR_TEXT_LABEL</em>.</li>
+<li>If the identifier matches any string constant in any enumeration, the parameter type must be <em>INPUT_INT</em> and the argument shall behave as if rewritten as an integer literal corresponding to the string constant’s value.</li>
+<li>Otherwise, the parameter type must be <em>TEXT_LABEL</em>.</li>
+</ol></li>
+</ul>
+<p>If no matching alternative is found, the program is ill-formed.</p>
+<h1 id="expressions"><span class="header-section-number">9</span> Expressions</h1>
+<p><strong>Constraints</strong></p>
+<p>An argument in an expression cannot be a string literal.</p>
+<p>The name of commands used to require script files (e.g. <code>GOSUB_FILE</code>) and its directive commands (i.e. <code>MISSION_START</code> and <code>MISSION_END</code>) cannot be on the left hand side of a expression.</p>
+<h2 id="assignment-expressions"><span class="header-section-number">9.1</span> Assignment Expressions</h2>
+<pre><code>binop := &#39;+&#39; | &#39;-&#39; | &#39;*&#39; | &#39;/&#39; | &#39;+@&#39; | &#39;-@&#39; ;
+asop := &#39;=&#39; | &#39;=#&#39; | &#39;+=&#39; | &#39;-=&#39; | &#39;*=&#39; | &#39;/=&#39; | &#39;+=@&#39; | &#39;-=@&#39; ;
+unop := &#39;--&#39; | &#39;++&#39; ;
+
+expr_assign_abs := identifier {whitespace} &#39;=&#39; {whitespace} &#39;ABS&#39; {whitespace} argument ;
+expr_assign_binary := identifier {whitespace} asop {whitespace} argument ;
+expr_assign_ternary := identifier {whitespace} &#39;=&#39; {whitespace} argument {whitespace} binop {whitespace} argument ;
+expr_assign_unary := (unop {whitespace} identifier) 
+                   | (identifier {whitespace} unop) ;
+
+assignment_expression := expr_assign_unary
+                       | expr_assign_binary
+                       | expr_assign_ternary
+                       | expr_assign_abs ;</code></pre>
+<p>The unary assignments <code>++a</code> and <code>a++</code> behaves as if <code>ADD_THING_TO_THING a 1</code> is executed.</p>
+<p>The unary assignments <code>--a</code> and <code>a--</code> behaves as if <code>SUB_THING_FROM_THING a 1</code> is executed.</p>
+<p>The binary assignment expressions behaves as if the following is executed:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Expression</th>
+<th>Behaves As If</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>a = b</code></td>
+<td><code>SET a b</code></td>
+</tr>
+<tr class="even">
+<td><code>a =# b</code></td>
+<td><code>CSET a b</code></td>
+</tr>
+<tr class="odd">
+<td><code>a += b</code></td>
+<td><code>ADD_THING_TO_THING a b</code></td>
+</tr>
+<tr class="even">
+<td><code>a -= b</code></td>
+<td><code>SUB_THING_FROM_THING a b</code></td>
+</tr>
+<tr class="odd">
+<td><code>a *= b</code></td>
+<td><code>MULT_THING_BY_THING a b</code></td>
+</tr>
+<tr class="even">
+<td><code>a /= b</code></td>
+<td><code>DIV_THING_BY_THING a b</code></td>
+</tr>
+<tr class="odd">
+<td><code>a +=@ b</code></td>
+<td><code>ADD_THING_TO_THING_TIMED a b</code></td>
+</tr>
+<tr class="even">
+<td><code>a -=@ b</code></td>
+<td><code>SUB_THING_FROM_THING_TIMED a b</code></td>
+</tr>
+</tbody>
+</table>
+<p>The absolute assignment <code>a = ABS b</code> behaves as if the following is executed:</p>
+<ul>
+<li><code>ABS a</code> if the name <code>a</code> is the same as the name <code>b</code>.</li>
+<li><code>SET a b</code> followed by <code>ABS a</code> otherwise.</li>
+</ul>
+<p>The ternary assignment <code>a = b + c</code> behaves as if the following is executed:</p>
+<ul>
+<li><code>ADD_THING_TO_THING a c</code> if the name <code>a</code> is the same as the name <code>b</code>.</li>
+<li><code>ADD_THING_TO_THING a b</code> if the name <code>a</code> is the same as the name <code>c</code>.</li>
+<li><code>SET a b</code> followed by <code>ADD_THING_TO_THING a c</code> otherwise.</li>
+</ul>
+<p>The ternary assignment <code>a = b - c</code> behaves as if the following is executed:</p>
+<ul>
+<li><code>SUB_THING_FROM_THING a c</code> if the name <code>a</code> is the same as the name <code>b</code>.</li>
+<li>Implementation-defined if <code>a</code> is the same name as <code>c</code>.</li>
+<li><code>SET a b</code> followed by <code>SUB_THING_BY_THING a c</code> otherwise.</li>
+</ul>
+<p>The ternary assignment <code>a = b * c</code> behaves as if <code>a = b + c</code>, except by using <code>MULT_THING_BY_THING</code> instead of <code>ADD_THING_TO_THING</code>.</p>
+<p>The ternary assignment <code>a = b / c</code> behaves as if <code>a = b - c</code>, except by using <code>DIV_THING_BY_THING</code> instead of <code>SUB_THING_FROM_THING</code>.</p>
+<p>The ternary assignments <code>a = b +@ c</code> and <code>a = b -@ c</code> behaves as if <code>a = b - c</code>, except by using <code>ADD_THING_TO_THING_TIMED</code> and <code>SUB_THING_FROM_THING_TIMED</code>, respectively, instead of <code>SUB_THING_FROM_THING</code>.</p>
+<h2 id="conditional-expressions"><span class="header-section-number">9.2</span> Conditional Expressions</h2>
+<pre><code>relop := &#39;=&#39; | &#39;&lt;&#39; | &#39;&gt;&#39; | &#39;&gt;=&#39; | &#39;&lt;=&#39; ;
+conditional_expression := argument {whitespace} relop {whitespace} argument ;</code></pre>
+<p>These expressions behave as if the following is executed:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Expression</th>
+<th>Behaves As If</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>a = b</code></td>
+<td><code>IS_THING_EQUAL_TO_THING a b</code></td>
+</tr>
+<tr class="even">
+<td><code>a &gt; b</code></td>
+<td><code>IS_THING_GREATER_THAN_THING a b</code></td>
+</tr>
+<tr class="odd">
+<td><code>a &gt;= b</code></td>
+<td><code>IS_THING_GREATER_OR_EQUAL_TO_THING a b</code></td>
+</tr>
+<tr class="even">
+<td><code>a &lt; b</code></td>
+<td><code>IS_THING_GREATER_THAN_THING b a</code></td>
+</tr>
+<tr class="odd">
+<td><code>a &lt;= b</code></td>
+<td><code>IS_THING_GREATER_OR_EQUAL_TO_THING b a</code></td>
+</tr>
+</tbody>
+</table>
+<h1 id="statements"><span class="header-section-number">10</span> Statements</h1>
+<p>A statement specifies an action to be executed.</p>
+<pre><code>statement := labeled_statement 
+           | embedded_statement ;</code></pre>
+<h2 id="labeled-statements"><span class="header-section-number">10.1</span> Labeled Statements</h2>
+<p>Statements can be prefixed with a label.</p>
+<pre><code>label_def := identifier &#39;:&#39; ;
+label_prefix := label_def sep ;
+
+labeled_statement := label_prefix embedded_statement 
+                   | label_def empty_statement ;</code></pre>
+<p><strong>Constraints</strong></p>
+<p>The name of a label must be unique across the multi-file.</p>
+<p><strong>Semantics</strong></p>
+<p>This declares a label named after the given identifier.</p>
+<p>The label can be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.</p>
+<h2 id="empty-statements"><span class="header-section-number">10.2</span> Empty Statements</h2>
+<pre><code>empty_statement := eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>An empty statement does nothing.</p>
+<h2 id="embedded-statements"><span class="header-section-number">10.3</span> Embedded Statements</h2>
+<p>Embedded statements are statements not prefixed by a label.</p>
+<pre><code>embedded_statement := empty_statement
+                     | command_statement
+                     | expression_statement
+                     | scope_statement
+                     | var_statement
+                     | if_statement
+                     | ifnot_statement
+                     | if_goto_statement
+                     | ifnot_goto_statement
+                     | while_statement
+                     | whilenot_statement
+                     | repeat_statement
+                     | require_statement ;</code></pre>
+<h2 id="command-statements"><span class="header-section-number">10.4</span> Command Statements</h2>
+<pre><code>command_statement := command eol ;</code></pre>
+<p><strong>Constraints</strong></p>
+<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).</p>
+<h2 id="expression-statements"><span class="header-section-number">10.5</span> Expression Statements</h2>
+<pre><code>expression_statement := assignment_expression eol
+                      | conditional_expression eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>An expression statement executes the expression it embodies.</p>
+<p>The execution of the assignment expression <code>a = b</code> is favored over the execution of the conditional expression of the same form.</p>
+<h2 id="scope-statements"><span class="header-section-number">10.6</span> Scope Statements</h2>
+<pre><code>scope_statement := &#39;{&#39; eol
+                   {statement}
+                   [label_prefix] &#39;}&#39; eol ;</code></pre>
+<p><strong>Constraints</strong></p>
+<p>Lexical scopes cannot be nested.</p>
+<p><strong>Semantics</strong></p>
+<p>The command <code>{</code> activates a lexical scope where local variables can be declared.</p>
+<p>The command <code>}</code> leaves the active lexical scope.</p>
+<p>The transfer of control to any of the statements within the scope block activates it.</p>
+<p>The execution of a jump to outside the scope block leaves the lexical scope.</p>
+<p>Performing a subroutine call does not leave the active scope. The name of local variables become hidden if the subroutine is not within the scope block. The behaviour of the program is unspecified if such a subroutine activates another lexical scope.</p>
+<p>Leaving a lexical scope causes the storage for the declared local variables to be reclaimed.</p>
+<h2 id="variable-declaration-statements"><span class="header-section-number">10.7</span> Variable Declaration Statements</h2>
+<pre><code>command_var_name := &#39;VAR_INT&#39; 
+                    | &#39;LVAR_INT&#39;
+                    | &#39;VAR_FLOAT&#39;
+                    | &#39;LVAR_FLOAT&#39; ;
+                    | &#39;VAR_TEXT_LABEL&#39;
+                    | &#39;LVAR_TEXT_LABEL&#39; ;
+command_var_param := sep variable ;
+
+var_statement := command_var_name command_var_param {command_var_param} eol ;</code></pre>
+<p>The name of the command is a pair of storage duration and variable type.</p>
+<p>The commands with the <code>VAR_</code> prefix declares global variables. The ones with <code>LVAR_</code> declares local variables. The <code>INT</code> suffix declares variables capable of storing integers. The <code>FLOAT</code> suffix declares floating-point ones. Finally, the <code>TEXT_LABEL</code> one declares variables capable of storing text labels.</p>
+<p><strong>Constraints</strong></p>
+<p>Global variable names must be unique across the multi-file.</p>
+<p>Local variables must be declared inside a lexical scope.</p>
+<p>Local variables can have identical names as long as they are in different lexical scopes.</p>
+<p>Local variables shall not have the same name as any global variable.</p>
+<p>A variable shall not have the same name as any string constant in any enumeration (except for the global enumeration).</p>
+<p>The array dimensions of the variable (if any) must be specified by an integer literal greater than zero.</p>
+<p><strong>Semantics</strong></p>
+<p>This command declares one or more names with the specified storage duration, type, and array dimensions.</p>
+<p>Global variable names can be seen by the entire multi-file.</p>
+<p>Local variable names can be seen by their entire lexical scope.</p>
+<p>The initial value of variables is unspecified.</p>
+<h2 id="conditional-statements"><span class="header-section-number">10.8</span> Conditional Statements</h2>
+<p>Conditional statements produce changes in the script compare flag.</p>
+<pre><code>conditional_element := [&#39;NOT&#39; sep] (command | conditional_expression) ;
+
+and_conditional_stmt := &#39;AND&#39; sep conditional_element eol ;
+or_conditional_stmt := &#39;OR&#39; sep conditional_element eol ;
+
+conditional_list := conditional_element eol
+                    ({and_conditional_stmt} | {or_conditional_stmt}) ;</code></pre>
+<p><strong>Constraints</strong></p>
+<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).</p>
+<p><strong>Semantics</strong></p>
+<p>A conditional element executes the command or expression it embodies. The execution of a command follows the same semantic rules of a command statement. The compare flag of the executed element is negated if the <code>NOT</code> prefix is used.</p>
+<p>A conditional list is a sequence of one or more conditional elements separated by either <code>AND</code> or <code>OR</code> tokens.</p>
+<p>The compare flag is set to true if the compare flag of all conditional elements in a <code>AND</code> list holds true. Otherwise it is set to false.</p>
+<p>The compare flag is set to true if the compare flag of at least one conditional elements in a <code>OR</code> list holds true. Otherwise it is set to false.</p>
+<p>A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.</p>
+<h2 id="selection-statements"><span class="header-section-number">10.9</span> Selection Statements</h2>
+<p>Selection statements selects which statement to execute depending on certain conditions.</p>
+<h3 id="if-statement"><span class="header-section-number">10.9.1</span> IF Statement</h3>
+<pre><code>if_statement := &#39;IF&#39; sep conditional_list
+                {statement}
+                [[label_prefix] &#39;ELSE&#39; eol
+                {statement}]
+                [label_prefix] &#39;ENDIF&#39; eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>This statement executes a list of conditions, grabs its compare flag and chooses between two set of statements to execute.</p>
+<p>If the compare flag is true, control is transferred to the first set of statements. Otherwise, to the second set if an <code>ELSE</code> exists. Execution of the <code>ELSE</code> or the <code>ENDIF</code> command causes control to leave the IF block.</p>
+<h3 id="ifnot-statement"><span class="header-section-number">10.9.2</span> IFNOT Statement</h3>
+<pre><code>ifnot_statement := &#39;IFNOT&#39; sep conditional_list
+                   {statement}
+                   [[label_prefix] &#39;ELSE&#39; eol
+                   {statement}]
+                   [label_prefix] &#39;ENDIF&#39; eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>The behaviour of this is the same as of the IF statement, except the complement of the compare flag is used to test which set of statements to execute.</p>
+<h3 id="if-goto-statement"><span class="header-section-number">10.9.3</span> IF GOTO Statement</h3>
+<pre><code>if_goto_statement := &#39;IF&#39; sep conditional_element sep &#39;GOTO&#39; sep identifier eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>This statement performs a jump to the label specified by identifier if the compare flag of the conditional element holds true. Otherwise, the flow of control is unchanged.</p>
+<h3 id="ifnot-goto-statement"><span class="header-section-number">10.9.4</span> IFNOT GOTO Statement</h3>
+<pre><code>ifnot_goto_statement := &#39;IFNOT&#39; sep conditional_element sep &#39;GOTO&#39; sep identifier eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>The behaviour of this is the same as of the IF GOTO statement, except the complement of the compare flag is used to test whether to jump.</p>
+<h2 id="iteration-statements"><span class="header-section-number">10.10</span> Iteration Statements</h2>
+<h3 id="while-statement"><span class="header-section-number">10.10.1</span> WHILE Statement</h3>
+<pre><code>while_statement := &#39;WHILE&#39; sep conditional_list
+                   {statement}
+                   [label_prefix] &#39;ENDWHILE&#39; eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>The WHILE statement executes a set of statements while the compare flag of the conditional list holds true.</p>
+<p>The statement executes by grabbing the compare flag of the list of conditions and transferring control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the <code>ENDWHILE</code> command causes control to be transferred to beginning of the block, where the conditions are evaluated again.</p>
+<h3 id="whilenot-statement"><span class="header-section-number">10.10.2</span> WHILENOT Statement</h3>
+<pre><code>whilenot_statement := &#39;WHILENOT&#39; sep conditional_list
+                      {statement}
+                      [label_prefix] &#39;ENDWHILE&#39; eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>The behaviour of this is the same as of the WHILE statement, except the complement of the compare flag is used to test whether to continue executing the set of statements.</p>
+<h3 id="repeat-statement"><span class="header-section-number">10.10.3</span> REPEAT Statement</h3>
+<pre><code>repeat_statement := &#39;REPEAT&#39; sep integer sep identifier eol
+                    {statement}
+                    [label_prefix] &#39;ENDREPEAT&#39; eol ;</code></pre>
+<p><strong>Constraints</strong></p>
+<p>The first argument to REPEAT must be an integer literal.</p>
+<p>The second argument must be a variable of integer type.</p>
+<p><strong>Semantics</strong></p>
+<p>The REPEAT statement executes a set of statements until a counter variable reaches a threshold.</p>
+<p>The <code>REPEAT</code> command causes the variable to be set to zero. Execution of the <code>ENDREPEAT</code> command causes the variable to be incremented and if it compares less than the threshold, it transfers control back to the set of statements. Otherwise, it leaves the block.</p>
+<p>The statements are always executed at least once.</p>
+<h2 id="require-statements"><span class="header-section-number">10.11</span> Require Statements</h2>
+<pre><code>filename := {graph_char} &#39;.SC&#39; ;
+
+require_statement := command_gosub_file
+                   | command_launch_mission
+                   | command_load_and_launch_mission ;</code></pre>
+<p>Require statements request script files to become part of the multi-file being translated.</p>
+<p><strong>Constraints</strong></p>
+<p>Require statements shall only appear in the <em>main script file</em> or <em>main extension files</em>.</p>
+<h3 id="gosub_file-statement"><span class="header-section-number">10.11.1</span> GOSUB_FILE Statement</h3>
+<pre><code>command_gosub_file := &#39;GOSUB_FILE&#39; sep identifier sep filename eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>The <code>GOSUB_FILE</code> command requires a <em>main extension file</em> to become part of the multi-file.</p>
+<p>It also calls the subroutine specified by label.</p>
+<p>The behaviour is unspecified if the label is not part of the required file.</p>
+<h3 id="launch_mission-statement"><span class="header-section-number">10.11.2</span> LAUNCH_MISSION Statement</h3>
+<pre><code>command_launch_mission := &#39;LAUNCH_MISSION&#39; sep filename eol ;</code></pre>
+<p><strong>Semantics</strong></p>
+<p>The <code>LAUNCH_MISSION</code> command requires a <em>subscript file</em> to become part of the multi-file.</p>
+<p>It also starts a new subscript with the program counter at the <code>MISSION_START</code> directive of the specified script file.</p>
+<h3 id="load_and_launch_mission-statement"><span class="header-section-number">10.11.3</span> LOAD_AND_LAUNCH_MISSION Statement</h3>
+<pre><code>command_load_and_launch_mission := &#39;LOAD_AND_LAUNCH_MISSION&#39; sep filename eol ;</code></pre>
+<p><strong>Constraints</strong></p>
+<p>Only a single <em>mission script</em> can be running at once.</p>
+<p><strong>Semantics</strong></p>
+<p>The <code>LOAD_AND_LAUNCH_MISSION</code> command requires a <em>mission script file</em> to become part of the multi-file.</p>
+<p>It also starts a new <em>mission script</em> with the program counter at the <code>MISSION_START</code> directive of the specified script file.</p>
+<h1 id="script-file-structure"><span class="header-section-number">11</span> Script File Structure</h1>
+<h2 id="main-script-files"><span class="header-section-number">11.1</span> Main Script Files</h2>
+<pre><code>main_script_file := {statement} ;</code></pre>
+<p>A main script file is a sequence of zero or more statements.</p>
+<p><strong>Semantics</strong></p>
+<p>The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is unspecified.</p>
+<h2 id="main-extension-files"><span class="header-section-number">11.2</span> Main Extension Files</h2>
+<pre><code>main_extension_file := {statement} ;</code></pre>
+<p>A main extension file is a sequence of zero or more statements.</p>
+<h2 id="subscript-files"><span class="header-section-number">11.3</span> Subscript Files</h2>
+<pre><code>subscript_file := &#39;MISSION_START&#39; eol
+                  {statement}
+                  [label_prefix] &#39;MISSION_END&#39; eol
+                  {statement} ;</code></pre>
+<p>A subscript file is a sequence of zero or more statements in a <code>MISSION_START</code> and <code>MISSION_END</code> block. More statements can follow.</p>
+<p><strong>Constraints</strong></p>
+<p>The <code>MISSION_START</code> command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (<code></code>) and horizontal tabs (<code>\t</code>). Even comments are disallowed.</p>
+<p><strong>Semantics</strong></p>
+<p>The <code>MISSION_END</code> command behaves as if by executing the <code>TERMINATE_THIS_SCRIPT</code> command.</p>
+<h2 id="mission-script-files"><span class="header-section-number">11.4</span> Mission Script Files</h2>
+<pre><code>mission_script_file := subscript_file ;</code></pre>
+<p>A mission script file has the same structure of a subscript file.</p>
+<h1 id="supporting-commands"><span class="header-section-number">12</span> Supporting Commands</h1>
+<p>In order to perform useful computation the following supporting commands may be available.</p>
+<h2 id="wait"><span class="header-section-number">12.1</span> WAIT</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>WAIT INPUT_INT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Yields control to another script. The current script is not resumed for at least the specified number of milliseconds.</p>
+<p>This command is useful due to the cooperative multitasking nature of the execution environment.</p>
+<h2 id="goto"><span class="header-section-number">12.2</span> GOTO</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>GOTO LABEL</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Performs a jump to the specified location.</p>
+<h2 id="gosub"><span class="header-section-number">12.3</span> GOSUB</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>GOSUB LABEL</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Calls the subroutine in the specified location.</p>
+<h2 id="return"><span class="header-section-number">12.4</span> RETURN</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>RETURN</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Returns from the last called subroutine.</p>
+<p>The behaviour is undefined if there is no active subroutine.</p>
+<h2 id="return_true"><span class="header-section-number">12.5</span> RETURN_TRUE</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>RETURN_TRUE</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Returns true (as in any command updating the compare flag to true).</p>
+<h2 id="return_false"><span class="header-section-number">12.6</span> RETURN_FALSE</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>RETURN_FALSE</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Returns false (as in any command updating the compare flag to false).</p>
+<h2 id="script_name"><span class="header-section-number">12.7</span> SCRIPT_NAME</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>SCRIPT_NAME TEXT_LABEL</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Associates a name to the executing script.</p>
+<p><strong>Constraints</strong></p>
+<p>The translation environment must enforce the following constraints.</p>
+<p>The name of a script must be unique across the multi-file.</p>
+<p>The behaviour of the translation is unspecified if the name is given by a text label variable.</p>
+<h2 id="terminate_this_script"><span class="header-section-number">12.8</span> TERMINATE_THIS_SCRIPT</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>TERMINATE_THIS_SCRIPT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Terminates the executing script.</p>
+<h2 id="start_new_script"><span class="header-section-number">12.9</span> START_NEW_SCRIPT</h2>
+<p><strong>Parameters</strong></p>
+<pre><code>START_NEW_SCRIPT LABEL INPUT_OPT...</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Creates a script and sets its program counter to the specified label location.</p>
+<p>The first few local variables at the scope of the target label are assigned the values of the optional input arguments. That is, the first declared local variable is set to the first optional argument, the second variable to the second optional argument, and so on.</p>
+<p><strong>Constraints</strong></p>
+<p>The translation environment must enforce the following constraints.</p>
+<p>The specified label location must be within a scope.</p>
+<p>The type of a local variable and its respective input argument must match. For instance, if an input argument is an integer literal or variable of integer type, its corresponding local variable in the target scope must be of integer type.</p>
+<p>If there are not enough local variables in the target scope to accomodate the input arguments the program is ill-formed.</p>
+<p>If an input argument is a variable, the value assignment to the variable in the target scope shall obey the same constraints as specified in the SET alternator.</p>
+<h1 id="supporting-command-selectors"><span class="header-section-number">13</span> Supporting Command Selectors</h1>
+<p>To further enchance the set of minimal commands for useful computation, the following command selectors and its supportive alternatives are defined.</p>
+<p>An implementation is required to support these selectors, but it may not support all of its alternatives.</p>
+<h2 id="set"><span class="header-section-number">13.1</span> SET</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>SET_VAR_INT VAR_INT INT
+SET_VAR_FLOAT VAR_FLOAT INT
+SET_LVAR_INT LVAR_INT INT
+SET_LVAR_FLOAT LVAR_FLOAT FLOAT
+SET_VAR_INT_TO_VAR_INT VAR_INT TVAR_INT
+SET_LVAR_INT_TO_LVAR_INT LVAR_INT LVAR_INT
+SET_VAR_FLOAT_TO_VAR_FLOAT VAR_FLOAT VAR_FLOAT
+SET_LVAR_FLOAT_TO_LVAR_FLOAT LVAR_FLOAT LVAR_FLOAT
+SET_VAR_FLOAT_TO_LVAR_FLOAT VAR_FLOAT LVAR_FLOAT
+SET_LVAR_FLOAT_TO_VAR_FLOAT LVAR_FLOAT VAR_FLOAT
+SET_VAR_INT_TO_LVAR_INT VAR_INT LVAR_INT
+SET_LVAR_INT_TO_VAR_INT LVAR_INT VAR_INT
+SET_VAR_INT_TO_CONSTANT VAR_INT INPUT_INT
+SET_LVAR_INT_TO_CONSTANT VAR_INT INPUT_INT
+SET_VAR_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+SET_LVAR_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Sets the variable on the left to the value on the right.</p>
+<p><strong>Constraints</strong></p>
+<p>The translation environment must enforce the following constraints.</p>
+<p>A variable cannot be assigned to another variable of different entity type. If the right variable has no entity type but the left one does, the program is ill-formed. If the left variable has no entity type, the entity type of the right variable is assigned to it.</p>
+<h2 id="cset"><span class="header-section-number">13.2</span> CSET</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>CSET_VAR_INT_TO_VAR_FLOAT VAR_INT VAR_FLOAT
+CSET_VAR_FLOAT_TO_VAR_INT VAR_FLOAT VAR_INT 
+CSET_LVAR_INT_TO_VAR_FLOAT LVAR_INT VAR_FLOAT 
+CSET_LVAR_FLOAT_TO_VAR_INT LVAR_FLOAT VAR_INT 
+CSET_VAR_INT_TO_LVAR_FLOAT VAR_INT LVAR_FLOAT 
+CSET_VAR_FLOAT_TO_LVAR_INT VAR_FLOAT LVAR_INT 
+CSET_LVAR_INT_TO_LVAR_FLOAT LVAR_INT LVAR_FLOAT 
+CSET_LVAR_FLOAT_TO_LVAR_INT LVAR_FLOAT LVAR_INT </code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Sets the variable on the left to the value of the variable on the right converted to the left type.</p>
+<h2 id="add_thing_to_thing"><span class="header-section-number">13.3</span> ADD_THING_TO_THING</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>ADD_VAL_TO_INT_VAR VAR_INT INT
+ADD_VAL_TO_FLOAT_VAR VAR_FLOAT FLOAT
+ADD_VAL_TO_INT_LVAR LVAR_INT INT
+ADD_VAL_TO_FLOAT_LVAR LVAR_FLOAT FLOAT
+ADD_INT_VAR_TO_INT_VAR VAR_INT VAR_INT
+ADD_FLOAT_VAR_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+ADD_INT_LVAR_TO_INT_LVAR LVAR_INT LVAR_INT
+ADD_FLOAT_LVAR_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+ADD_INT_VAR_TO_INT_LVAR LVAR_INT VAR_INT
+ADD_FLOAT_VAR_TO_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT
+ADD_INT_LVAR_TO_INT_VAR VAR_INT LVAR_INT
+ADD_FLOAT_LVAR_TO_FLOAT_VAR VAR_FLOAT LVAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Adds the value on the right to the variable on the left.</p>
+<h2 id="sub_thing_from_thing"><span class="header-section-number">13.4</span> SUB_THING_FROM_THING</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>SUB_VAL_FROM_INT_VAR VAR_INT INT
+SUB_VAL_FROM_FLOAT_VAR VAR_FLOAT FLOAT
+SUB_VAL_FROM_INT_LVAR LVAR_INT INT
+SUB_VAL_FROM_FLOAT_LVAR LVAR_FLOAT FLOAT
+SUB_INT_VAR_FROM_INT_VAR VAR_INT VAR_INT
+SUB_FLOAT_VAR_FROM_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+SUB_INT_LVAR_FROM_INT_LVAR LVAR_INT LVAR_INT
+SUB_FLOAT_LVAR_FROM_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+SUB_INT_VAR_FROM_INT_LVAR LVAR_INT VAR_INT
+SUB_FLOAT_VAR_FROM_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT
+SUB_INT_LVAR_FROM_INT_VAR VAR_INT LVAR_INT
+SUB_FLOAT_LVAR_FROM_FLOAT_VAR VAR_FLOAT LVAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Substracts the value on the right from the variable on the left.</p>
+<h2 id="mult_thing_by_thing"><span class="header-section-number">13.5</span> MULT_THING_BY_THING</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>MULT_INT_VAR_BY_VAL VAR_INT INT
+MULT_FLOAT_VAR_BY_VAL VAR_FLOAT FLOAT
+MULT_INT_LVAR_BY_VAL LVAR_INT INT
+MULT_FLOAT_LVAR_BY_VAL LVAR_FLOAT FLOAT
+MULT_INT_VAR_BY_INT_VAR VAR_INT VAR_INT
+MULT_FLOAT_VAR_BY_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+MULT_INT_LVAR_BY_INT_LVAR LVAR_INT LVAR_INT
+MULT_FLOAT_LVAR_BY_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+MULT_INT_VAR_BY_INT_LVAR VAR_INT LVAR_INT
+MULT_FLOAT_VAR_BY_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+MULT_INT_LVAR_BY_INT_VAR LVAR_INT VAR_INT
+MULT_FLOAT_LVAR_BY_FLOAT_VAR LVAR_FLOAT VAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Multiplites the variable on the left by the value on the right.</p>
+<h2 id="div_thing_by_thing"><span class="header-section-number">13.6</span> DIV_THING_BY_THING</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>DIV_INT_VAR_BY_VAL VAR_INT INT
+DIV_FLOAT_VAR_BY_VAL VAR_FLOAT FLOAT
+DIV_INT_LVAR_BY_VAL LVAR_INT INT
+DIV_FLOAT_LVAR_BY_VAL LVAR_FLOAT FLOAT
+DIV_INT_VAR_BY_INT_VAR VAR_INT VAR_INT
+DIV_FLOAT_VAR_BY_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+DIV_INT_LVAR_BY_INT_LVAR LVAR_INT LVAR_INT
+DIV_FLOAT_LVAR_BY_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+DIV_INT_VAR_BY_INT_LVAR VAR_INT LVAR_INT
+DIV_FLOAT_VAR_BY_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+DIV_INT_LVAR_BY_INT_VAR LVAR_INT VAR_INT
+DIV_FLOAT_LVAR_BY_FLOAT_VAR LVAR_FLOAT VAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Divides the variable on the left by the value on the right.</p>
+<h2 id="abs"><span class="header-section-number">13.7</span> ABS</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>ABS_VAR_INT VAR_INT
+ABS_LVAR_INT LVAR_INT
+ABS_VAR_FLOAT VAR_FLOAT
+ABS_LVAR_FLOAT LVAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Computes the absolute value of a variable’s value and store the result in the same variable.</p>
+<h2 id="add_thing_to_thing_timed"><span class="header-section-number">13.8</span> ADD_THING_TO_THING_TIMED</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>ADD_TIMED_VAL_TO_FLOAT_VAR VAR_FLOAT FLOAT
+ADD_TIMED_VAL_TO_FLOAT_LVAR LVAR_FLOAT FLOAT
+ADD_TIMED_FLOAT_VAR_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+ADD_TIMED_FLOAT_LVAR_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+ADD_TIMED_FLOAT_LVAR_TO_FLOAT_VAR VAR_FLOAT LVAR_FLOAT
+ADD_TIMED_FLOAT_VAR_TO_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Adds the value on the right multipled by the frame delta time to the variable on the left.</p>
+<h2 id="sub_thing_from_thing_timed"><span class="header-section-number">13.9</span> SUB_THING_FROM_THING_TIMED</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>SUB_TIMED_VAL_FROM_FLOAT_VAR VAR_FLOAT FLOAT
+SUB_TIMED_VAL_FROM_FLOAT_LVAR LVAR_FLOAT FLOAT
+SUB_TIMED_FLOAT_VAR_FROM_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+SUB_TIMED_FLOAT_LVAR_FROM_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+SUB_TIMED_FLOAT_LVAR_FROM_FLOAT_VAR VAR_FLOAT LVAR_FLOAT
+SUB_TIMED_FLOAT_VAR_FROM_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Substracts the value on the right multipled by the frame delta time from the variable on the left.</p>
+<h2 id="is_thing_equal_to_thing"><span class="header-section-number">13.10</span> IS_THING_EQUAL_TO_THING</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>IS_INT_VAR_EQUAL_TO_NUMBER VAR_INT INT
+IS_INT_LVAR_EQUAL_TO_NUMBER LVAR_INT INT
+IS_INT_VAR_EQUAL_TO_INT_VAR VAR_INT VAR_INT
+IS_INT_LVAR_EQUAL_TO_INT_LVAR LVAR_INT LVAR_INT
+IS_INT_VAR_EQUAL_TO_INT_LVAR VAR_INT LVAR_INT
+IS_FLOAT_VAR_EQUAL_TO_NUMBER VAR_FLOAT FLOAT
+IS_FLOAT_LVAR_EQUAL_TO_NUMBER LVAR_FLOAT FLOAT
+IS_FLOAT_VAR_EQUAL_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+IS_FLOAT_LVAR_EQUAL_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+IS_FLOAT_VAR_EQUAL_TO_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+IS_INT_VAR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+IS_INT_LVAR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
+IS_VAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+IS_LVAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
+IS_INT_LVAR_EQUAL_TO_INT_VAR LVAR_INT VAR_INT
+IS_FLOAT_LVAR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Returns whether the value on the left is equal the value on the right.</p>
+<h2 id="is_thing_greater_than_thing"><span class="header-section-number">13.11</span> IS_THING_GREATER_THAN_THING</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>IS_INT_VAR_GREATER_THAN_NUMBER VAR_INT INT
+IS_INT_LVAR_GREATER_THAN_NUMBER LVAR_INT INT
+IS_NUMBER_GREATER_THAN_INT_VAR INT VAR_INT
+IS_NUMBER_GREATER_THAN_INT_LVAR INT LVAR_INT
+IS_INT_VAR_GREATER_THAN_INT_VAR VAR_INT VAR_INT
+IS_INT_LVAR_GREATER_THAN_INT_LVAR LVAR_INT LVAR_INT
+IS_INT_VAR_GREATER_THAN_INT_LVAR VAR_INT LVAR_INT
+IS_INT_LVAR_GREATER_THAN_INT_VAR LVAR_INT VAR_INT
+IS_FLOAT_VAR_GREATER_THAN_NUMBER VAR_FLOAT FLOAT
+IS_FLOAT_LVAR_GREATER_THAN_NUMBER LVAR_FLOAT FLOAT
+IS_NUMBER_GREATER_THAN_FLOAT_VAR FLOAT VAR_FLOAT
+IS_NUMBER_GREATER_THAN_FLOAT_LVAR FLOAT LVAR_FLOAT
+IS_FLOAT_VAR_GREATER_THAN_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+IS_FLOAT_LVAR_GREATER_THAN_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+IS_FLOAT_VAR_GREATER_THAN_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+IS_FLOAT_LVAR_GREATER_THAN_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+IS_INT_VAR_GREATER_THAN_CONSTANT VAR_INT INPUT_INT
+IS_INT_LVAR_GREATER_THAN_CONSTANT LVAR_INT INPUT_INT
+IS_CONSTANT_GREATER_THAN_INT_VAR INPUT_INT VAR_INT
+IS_CONSTANT_GREATER_THAN_INT_LVAR INPUT_INT LVAR_INT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Returns whether the value on the left is greater than the value on the right.</p>
+<h2 id="is_thing_greater_or_equal_to_thing"><span class="header-section-number">13.12</span> IS_THING_GREATER_OR_EQUAL_TO_THING</h2>
+<p><strong>Alternatives</strong></p>
+<pre><code>IS_INT_VAR_GREATER_OR_EQUAL_TO_NUMBER VAR_INT INT
+IS_INT_LVAR_GREATER_OR_EQUAL_TO_NUMBER LVAR_INT INT
+IS_NUMBER_GREATER_OR_EQUAL_TO_INT_VAR INT VAR_INT
+IS_NUMBER_GREATER_OR_EQUAL_TO_INT_LVAR INT LVAR_INT
+IS_INT_VAR_GREATER_OR_EQUAL_TO_INT_VAR VAR_INT VAR_INT
+IS_INT_LVAR_GREATER_OR_EQUAL_TO_INT_LVAR LVAR_INT LVAR_INT
+IS_INT_VAR_GREATER_OR_EQUAL_TO_INT_LVAR VAR_INT LVAR_INT
+IS_INT_LVAR_GREATER_OR_EQUAL_TO_INT_VAR LVAR_INT VAR_INT
+IS_FLOAT_VAR_GREATER_OR_EQUAL_TO_NUMBER VAR_FLOAT FLOAT
+IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_NUMBER LVAR_FLOAT FLOAT
+IS_NUMBER_GREATER_OR_EQUAL_TO_FLOAT_VAR FLOAT VAR_FLOAT
+IS_NUMBER_GREATER_OR_EQUAL_TO_FLOAT_LVAR FLOAT LVAR_FLOAT
+IS_FLOAT_VAR_GREATER_OR_EQUAL_TO_FLOAT_VAR VAR_FLOAT VAR_FLOAT
+IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_FLOAT_LVAR LVAR_FLOAT LVAR_FLOAT
+IS_FLOAT_VAR_GREATER_OR_EQUAL_TO_FLOAT_LVAR VAR_FLOAT LVAR_FLOAT
+IS_FLOAT_LVAR_GREATER_OR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+IS_INT_VAR_GREATER_OR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+IS_INT_LVAR_GREATER_OR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
+IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_VAR INPUT_INT VAR_INT
+IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR INPUT_INT LVAR_INT</code></pre>
+<p><strong>Side-effects</strong></p>
+<p>Returns whether the value on the left is greater than or equal to the value on the right.</p>
+<h1 id="appendix"><span class="header-section-number">14</span> Appendix</h1>
+<h2 id="regular-lexical-grammar"><span class="header-section-number">14.1</span> Regular Lexical Grammar</h2>
+<pre><code># A Regular Lexical Grammar for GTA3script
+sep := sep ;
+eol := eol ;
+token := token_char {token_char} 
+       | &#39;-&#39; (digit | &#39;.&#39;) {token_char} ;
+string_literal := string_literal ;
+plus := &#39;+&#39; ;
+minus := &#39;-&#39; ;
+star := &#39;*&#39; ;
+slash := &#39;/&#39; ;
+plus_at := &#39;+@&#39; ;
+minus_at := &#39;-@&#39; ;
+equal := &#39;=&#39; ;
+equal_hash := &#39;=#&#39; ;
+plus_equal := &#39;+=&#39; ;
+minus_equal := &#39;-=&#39; ;
+star_equal := &#39;*=&#39; ; 
+slash_equal := &#39;/=&#39; ;
+plus_equal_at := &#39;+=@&#39; ;
+minus_equal_at := &#39;-=@&#39; ;
+minus_minus := &#39;--&#39; ;
+plus_plus := &#39;++&#39; ;</code></pre>
+<p>There are only operators, separators, unclassified tokens, and string literals.</p>
+<p>Each unclassified token requires parsing context in order to be classified.</p>
+<p>Comments are excluded from this grammar because nested block comments are context-free.</p>
+<p>This regular grammar is not capable of handling the complete set of words generated by <code>filename</code>. For instance, <code>file-name.sc</code> would not be interpreted properly. A translator should be careful to handle this case properly.</p>
+<p>The following are examples of context dependency for token classification:</p>
+<pre><code>// for the sake of simplicity separation tokens are omitted.
+
+WORD: WORD:    // label(WORD:) command(WORD:)
+
+WORD WORD      // command(WORD) identifier(WORD)
+
+1234 1234      // command(1234) integer(1234)
+
+X = Y          // identifier(X) &#39;=&#39; identifier(Y)
+X Y            // command(X) identifier(Y)
+
+X --           // identifier(X) &#39;--&#39;
+X -1           // command(X) integer(-1)
+
+LAUNCH_MISSION a.sc // command(LAUNCH_MISSION) filename(a.sc)
+OTHER_COMMAND a.sc  // command(OTHER_COMMAND) identifier(a.sc)
+// NOTE: filename is not an identifier because, for instance,
+// filename(4x4.sc) cannot be classified as an identifier.
+
+OR             // command(AND)
+NOT            // command(NOT)
+IF SOMETHING   //
+OR OR          // &#39;OR&#39; command(OR)
+OR NOT NOT     // &#39;OR&#39; &#39;NOT&#39; command(NOT)
+    NOP        //
+ENDIF          //
+
+// NOTE: that is a defect actually, see following example:
+IF SOMETHING
+    AND var    // &#39;AND&#39; command(var) -- not what we want
+    // same problem for OR.
+    // NOT is affected by IF NOT var.
+ENDIF</code></pre>
+<h2 id="ambiguity"><span class="header-section-number">14.2</span> Ambiguity</h2>
+<p>Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.</p>
+<h3 id="if-goto"><span class="header-section-number">14.2.1</span> IF GOTO</h3>
+<pre><code>IF COMMAND goto other
+COMMAND goto other</code></pre>
+<p>The first line could mean an command, taking two arguments, <code>goto</code> and <code>other</code>. Or, it could mean that if the command returns true, a jump should be performed into the <code>other</code> label. The correct interpretation is the latter.</p>
+<p>The second line is unambiguous due to context.</p>
+<p>We suggest an implementation to emit an warnings to declarations of names and the use of text labels equal to <code>goto</code>.</p>
+<h3 id="ternary-minus-one"><span class="header-section-number">14.2.2</span> Ternary Minus One</h3>
+<pre><code>x = 1-1
+x = 1 -1
+x = 1 - 1
+x = 1--1
+x = 1- -1</code></pre>
+<p>The first line could mean <code>1</code> minus <code>1</code>, or it could mean <code>1</code> and then the number <code>-1</code>. The latter is the correct interpretation. And yes, it is a syntax error.</p>
+<p>The second line has the same ambiguity and its interpretation should be the same as the first line.</p>
+<p>The third line is not ambiguous.</p>
+<p>The fourth line is ambiguous. Its actual meaning is <code>1</code> followed by the unary operator <code>--</code> and it is a syntax error.</p>
+<p>The fifth line is not ambiguous.</p>
+<p>The token stream produced by the regular lexical grammar in the appendix should solve this issue naturally.</p>
+<h2 id="how-to-miss2"><span class="header-section-number">14.3</span> How to MISS2</h2>
+<p>The leaked script compiler is full of bugs. It was written for in-house use, so it’s meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn’t. For the conservative, the following is a list of known things miss2 accepts that this specification does not.</p>
+<p>Do note a regular lexical grammar (like above) cannot be built for the language recognized by miss2.</p>
+<p><strong>Unrestricted character set</strong></p>
+<p>More control codes than the specified are <em>accepted</em> by miss2 (such as <code>\r</code> anywhere or <code>\v</code>). The compiler behaves in weird ways when those are used.</p>
+<p>You may use custom characters (c &gt; 127), but you may clash with the characters DMA used to tokenize string literals.</p>
+<p><strong>A string literal is the same as four tokens</strong></p>
+<pre><code>SAVE_STRING_TO_DEBUG_FILE &quot;OO AR AZ WERTY&quot;
+SAVE_STRING_TO_DEBUG_FILE FOO BAR BAZ QWERTY
+// both are recognized by miss2 and produce the same bytecode
+// this specification only accepts the string literal one</code></pre>
+<p><strong>A string literal ends a line</strong></p>
+<p>As part of transforming a string literal into tokens, miss2 puts a null terminator in the line. Thus, any argument following it is kinda of ignored.</p>
+<pre><code>SAVE_STRING_TO_DEBUG_FILE &quot;this is a string&quot; and this is ignored
+// this specification does not accept this</code></pre>
+<p><strong>Accepts internal compiler commands</strong></p>
+<p>Remove the constraint that commands that conflict with grammar definitions cannot be used in a <code>command_statement</code> and you get atrocities like:</p>
+<pre><code>IF { // does not begin a lexical scope
+ENDIF
+
+IF WHILE 0 // it&#39;s like an ANDOR within an ANDOR
+ENDIF
+
+// there is probably a lot more of these</code></pre>
+<p><strong>WHILENOT is incomplete</strong></p>
+<p>WHILENOT only accepts equality comparison</p>
+<pre><code>WHILENOT x = 1
+ENDWHILE
+
+WHILENOT x &lt; 1 // not recognized
+ENDWHILE
+
+// since we accept the above, we are not a subset anymore.
+// to fix this (and become a subset again) only allow equality
+// on WHILENOT.</code></pre>
+<p><strong>AND/OR behaves differently than IF/WHILE/expressions</strong></p>
+<pre><code>WHILENOT x &lt; 1 // not recognized
+AND x &lt; 1      // recognized
+ENDWHILE
+// this specification accepts both
+
+WHILE WAIT 1-1 // not recognized
+AND WAIT 1-1   // recognized
+// this specification accepts neither
+
+WHILE WAIT-1   // the command WAIT with a -1 argument
+AND WAIT-1     // a command named WAIT-1
+// this specification accepts neither</code></pre>
+<p><strong>INT tokens allow minus in the middle</strong></p>
+<pre><code>WAIT 1-1
+WAIT 1-
+// this specification does not accept this</code></pre>
+<p><strong>Commands may have operator characters</strong></p>
+<pre><code>--b   // recognized as &#39;--&#39; identifier(b)
+--b b // recognized as command(--b) identifier(b)
+// this makes the lexer context sensitive
+// but this spec disallow the later form based
+// on the belief the IF/WHILE/expressions parser
+// is the correct one (details above).</code></pre>
+<p><strong>anything may follow MISSION_START</strong></p>
+<pre><code>MISSION_START anythin&quot;may follow&quot; this thing
+MISSION_END the same &quot;happens&quot;with mission_end
+// this specification does not accept this</code></pre>
+<p><strong>labels may contain any printable character (except quotation marks)</strong></p>
+<pre><code>e-=1:                  // recognized (we don&#39;t accept this)
+GOTO e-=1              // not recognized
+LAUNCH_MISSION e/=.sc  // recognized (we don&#39;t accept this)</code></pre>
+<p><strong>label may be empty or not match identifier</strong></p>
+<p>The name of a label may be empty. The name of a label may contain characters that do not match the <code>identifier</code> production.</p>
+<pre><code>:     // recognized
+::::  // recognized
+@abc: // recognized
+// this specification does not accept this</code></pre>
+<p><strong>non-identifiers on the lhs of assignment expressions</strong></p>
+<p>Some expressions implement this correctly in miss2, some don’t.</p>
+<pre><code>1 = ABS 2 // recognized
+--1       // recognized for every unary expression
+1 = 2 * 3 // recognized for every ternary expression
+1 = 2     // recognized
+1 =# 2    // recognized
+1 *= 2    // not recognized for every other binary expression
+// this specification does not accept any of this</code></pre>
+<p><strong>labels in AND/OR</strong></p>
+<p>miss2 allows labels to prefix AND/OR conditions. However, it produces weird code. As such, this specification does not accept it.</p>
+<pre><code>IF x = 0
+lab_or: OR x = 1 // goes to the WAIT 0 after the last condition
+OR x = 2         // this specification does not accept this
+    WAIT 1
+ELSE
+    WAIT 2
+ENDIF</code></pre>
+<p><strong>weird closing blocks</strong></p>
+<p>stuff like the following is recognized by miss2</p>
+<pre><code>WHILE x = 0
+    IF y = 1
+        WAIT 0
+ENDWHILE
+    ENDIF
+// this specification does not accept this (nor variations of this)</code></pre>
+<p>this happens with scopes, IFs, REPEATs, WHILEs, <code>MISSION_END</code>, and what not.</p>
+<p>it is very interesting actually, but clearly a language bug (would not say a implementation bug though).</p>
+<p><strong>exclusive scripts</strong></p>
+<p>we don’t really what are these, so we won’t specify them.</p>
+<p><strong>entities</strong></p>
+<pre><code>VAR_INT vcar
+COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar // this spec gives an error, miss2 recognizes (does not look like intended behaviour?)</code></pre>
+<p>TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES TODO scripts subscripts mission script and such (what are the execution differences) TODO translation limits TODO what about commands that do not produce compare flag changes but may appear in a conditional statement TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb) TODO better name for what we are calling require statements TODO interesting NOP is not compiled TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier. TODO SAVE_VAR_INT TODO should we fix the floating point literals (e.g. ‘1.9.2’)? I think there are DMA scripts that need this. TODO maybe move the semantic definition that we cannot use mission script labels from outside it from concepts to the script file structure section TODO the rationale for global having unspecified initial value: Stories variable sharing (must read more though). TODO read gta3sc issues and source for quirks TODO re-read Wesser’s PM TODO fix AND OR NOT defect? TODO list of special command names (user cannot write these) TODO correctly specify that a[1] = a[1]abc + 2 is not the same as a[1] = a[1] + 2 TODO talk about repetion of filenames and using in different script types TODO define semantics for <code>arr</code> (no brackets) TODO creating packages and such are declarations too (not only var decls) TODO declarations, entities and variable usage TODO label semantics of start new script (GTA3 allows label: {}) TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level) LIMITS TODO gxtsema gxt key length &lt;8 TODO gxtsema filename (excluding extension must be) &lt;16 TODO label name &lt;=38 TODO varname &lt;40 TODO scriptname &lt;=7 TODO scriptnames &lt;= 300 TODO &lt;=9216 gvar storage words TODO &lt;=16 lvars storage words TODO &lt;=255 array size TODO &lt;=35000 label refs TODO &lt;=255 line TODO &lt;=127 string</p>
+<h1 id="arachniography"><span class="header-section-number">15</span> Arachniography</h1>
+<ol type="1">
+<li><a href="http://gtamp.com/GTA2/gta2script.7z">Official GTA2script Compiler V9.6</a> by DMA Design.</li>
+<li><a href="https://public.thelink2012.xyz/gta3/GTA2%20Scripting.html">Official GTA2script Scripting Information</a> by DMA Design.</li>
+<li><a href="https://www.dropbox.com/s/7xgvqo8b9u1qw02/gta3sc_v413.rar">Official GTA3 Script Compiler V413</a> by Rockstar North.</li>
+<li><a href="https://public.thelink2012.xyz/gta3/gta3_main_source.7z">GTA III 10th Anniversary Multiscripts Source Code</a> by Rockstar North, War Drum Studios.</li>
+<li><a href="http://pastebin.com/raw/Pjb0Ezkx">GTA3 Script Compiler V413 Strings</a> organized by Wesser.</li>
+<li><a href="https://www.dropbox.com/s/zkn59hrw7o76ry7/gta3vc_sc_defines.rar">GTA3 Script Compiler V413 Definitions</a> organized by Wesser.</li>
+<li><a href="https://pastebin.com/raw/2VczpwK7">GTASA Mobile Symbol Listing</a> organized by LINK/2012.</li>
+<li><a href="http://pastebin.com/raw/YfLWLXJw">Work-In-Progress SCM Language Article</a> by Wesser.</li>
+<li><a href="http://web.archive.org/web/20170111193059/http://www.gtamodding.com/wiki/GTA3script">Ancient SCM Language Article</a> by Wesser.</li>
+</ol>
+</body>
+</html>
