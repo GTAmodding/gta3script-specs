@@ -11,7 +11,7 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <link rel="stylesheet" href="css/pandoc.css" />
+  <link rel="stylesheet" href="pandoc.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -34,12 +34,13 @@
 <li><a href="#elements"><span class="toc-section-number">6</span> Elements</a><ul>
 <li><a href="#source-code"><span class="toc-section-number">6.1</span> Source Code</a></li>
 <li><a href="#comments"><span class="toc-section-number">6.2</span> Comments</a></li>
-<li><a href="#commands"><span class="toc-section-number">6.3</span> Commands</a></li>
-<li><a href="#integer-literals"><span class="toc-section-number">6.4</span> Integer Literals</a></li>
-<li><a href="#floating-point-literals"><span class="toc-section-number">6.5</span> Floating-Point Literals</a></li>
-<li><a href="#identifiers"><span class="toc-section-number">6.6</span> Identifiers</a></li>
-<li><a href="#string-literals"><span class="toc-section-number">6.7</span> String Literals</a></li>
-<li><a href="#variable-references"><span class="toc-section-number">6.8</span> Variable References</a></li>
+<li><a href="#commands"><span class="toc-section-number">6.3</span> Commands</a><ul>
+<li><a href="#integer-literals"><span class="toc-section-number">6.3.1</span> Integer Literals</a></li>
+<li><a href="#floating-point-literals"><span class="toc-section-number">6.3.2</span> Floating-Point Literals</a></li>
+<li><a href="#identifiers"><span class="toc-section-number">6.3.3</span> Identifiers</a></li>
+<li><a href="#string-literals"><span class="toc-section-number">6.3.4</span> String Literals</a></li>
+<li><a href="#variable-references"><span class="toc-section-number">6.3.5</span> Variable References</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#parameters"><span class="toc-section-number">7</span> Parameters</a><ul>
 <li><a href="#string-constants"><span class="toc-section-number">7.1</span> String Constants</a></li>
@@ -190,7 +191,7 @@
 <p>A <em>script</em> is a unit of execution which contains its own <em>program counter</em>, <em>local variables</em> and <em>compare flag</em>.</p>
 <p>A <em>program</em> is a collection of scripts running concurrently in a cooperative fashion.</p>
 <p>A <em>variable</em> is a named storage location. This location holds a value of specific type.</p>
-<p>There are global and local variables. <em>Global variables</em> are stored in a way they are accessible from any script. <em>Local variables</em> are said to pertain to the particular script and only accessible from it.</p>
+<p>There are global and local variables. <em>Global variables</em> are stored in a way they are accessible from any script. <em>Local variables</em> pertains to its particular script and is only accessible from it.</p>
 <p>The lifetime of a <em>global variable</em> is the same as of the execution of all scripts. The lifetime of a <em>local variable</em> is the same as its script and lexical scope.</p>
 <p>A <em>command</em> is an operation to be performed by a script. Commands produces <em>side-effects</em> which are described by each command description.</p>
 <p>A possible side-effect of executing a command is the updating of the <em>compare flag</em>. The <em>compare flag</em> of a command is the boolean result it produces. The <em>compare flag of a script</em> is the <em>compare flag</em> of the its last executed command. The <em>compare flag</em> is useful for conditionally changing the <em>flow of control</em>.</p>
@@ -200,15 +201,15 @@
 <p>A command is said to <em>terminate</em> a script if it halts and reclaims storage of such a script.</p>
 <h2 id="script-files"><span class="header-section-number">5.2</span> Script Files</h2>
 <p>A <em>script file</em> is a source file containing a sequence of commands. Those commands are executed concurrently by multiple scripts.</p>
-<p>The <em>multi-file</em> is a collection of <em>script files</em>. Hereafter being the collection of <em>script files</em> being translated.</p>
+<p>The <em>multi-file</em> is a collection of script files. Hereafter being the collection of script files being translated.</p>
 <p>The <em>main script file</em> is the entry script file. This is where the first script (called the <em>main script</em>) starts execution. Translation begins here.</p>
-<p>Other script files are <em>required</em> to become part of the <em>multi-file</em> by the means of require statements within the <em>main script file</em>. The <em>main script file</em> itself is required from the translation environment.</p>
-<p>Many kinds of script files can be <em>required</em>.</p>
+<p>Other script files are <em>required</em> to become part of the multi-file by the means of require statements within the main script file. The main script file itself is required from the translation environment.</p>
+<p>Many kinds of script files can be required.</p>
 <p>A <em>main extension file</em> (or <em>foreign gosub file</em>) is a script file required by the means of a <em>GOSUB_FILE statement</em>. Other script files can be required from here as well.</p>
 <p>A <em>subscript file</em> is a script file required by the means of the <em>LAUNCH_MISSION statement</em>. A <em>subscript</em> is a script started by the same statement.</p>
-<p>A <em>mission script file</em> is a script file required by the means of the <em>LOAD_AND_LAUNCH_MISSION statement</em>. A <em>mission script</em> is a script started by the same statement. Only a single <em>mission script</em> can be running at once.</p>
-<p>Commands in the <em>main script file</em>, <em>main extension files</em> and <em>subscript files</em> shall not refer to labels in <em>mission script files</em>. A <em>mission script file</em> shall not refer to labels in other <em>mission script files</em>.</p>
-<p>The <em>main script file</em> is found in a unspecified manner. The other <em>script files</em> are found by recursively searching a directory with the same filename (excluding extension) as the <em>main script file</em>. This directory is in the same path as the <em>main script file</em>. The search for the <em>script files</em> shall be case-insensitive. All <em>script files</em> must have a <code>.sc</code> extension. If multiple script files with the same name are found, behaviour is unspecified.</p>
+<p>A <em>mission script file</em> is a script file required by the means of the <em>LOAD_AND_LAUNCH_MISSION statement</em>. A <em>mission script</em> is a script started by the same statement. Only a single mission script can be running at once.</p>
+<p>An implementation may contain special features regarding the way subscripts and mission scripts are executed.</p>
+<p>The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a <code>.sc</code> extension. If multiple script files with the same name are found, behaviour is unspecified.</p>
 <p>A script type is said to come before another script type under the following total order:</p>
 <ol type="1">
 <li>Main script.</li>
@@ -275,12 +276,12 @@ command := command_name { sep argument } ;</code></pre>
           | floating 
           | identifier
           | string_literal ;</code></pre>
-<h2 id="integer-literals"><span class="header-section-number">6.4</span> Integer Literals</h2>
+<h3 id="integer-literals"><span class="header-section-number">6.3.1</span> Integer Literals</h3>
 <pre><code>digit := &#39;0&#39;..&#39;9&#39; ;
 integer := [&#39;-&#39;] digit {digit} ;</code></pre>
 <p>A <em>integer literal</em> is a sequence of digits optionally preceded by a minus sign.</p>
 <p>If the literal begins with a minus, the number following it shall be negated.</p>
-<h2 id="floating-point-literals"><span class="header-section-number">6.5</span> Floating-Point Literals</h2>
+<h3 id="floating-point-literals"><span class="header-section-number">6.3.2</span> Floating-Point Literals</h3>
 <pre><code>floating_form1 := &#39;.&#39; digit { digit | &#39;.&#39; | &#39;F&#39; } ;
 floating_form2 := digit { digit } (&#39;.&#39; | &#39;F&#39;) { digit | &#39;.&#39; | &#39;F&#39; } ;
 floating := [&#39;-&#39;] (floating_form1 | floating_form2) ;</code></pre>
@@ -342,26 +343,26 @@ floating := [&#39;-&#39;] (floating_form1 | floating_form2) ;</code></pre>
 </tr>
 </tbody>
 </table>
-<h2 id="identifiers"><span class="header-section-number">6.6</span> Identifiers</h2>
+<h3 id="identifiers"><span class="header-section-number">6.3.3</span> Identifiers</h3>
 <pre><code>identifier := (&#39;$&#39; | &#39;A&#39;..&#39;Z&#39;) {token_char} ;</code></pre>
 <p>An <em>identifier</em> is a sequence of token characters beggining with a dollar or alphabetic character.</p>
 <p><strong>Constraints</strong></p>
 <p>An identifier shall not end with a <code>:</code> character.</p>
-<h2 id="string-literals"><span class="header-section-number">6.7</span> String Literals</h2>
+<h3 id="string-literals"><span class="header-section-number">6.3.4</span> String Literals</h3>
 <p>A <em>string literal</em> holds a string delimited by quotation marks.</p>
 <pre><code>string_literal := &#39;&quot;&#39; { ascii_char - (newline | &#39;&quot;&#39;) } &#39;&quot;&#39; ;</code></pre>
-<h2 id="variable-references"><span class="header-section-number">6.8</span> Variable References</h2>
+<h3 id="variable-references"><span class="header-section-number">6.3.5</span> Variable References</h3>
 <p>A <em>variable name</em> is a sequence of token characters, except the characters <code>[</code> and <code>]</code> cannot happen.</p>
 <pre><code>variable_char := token_char - (&#39;[&#39; | &#39;]&#39;) ;
 variable_name := (&#39;$&#39; | &#39;A&#39;..&#39;Z&#39;) {variable_char} ;</code></pre>
-<p>A <em>variable reference</em> is a variable name optionally followed by an array subscript. Any character following the subscript shall be ignored. A subscript shall not happen more than once.</p>
+<p>A <em>variable reference</em> is a variable name optionally followed by an array subscript.</p>
 <pre><code>subscript := &#39;[&#39; (variable_name | integer) &#39;]&#39; ;
-variable := variable_name [ subscript {variable_char} ] ;</code></pre>
-<p>The type of a variable reference is the inner type of the variable name being referenced.</p>
-<p>The subscript uses an integer literal or another variable name of integer type for indexing.</p>
-<p>The indexing is zero-based.</p>
-<p>The integer literal in a subscript must be positive.</p>
+variable := variable_name [ subscript ] ;</code></pre>
+<p>The type of a variable reference is the type of the variable name being referenced.</p>
+<p>The subscript uses an integer literal or another variable name of integer type for zero-based indexing.</p>
 <p>The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.</p>
+<p>The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.</p>
+<p>An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.</p>
 <h1 id="parameters"><span class="header-section-number">7</span> Parameters</h1>
 <p>A command receives several arguments. Every argument must obey the rules of its corresponding <em>parameter definition</em>.</p>
 <p>A <em>parameter definition</em> is a set of definitions regarding a single parameter for a specific command.</p>
@@ -659,6 +660,7 @@ conditional_list := conditional_element eol
 <p>The compare flag is set to true if the compare flag of all conditional elements in a <code>AND</code> list holds true. Otherwise it is set to false.</p>
 <p>The compare flag is set to true if the compare flag of at least one conditional elements in a <code>OR</code> list holds true. Otherwise it is set to false.</p>
 <p>A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.</p>
+<p>The behaviour is unspecified if the command used in a conditional element does not cause side-effects in the compare flag.</p>
 <h2 id="selection-statements"><span class="header-section-number">10.9</span> Selection Statements</h2>
 <p>Selection statements selects which statement to execute depending on certain conditions.</p>
 <h3 id="if-statement"><span class="header-section-number">10.9.1</span> IF Statement</h3>
@@ -718,6 +720,7 @@ require_statement := command_gosub_file
                    | command_launch_mission
                    | command_load_and_launch_mission ;</code></pre>
 <p>Require statements request script files to become part of the multi-file being translated.</p>
+<p>A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is unspecified.</p>
 <p><strong>Constraints</strong></p>
 <p>Require statements shall only appear in the <em>main script file</em> or <em>main extension files</em>.</p>
 <h3 id="gosub_file-statement"><span class="header-section-number">10.11.1</span> GOSUB_FILE Statement</h3>
@@ -744,9 +747,13 @@ require_statement := command_gosub_file
 <p>A main script file is a sequence of zero or more statements.</p>
 <p><strong>Semantics</strong></p>
 <p>The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is unspecified.</p>
+<p><strong>Constraints</strong></p>
+<p>Commands in the main script file shall not refer to labels in mission script files.</p>
 <h2 id="main-extension-files"><span class="header-section-number">11.2</span> Main Extension Files</h2>
 <pre><code>main_extension_file := {statement} ;</code></pre>
 <p>A main extension file is a sequence of zero or more statements.</p>
+<p><strong>Constraints</strong></p>
+<p>Commands in main extension files shall not refer to labels in mission script files.</p>
 <h2 id="subscript-files"><span class="header-section-number">11.3</span> Subscript Files</h2>
 <pre><code>subscript_file := &#39;MISSION_START&#39; eol
                   {statement}
@@ -755,11 +762,14 @@ require_statement := command_gosub_file
 <p>A subscript file is a sequence of zero or more statements in a <code>MISSION_START</code> and <code>MISSION_END</code> block. More statements can follow.</p>
 <p><strong>Constraints</strong></p>
 <p>The <code>MISSION_START</code> command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (<code></code>) and horizontal tabs (<code>\t</code>). Even comments are disallowed.</p>
+<p>Commands in subscript files shall not refer to labels in mission script files.</p>
 <p><strong>Semantics</strong></p>
 <p>The <code>MISSION_END</code> command behaves as if by executing the <code>TERMINATE_THIS_SCRIPT</code> command.</p>
 <h2 id="mission-script-files"><span class="header-section-number">11.4</span> Mission Script Files</h2>
 <pre><code>mission_script_file := subscript_file ;</code></pre>
 <p>A mission script file has the same structure of a subscript file.</p>
+<p><strong>Constraints</strong></p>
+<p>Commands in mission script files shall not refer to labels in mission script files other than itself.</p>
 <h1 id="supporting-commands"><span class="header-section-number">12</span> Supporting Commands</h1>
 <p>In order to perform useful computation the following supporting commands may be available.</p>
 <h2 id="wait"><span class="header-section-number">12.1</span> WAIT</h2>
@@ -1066,7 +1076,7 @@ OTHER_COMMAND a.sc  // command(OTHER_COMMAND) identifier(a.sc)
 // NOTE: filename is not an identifier because, for instance,
 // filename(4x4.sc) cannot be classified as an identifier.
 
-OR             // command(AND)
+OR             // command(OR)
 NOT            // command(NOT)
 IF SOMETHING   //
 OR OR          // &#39;OR&#39; command(OR)
@@ -1205,8 +1215,13 @@ ENDWHILE
 <p>we don’t really what are these, so we won’t specify them.</p>
 <p><strong>entities</strong></p>
 <pre><code>VAR_INT vcar
-COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar // this spec gives an error, miss2 recognizes (does not look like intended behaviour?)</code></pre>
-<p>TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES TODO scripts subscripts mission script and such (what are the execution differences) TODO translation limits TODO what about commands that do not produce compare flag changes but may appear in a conditional statement TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb) TODO better name for what we are calling require statements TODO interesting NOP is not compiled TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier. TODO SAVE_VAR_INT TODO should we fix the floating point literals (e.g. ‘1.9.2’)? I think there are DMA scripts that need this. TODO maybe move the semantic definition that we cannot use mission script labels from outside it from concepts to the script file structure section TODO the rationale for global having unspecified initial value: Stories variable sharing (must read more though). TODO read gta3sc issues and source for quirks TODO re-read Wesser’s PM TODO fix AND OR NOT defect? TODO list of special command names (user cannot write these) TODO correctly specify that a[1] = a[1]abc + 2 is not the same as a[1] = a[1] + 2 TODO talk about repetion of filenames and using in different script types TODO define semantics for <code>arr</code> (no brackets) TODO creating packages and such are declarations too (not only var decls) TODO declarations, entities and variable usage TODO label semantics of start new script (GTA3 allows label: {}) TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level) LIMITS TODO gxtsema gxt key length &lt;8 TODO gxtsema filename (excluding extension must be) &lt;16 TODO label name &lt;=38 TODO varname &lt;40 TODO scriptname &lt;=7 TODO scriptnames &lt;= 300 TODO &lt;=9216 gvar storage words TODO &lt;=16 lvars storage words TODO &lt;=255 array size TODO &lt;=35000 label refs TODO &lt;=255 line TODO &lt;=127 string</p>
+COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar
+// this spec gives an error, miss2 recognizes (does not look like intended behaviour?)
+// [...] we are not a subset anymore because of this.</code></pre>
+<p><strong>arrays</strong></p>
+<pre><code>WAIT arr[0]anything // recognized
+// this specification does not accept this</code></pre>
+<p>TODO should we fix the floating point literals (e.g. ‘1.9.2’)? I think there are DMA scripts that need this. TODO list of special command names (user cannot write these, include AND/OR/NOT) TODO label semantics of start new script (GTA3 allows label: {}) TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level) TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb) TODO interesting NOP is not compiled TODO creating packages and such are declarations too (not only var decls) TODO translation limits LIMITS TODO gxtsema gxt key length &lt;8 TODO gxtsema filename (excluding extension must be) &lt;16 TODO label name &lt;=38 TODO varname &lt;40 TODO scriptname &lt;=7 TODO scriptnames &lt;= 300 TODO &lt;=9216 gvar storage words TODO &lt;=16 lvars storage words TODO &lt;=255 array size TODO &lt;=35000 label refs TODO &lt;=255 line TODO &lt;=127 string</p>
 <h1 id="arachniography"><span class="header-section-number">15</span> Arachniography</h1>
 <ol type="1">
 <li><a href="http://gtamp.com/GTA2/gta2script.7z">Official GTA2script Compiler V9.6</a> by DMA Design.</li>
