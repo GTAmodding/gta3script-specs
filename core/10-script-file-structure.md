@@ -13,6 +13,10 @@ A main script file is a sequence of zero or more statements.
 
 The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is unspecified.
 
+**Constraints**
+
+Commands in the main script file shall not refer to labels in mission script files.
+
 ## Main Extension Files
 
 ```
@@ -20,6 +24,10 @@ main_extension_file := {statement} ;
 ```
 
 A main extension file is a sequence of zero or more statements.
+
+**Constraints**
+
+Commands in main extension files shall not refer to labels in mission script files.
 
 ## Subscript Files
 
@@ -36,6 +44,8 @@ A subscript file is a sequence of zero or more statements in a `MISSION_START` a
 
 The `MISSION_START` command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (` `) and horizontal tabs (`\t`). Even comments are disallowed.
 
+Commands in subscript files shall not refer to labels in mission script files.
+
 **Semantics**
 
 The `MISSION_END` command behaves as if by executing the `TERMINATE_THIS_SCRIPT` command.
@@ -48,4 +58,7 @@ mission_script_file := subscript_file ;
 
 A mission script file has the same structure of a subscript file.
 
+**Constraints**
+
+Commands in mission script files shall not refer to labels in mission script files other than itself.
 

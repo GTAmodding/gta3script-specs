@@ -85,7 +85,7 @@ argument := integer
           | string_literal ;
 ```
 
-## Integer Literals
+### Integer Literals
 
 ```
 digit := '0'..'9' ;
@@ -96,7 +96,7 @@ A *integer literal* is a sequence of digits optionally preceded by a minus sign.
 
 If the literal begins with a minus, the number following it shall be negated.
 
-## Floating-Point Literals
+### Floating-Point Literals
 
 ```
 floating_form1 := '.' digit { digit | '.' | 'F' } ;
@@ -126,7 +126,7 @@ The following are examples of valid and invalid literals:
 | 1.f     | 1.0     |
 | 1..     | 1.0     |
 
-## Identifiers
+### Identifiers
 
 ```
 identifier := ('$' | 'A'..'Z') {token_char} ;
@@ -138,7 +138,7 @@ An *identifier* is a sequence of token characters beggining with a dollar or alp
 
 An identifier shall not end with a `:` character.
 
-## String Literals
+### String Literals
 
 A *string literal* holds a string delimited by quotation marks.
 
@@ -146,7 +146,7 @@ A *string literal* holds a string delimited by quotation marks.
 string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 ```
 
-## Variable References
+### Variable References
 
 A *variable name* is a sequence of token characters, except the characters `[` and `]` cannot happen.
 
@@ -155,20 +155,19 @@ variable_char := token_char - ('[' | ']') ;
 variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ```
 
-A *variable reference* is a variable name optionally followed by an array subscript. Any character following the subscript shall be ignored. A subscript shall not happen more than once.
+A *variable reference* is a variable name optionally followed by an array subscript.
 
 ```
 subscript := '[' (variable_name | integer) ']' ;
-variable := variable_name [ subscript {variable_char} ] ;
+variable := variable_name [ subscript ] ;
 ```
 
-The type of a variable reference is the inner type of the variable name being referenced.
+The type of a variable reference is the type of the variable name being referenced.
 
-The subscript uses an integer literal or another variable name of integer type for indexing.
-
-The indexing is zero-based.
-
-The integer literal in a subscript must be positive.
+The subscript uses an integer literal or another variable name of integer type for zero-based indexing.
 
 The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.
 
+The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.
+
+An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.

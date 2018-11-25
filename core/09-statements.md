@@ -181,6 +181,8 @@ The compare flag is set to true if the compare flag of at least one conditional 
 
 A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.
 
+The behaviour is unspecified if the command used in a conditional element does not cause side-effects in the compare flag.
+
 ## Selection Statements
 
 Selection statements selects which statement to execute depending on certain conditions.
@@ -296,6 +298,8 @@ require_statement := command_gosub_file
 ```
 
 Require statements request script files to become part of the multi-file being translated.
+
+A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is unspecified.
 
 **Constraints** 
 

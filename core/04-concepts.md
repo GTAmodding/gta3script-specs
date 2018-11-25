@@ -9,7 +9,7 @@ A *program* is a collection of scripts running concurrently in a cooperative fas
 
 A *variable* is a named storage location. This location holds a value of specific type.
 
-There are global and local variables. *Global variables* are stored in a way they are accessible from any script. *Local variables* are said to pertain to the particular script and only accessible from it.
+There are global and local variables. *Global variables* are stored in a way they are accessible from any script. *Local variables* pertains to its particular script and is only accessible from it.
 
 The lifetime of a *global variable* is the same as of the execution of all scripts. The lifetime of a *local variable* is the same as its script and lexical scope.
 
@@ -29,23 +29,23 @@ A command is said to *terminate* a script if it halts and reclaims storage of su
 
 A *script file* is a source file containing a sequence of commands. Those commands are executed concurrently by multiple scripts.
 
-The *multi-file* is a collection of *script files*. Hereafter being the collection of *script files* being translated.
+The *multi-file* is a collection of script files. Hereafter being the collection of script files being translated.
 
 The *main script file* is the entry script file. This is where the first script (called the *main script*) starts execution. Translation begins here.
 
-Other script files are *required* to become part of the *multi-file* by the means of require statements within the *main script file*. The *main script file* itself is required from the translation environment.
+Other script files are *required* to become part of the multi-file by the means of require statements within the main script file. The main script file itself is required from the translation environment.
 
-Many kinds of script files can be *required*.
+Many kinds of script files can be required.
 
 A *main extension file* (or *foreign gosub file*) is a script file required by the means of a *GOSUB_FILE statement*. Other script files can be required from here as well.
 
 A *subscript file* is a script file required by the means of the *LAUNCH_MISSION statement*. A *subscript* is a script started by the same statement.
 
-A *mission script file* is a script file required by the means of the *LOAD_AND_LAUNCH_MISSION statement*. A *mission script* is a script started by the same statement. Only a single *mission script* can be running at once.
+A *mission script file* is a script file required by the means of the *LOAD_AND_LAUNCH_MISSION statement*. A *mission script* is a script started by the same statement. Only a single mission script can be running at once.
 
-Commands in the *main script file*, *main extension files* and *subscript files* shall not refer to labels in *mission script files*. A *mission script file* shall not refer to labels in other *mission script files*.
+An implementation may contain special features regarding the way subscripts and mission scripts are executed.
 
-The *main script file* is found in a unspecified manner. The other *script files* are found by recursively searching a directory with the same filename (excluding extension) as the *main script file*. This directory is in the same path as the *main script file*. The search for the *script files* shall be case-insensitive. All *script files* must have a `.sc` extension. If multiple script files with the same name are found, behaviour is unspecified.
+The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a `.sc` extension. If multiple script files with the same name are found, behaviour is unspecified.
 
 A script type is said to come before another script type under the following total order:
 

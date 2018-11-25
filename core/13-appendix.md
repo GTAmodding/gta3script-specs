@@ -58,7 +58,7 @@ OTHER_COMMAND a.sc  // command(OTHER_COMMAND) identifier(a.sc)
 // NOTE: filename is not an identifier because, for instance,
 // filename(4x4.sc) cannot be classified as an identifier.
 
-OR             // command(AND)
+OR             // command(OR)
 NOT            // command(NOT)
 IF SOMETHING   //
 OR OR          // 'OR' command(OR)
@@ -289,34 +289,29 @@ we don't really what are these, so we won't specify them.
 
 ```
 VAR_INT vcar
-COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar // this spec gives an error, miss2 recognizes (does not look like intended behaviour?)
+COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar
+// this spec gives an error, miss2 recognizes (does not look like intended behaviour?)
+// [...] we are not a subset anymore because of this.
+```
+
+**arrays**
+
+```
+WAIT arr[0]anything // recognized
+// this specification does not accept this
 ```
 
 
 
-TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES 
-TODO scripts subscripts mission script and such (what are the execution differences)
-TODO translation limits
-TODO what about commands that do not produce compare flag changes but may appear in a conditional statement
-TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb)
-TODO better name for what we are calling require statements
-TODO interesting NOP is not compiled
-TODO rockstar does not know if it calls arg 17 a text string or a string identifier. I will go for identifier.
-TODO SAVE_VAR_INT
 TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
-TODO maybe move the semantic definition that we cannot use mission script labels from outside it from concepts to the script file structure section
-TODO the rationale for global having unspecified initial value: Stories variable sharing (must read more though).
-TODO read gta3sc issues and source for quirks
-TODO re-read Wesser's PM
-TODO fix AND OR NOT defect?
-TODO list of special command names (user cannot write these)
-TODO correctly specify that a[1] = a[1]abc + 2 is not the same as a[1] = a[1] + 2
-TODO talk about repetion of filenames and using in different script types
-TODO define semantics for `arr` (no brackets)
-TODO creating packages and such are declarations too (not only var decls)
-TODO declarations, entities and variable usage
+TODO list of special command names (user cannot write these, include AND/OR/NOT)
 TODO label semantics of start new script (GTA3 allows label: {})
+TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES 
 TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
+TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb)
+TODO interesting NOP is not compiled
+TODO creating packages and such are declarations too (not only var decls)
+TODO translation limits
 LIMITS
 TODO gxtsema gxt key length <8
 TODO gxtsema filename (excluding extension must be) <16
@@ -330,5 +325,3 @@ TODO <=255 array size
 TODO <=35000 label refs
 TODO <=255 line
 TODO <=127 string
-
-
