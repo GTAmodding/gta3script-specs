@@ -1,0 +1,40 @@
+[appendix]
+== Ambiguity
+
+Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.
+
+=== IF GOTO
+
+----
+IF COMMAND goto other
+COMMAND goto other
+----
+
+The first line could mean an command, taking two arguments, `goto` and `other`. Or, it could mean that if the command returns true, a jump should be performed into the `other` label. The correct interpretation is the latter.
+
+The second line is unambiguous due to context.
+
+We suggest an implementation to emit an warnings to declarations of names and the use of text labels equal to `goto`.
+
+=== Ternary Minus One
+
+----
+x = 1-1
+x = 1 -1
+x = 1 - 1
+x = 1--1
+x = 1- -1
+----
+
+The first line could mean `1` minus `1`, or it could mean `1` and then the number `-1`. The latter is the correct interpretation. And yes, it is a syntax error.
+
+The second line has the same ambiguity and its interpretation should be the same as the first line.
+
+The third line is not ambiguous.
+
+The fourth line is ambiguous. Its actual meaning is `1` followed by the unary operator `--` and it is a syntax error.
+
+The fifth line is not ambiguous.
+
+The token stream produced by the regular lexical grammar in the appendix should solve this issue naturally.
+
