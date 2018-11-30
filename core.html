@@ -8,6 +8,45 @@
 <title>GTA3script Specification</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
+<style>
+/* Little customization on the asciidoctor stylesheet */
+#header, #content, #footer, #footnotes {
+  max-width: 51em;
+}
+.sect1 + .sect1 {
+  border-top: none;
+}
+h1, h2, h3, h4, h5, h6 {
+  color: #111;
+  font-weight: normal;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+#content #toc {
+  background: none;
+}
+.literalblock pre, .listingblock pre:not(.highlight),
+.listingblock pre[class="highlight"], .listingblock pre[class^="highlight "],
+.listingblock pre.CodeRay, .listingblock pre.prettyprint {
+  background: none;
+}
+pre {
+  color: #000000;
+}
+:not(pre) > code {
+  background-color: inherit;
+  padding: 0 0;
+}
+code {
+  color: #000000;
+}
+p {
+  line-height: 1.7;
+}
+ol>li p, ul>li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist {
+  margin-bottom: 0;
+}
+</style>
 </head>
 <body class="article">
 <div id="header">
