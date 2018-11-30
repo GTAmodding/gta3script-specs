@@ -1,0 +1,45 @@
+= GTA3script Specification
+:toc: macro
+:toc-title:
+:toclevels: 9
+:sectnums:
+//:revnumber: {release-version}
+:revdate: {localdate}
+:nofooter:
+:idprefix:
+:idseparator: -
+
+NOTE: This is a draft. It may be wrong, incomplete and subject to change.
+
+toc::[]
+
+include::00-introduction.adoc[]
+
+include::01-scope.adoc[]
+
+include::02-terms-and-definitions.adoc[]
+
+include::03-notation.adoc[]
+
+include::04-concepts.adoc[]
+
+include::05-elements.adoc[]
+
+include::06-parameters.adoc[]
+
+include::07-command-selectors.adoc[]
+
+include::08-expressions.adoc[]
+
+include::09-statements.adoc[]
+
+include::10-script-file-structure.adoc[]
+
+include::11-supporting-commands.adoc[]
+
+include::12-supporting-command-selectors.adoc[]
+
+include::13-appendix.adoc[]
+
+include::14-arachniography.adoc[]
+

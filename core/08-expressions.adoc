@@ -1,16 +1,14 @@
-Expressions
-=========================
+== Expressions
 
-**Constraints**
+*Constraints*
 
 An argument in an expression cannot be a string literal.
 
 The name of commands used to require script files (e.g. `GOSUB_FILE`) and its directive commands (i.e. `MISSION_START` and `MISSION_END`) cannot be on the left hand side of a expression.
 
-## Assignment Expressions
+=== Assignment Expressions
 
-
-```
+----
 binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
 asop := '=' | '=#' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' ;
 unop := '--' | '++' ;
@@ -18,48 +16,65 @@ unop := '--' | '++' ;
 expr_assign_abs := identifier {whitespace} '=' {whitespace} 'ABS' {whitespace} argument ;
 expr_assign_binary := identifier {whitespace} asop {whitespace} argument ;
 expr_assign_ternary := identifier {whitespace} '=' {whitespace} argument {whitespace} binop {whitespace} argument ;
-expr_assign_unary := (unop {whitespace} identifier) 
+expr_assign_unary := (unop {whitespace} identifier)
                    | (identifier {whitespace} unop) ;
 
 assignment_expression := expr_assign_unary
                        | expr_assign_binary
                        | expr_assign_ternary
                        | expr_assign_abs ;
-```
+----
 
-The unary assignments `++a` and `a++` behaves as if `ADD_THING_TO_THING a 1` is executed.
+The unary assignments `pass:c[++a]` and `pass:c[a++]` behaves as if `ADD_THING_TO_THING a 1` is executed.
 
 The unary assignments `--a` and `a--`  behaves as if `SUB_THING_FROM_THING a 1` is executed.
 
 The binary assignment expressions behaves as if the following is executed:
 
-| Expression | Behaves As If                                  |
-| ---------- | ---------------------------------------------- |
-| `a = b`    | `SET a b`                                      |
-| `a =# b`   | `CSET a b`                                     |
-| `a += b`   | `ADD_THING_TO_THING a b`                       |
-| `a -= b`   | `SUB_THING_FROM_THING a b`                     |
-| `a *= b`   | `MULT_THING_BY_THING a b`                      |
-| `a /= b`   | `DIV_THING_BY_THING a b`                       |
-| `a +=@ b`  | `ADD_THING_TO_THING_TIMED a b`                 |
-| `a -=@ b`  | `SUB_THING_FROM_THING_TIMED a b`               |
+|===
+| Expression | Behaves As If
+
+| `a = b`
+| `SET a b`
+
+| `a =# b`
+| `CSET a b`
+
+| `a += b`
+| `ADD_THING_TO_THING a b`
+
+| `a -= b`
+| `SUB_THING_FROM_THING a b`
+
+| `a *= b`
+| `MULT_THING_BY_THING a b`
+
+| `a /= b`
+| `DIV_THING_BY_THING a b`
+
+| `a +=@ b`
+| `ADD_THING_TO_THING_TIMED a b`
+
+| `a -=@ b`
+| `SUB_THING_FROM_THING_TIMED a b`
+|===
 
 The absolute assignment `a = ABS b` behaves as if the following is executed:
 
- + `ABS a` if the name `a` is the same as the name `b`.
- + `SET a b` followed by `ABS a` otherwise.
+* `ABS a` if the name `a` is the same as the name `b`.
+* `SET a b` followed by `ABS a` otherwise.
 
 The ternary assignment `a = b + c` behaves as if the following is executed:
- 
- + `ADD_THING_TO_THING a c` if the name `a` is the same as the name `b`.
- + `ADD_THING_TO_THING a b` if the name `a` is the same as the name `c`.
- + `SET a b` followed by `ADD_THING_TO_THING a c` otherwise.
+
+* `ADD_THING_TO_THING a c` if the name `a` is the same as the name `b`.
+* `ADD_THING_TO_THING a b` if the name `a` is the same as the name `c`.
+* `SET a b` followed by `ADD_THING_TO_THING a c` otherwise.
 
 The ternary assignment `a = b - c` behaves as if the following is executed:
 
- + `SUB_THING_FROM_THING a c` if the name `a` is the same as the name `b`.
- + Implementation-defined if `a` is the same name as `c`.
- + `SET a b` followed by `SUB_THING_BY_THING a c` otherwise.
+* `SUB_THING_FROM_THING a c` if the name `a` is the same as the name `b`.
+* Implementation-defined if `a` is the same name as `c`.
+* `SET a b` followed by `SUB_THING_BY_THING a c` otherwise.
 
 The ternary assignment `a = b * c` behaves as if `a = b + c`, except by using `MULT_THING_BY_THING` instead of `ADD_THING_TO_THING`.
 
@@ -67,20 +82,30 @@ The ternary assignment `a = b / c` behaves as if `a = b - c`, except by using `D
 
 The ternary assignments `a = b +@ c` and `a = b -@ c` behaves as if `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
 
-## Conditional Expressions
+=== Conditional Expressions
 
-```
+----
 relop := '=' | '<' | '>' | '>=' | '<=' ;
 conditional_expression := argument {whitespace} relop {whitespace} argument ;
-```
+----
 
 These expressions behave as if the following is executed:
 
-| Expression | Behaves As If                                  |
-| ---------- | ---------------------------------------------- |
-| `a = b`    | `IS_THING_EQUAL_TO_THING a b`                  |
-| `a > b`    | `IS_THING_GREATER_THAN_THING a b`              |
-| `a >= b`   | `IS_THING_GREATER_OR_EQUAL_TO_THING a b`       |
-| `a < b`    | `IS_THING_GREATER_THAN_THING b a`              |
-| `a <= b`   | `IS_THING_GREATER_OR_EQUAL_TO_THING b a`       |
+|===
+| Expression | Behaves As If
 
+| `a = b`
+| `IS_THING_EQUAL_TO_THING a b`
+
+| `a > b`
+| `IS_THING_GREATER_THAN_THING a b`
+
+| `a >= b`
+| `IS_THING_GREATER_OR_EQUAL_TO_THING a b`
+
+| `a < b`
+| `IS_THING_GREATER_THAN_THING b a`
+
+| `+a <= b+`
+| `IS_THING_GREATER_OR_EQUAL_TO_THING b a`
+|===

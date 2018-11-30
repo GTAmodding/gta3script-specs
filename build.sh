@@ -1,2 +1,2 @@
 #!/bin/sh
-pandoc --toc --standalone -M title="GTA3script Specification" --number-sections --css="css/pandoc.css" core/*.md -o core.html
+asciidoctor -a linkcss -a docinfo=shared-head -a docinfodir="$(pwd)" core/index.adoc -o core.html

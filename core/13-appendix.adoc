@@ -1,13 +1,12 @@
-Appendix
-============
+== Appendix
 
-## Regular Lexical Grammar
+=== Regular Lexical Grammar
 
-```
+----
 # A Regular Lexical Grammar for GTA3script
 sep := sep ;
 eol := eol ;
-token := token_char {token_char} 
+token := token_char {token_char}
        | '-' (digit | '.') {token_char} ;
 string_literal := string_literal ;
 plus := '+' ;
@@ -20,13 +19,13 @@ equal := '=' ;
 equal_hash := '=#' ;
 plus_equal := '+=' ;
 minus_equal := '-=' ;
-star_equal := '*=' ; 
+star_equal := '*=' ;
 slash_equal := '/=' ;
 plus_equal_at := '+=@' ;
 minus_equal_at := '-=@' ;
 minus_minus := '--' ;
 plus_plus := '++' ;
-```
+----
 
 There are only operators, separators, unclassified tokens, and string literals.
 
@@ -38,7 +37,7 @@ This regular grammar is not capable of handling the complete set of words genera
 
 The following are examples of context dependency for token classification:
 
-```
+----
 // for the sake of simplicity separation tokens are omitted.
 
 WORD: WORD:    // label(WORD:) command(WORD:)
@@ -72,18 +71,18 @@ IF SOMETHING
     // same problem for OR.
     // NOT is affected by IF NOT var.
 ENDIF
-```
+----
 
-## Ambiguity
+=== Ambiguity
 
 Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.
 
-### IF GOTO
+==== IF GOTO
 
-```
+----
 IF COMMAND goto other
 COMMAND goto other
-```
+----
 
 The first line could mean an command, taking two arguments, `goto` and `other`. Or, it could mean that if the command returns true, a jump should be performed into the `other` label. The correct interpretation is the latter.
 
@@ -91,15 +90,15 @@ The second line is unambiguous due to context.
 
 We suggest an implementation to emit an warnings to declarations of names and the use of text labels equal to `goto`.
 
-### Ternary Minus One
+==== Ternary Minus One
 
-```
+----
 x = 1-1
 x = 1 -1
 x = 1 - 1
 x = 1--1
 x = 1- -1
-```
+----
 
 The first line could mean `1` minus `1`, or it could mean `1` and then the number `-1`. The latter is the correct interpretation. And yes, it is a syntax error.
 
@@ -113,41 +112,41 @@ The fifth line is not ambiguous.
 
 The token stream produced by the regular lexical grammar in the appendix should solve this issue naturally.
 
-## How to MISS2
+=== How to MISS2
 
 The leaked script compiler is full of bugs. It was written for in-house use, so it's meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn't. For the conservative, the following is a list of known things miss2 accepts that this specification does not.
 
 Do note a regular lexical grammar (like above) cannot be built for the language recognized by miss2.
 
-**Unrestricted character set**
+*Unrestricted character set*
 
-More control codes than the specified are *accepted* by miss2 (such as `\r` anywhere or `\v`). The compiler behaves in weird ways when those are used.
+More control codes than the specified are _accepted_ by miss2 (such as `\r` anywhere or `\v`). The compiler behaves in weird ways when those are used.
 
 You may use custom characters (c > 127), but you may clash with the characters DMA used to tokenize string literals.
 
-**A string literal is the same as four tokens**
+*A string literal is the same as four tokens*
 
-```
+----
 SAVE_STRING_TO_DEBUG_FILE "OO AR AZ WERTY"
 SAVE_STRING_TO_DEBUG_FILE FOO BAR BAZ QWERTY
 // both are recognized by miss2 and produce the same bytecode
 // this specification only accepts the string literal one
-``` 
+----
 
-**A string literal ends a line**
+*A string literal ends a line*
 
 As part of transforming a string literal into tokens, miss2 puts a null terminator in the line. Thus, any argument following it is kinda of ignored.
 
-```
+----
 SAVE_STRING_TO_DEBUG_FILE "this is a string" and this is ignored
 // this specification does not accept this
-```
+----
 
-**Accepts internal compiler commands**
+*Accepts internal compiler commands*
 
 Remove the constraint that commands that conflict with grammar definitions cannot be used in a `command_statement` and you get atrocities like:
 
-```
+----
 IF { // does not begin a lexical scope
 ENDIF
 
@@ -155,13 +154,13 @@ IF WHILE 0 // it's like an ANDOR within an ANDOR
 ENDIF
 
 // there is probably a lot more of these
-```
+----
 
-**WHILENOT is incomplete**
+*WHILENOT is incomplete*
 
 WHILENOT only accepts equality comparison
 
-```
+----
 WHILENOT x = 1
 ENDWHILE
 
@@ -171,11 +170,11 @@ ENDWHILE
 // since we accept the above, we are not a subset anymore.
 // to fix this (and become a subset again) only allow equality
 // on WHILENOT.
-```
+----
 
-**AND/OR behaves differently than IF/WHILE/expressions**
+*AND/OR behaves differently than IF/WHILE/expressions*
 
-```
+----
 WHILENOT x < 1 // not recognized
 AND x < 1      // recognized
 ENDWHILE
@@ -188,59 +187,59 @@ AND WAIT 1-1   // recognized
 WHILE WAIT-1   // the command WAIT with a -1 argument
 AND WAIT-1     // a command named WAIT-1
 // this specification accepts neither
-```
+----
 
-**INT tokens allow minus in the middle**
+*INT tokens allow minus in the middle*
 
-```
+----
 WAIT 1-1
 WAIT 1-
 // this specification does not accept this
-```
+----
 
-**Commands may have operator characters**
+*Commands may have operator characters*
 
-```
+----
 --b   // recognized as '--' identifier(b)
 --b b // recognized as command(--b) identifier(b)
 // this makes the lexer context sensitive
 // but this spec disallow the later form based
 // on the belief the IF/WHILE/expressions parser
 // is the correct one (details above).
-```
+----
 
-**anything may follow MISSION_START**
+*anything may follow MISSION_START*
 
-```
+----
 MISSION_START anythin"may follow" this thing
 MISSION_END the same "happens"with mission_end
 // this specification does not accept this
-```
+----
 
-**labels may contain any printable character (except quotation marks)**
+*labels may contain any printable character (except quotation marks)*
 
-```
+----
 e-=1:                  // recognized (we don't accept this)
 GOTO e-=1              // not recognized
 LAUNCH_MISSION e/=.sc  // recognized (we don't accept this)
-```
+----
 
-**label may be empty or not match identifier**
+*label may be empty or not match identifier*
 
 The name of a label may be empty. The name of a label may contain characters that do not match the `identifier` production.
 
-```
+----
 :     // recognized
 ::::  // recognized
 @abc: // recognized
 // this specification does not accept this
-```
+----
 
-**non-identifiers on the lhs of assignment expressions**
+*non-identifiers on the lhs of assignment expressions*
 
 Some expressions implement this correctly in miss2, some don't.
 
-```
+----
 1 = ABS 2 // recognized
 --1       // recognized for every unary expression
 1 = 2 * 3 // recognized for every ternary expression
@@ -248,13 +247,13 @@ Some expressions implement this correctly in miss2, some don't.
 1 =# 2    // recognized
 1 *= 2    // not recognized for every other binary expression
 // this specification does not accept any of this
-```
+----
 
-**labels in AND/OR**
+*labels in AND/OR*
 
 miss2 allows labels to prefix AND/OR conditions. However, it produces weird code. As such, this specification does not accept it.
 
-```
+----
 IF x = 0
 lab_or: OR x = 1 // goes to the WAIT 0 after the last condition
 OR x = 2         // this specification does not accept this
@@ -262,51 +261,49 @@ OR x = 2         // this specification does not accept this
 ELSE
     WAIT 2
 ENDIF
-```
+----
 
-**weird closing blocks**
+*weird closing blocks*
 
 stuff like the following is recognized by miss2
 
-```
+----
 WHILE x = 0
     IF y = 1
         WAIT 0
 ENDWHILE
     ENDIF
 // this specification does not accept this (nor variations of this)
-```
+----
 
 this happens with scopes, IFs, REPEATs, WHILEs, `MISSION_END`, and what not.
 
 it is very interesting actually, but clearly a language bug (would not say a implementation bug though).
 
-**exclusive scripts**
+*exclusive scripts*
 
 we don't really what are these, so we won't specify them.
 
-**entities**
+*entities*
 
-```
+----
 VAR_INT vcar
 COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar
 // this spec gives an error, miss2 recognizes (does not look like intended behaviour?)
 // [...] we are not a subset anymore because of this.
-```
+----
 
-**arrays**
+*arrays*
 
-```
+----
 WAIT arr[0]anything // recognized
 // this specification does not accept this
-```
-
-
+----
 
 TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
 TODO list of special command names (user cannot write these, include AND/OR/NOT)
 TODO label semantics of start new script (GTA3 allows label: {})
-TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES 
+TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES
 TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
 TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb)
 TODO interesting NOP is not compiled
@@ -315,13 +312,13 @@ TODO translation limits
 LIMITS
 TODO gxtsema gxt key length <8
 TODO gxtsema filename (excluding extension must be) <16
-TODO label name <=38
+TODO label name \<=38
 TODO varname <40
-TODO scriptname <=7
-TODO scriptnames <= 300
-TODO <=9216 gvar storage words
-TODO <=16 lvars storage words
-TODO <=255 array size
-TODO <=35000 label refs
-TODO <=255 line
-TODO <=127 string
+TODO scriptname \<=7
+TODO scriptnames \<= 300
+TODO \<=9216 gvar storage words
+TODO \<=16 lvars storage words
+TODO \<=255 array size
+TODO \<=35000 label refs
+TODO \<=255 line
+TODO \<=127 string
