@@ -1,9 +1,11 @@
+[[alternator-def]]
 == Supporting Command Selectors
 
 To further enchance the set of minimal commands for useful computation, the following command selectors and its supportive alternatives are defined.
 
 An implementation is required to support these selectors, but it may not support all of its alternatives.
 
+[[alternator-def-set]]
 === SET
 
 *Alternatives*
@@ -35,6 +37,7 @@ The translation environment must enforce the following constraints.
 
 A variable cannot be assigned to another variable of different entity type. If the right variable has no entity type but the left one does, the program is ill-formed. If the left variable has no entity type, the entity type of the right variable is assigned to it.
 
+[[alternator-def-cset]]
 === CSET
 
 *Alternatives*
@@ -52,6 +55,7 @@ A variable cannot be assigned to another variable of different entity type. If t
 
 Sets the variable on the left to the value of the variable on the right converted to the left type.
 
+[[alternator-def-add-thing-to-thing]]
 === ADD_THING_TO_THING
 
 *Alternatives*
@@ -73,6 +77,7 @@ Sets the variable on the left to the value of the variable on the right converte
 
 Adds the value on the right to the variable on the left.
 
+[[alternator-def-sub-thing-from-thing]]
 === SUB_THING_FROM_THING
 
 *Alternatives*
@@ -94,6 +99,7 @@ Adds the value on the right to the variable on the left.
 
 Substracts the value on the right from the variable on the left.
 
+[[alternator-def-mult-thing-by-thing]]
 === MULT_THING_BY_THING
 
 *Alternatives*
@@ -115,6 +121,7 @@ Substracts the value on the right from the variable on the left.
 
 Multiplites the variable on the left by the value on the right.
 
+[[alternator-def-div-thing-by-thing]]
 === DIV_THING_BY_THING
 
 *Alternatives*
@@ -136,6 +143,7 @@ Multiplites the variable on the left by the value on the right.
 
 Divides the variable on the left by the value on the right.
 
+[[alternator-def-abs]]
 === ABS
 
 *Alternatives*
@@ -149,6 +157,7 @@ Divides the variable on the left by the value on the right.
 
 Computes the absolute value of a variable's value and store the result in the same variable.
 
+[[alternator-def-add-thing-to-thing-timed]]
 === ADD_THING_TO_THING_TIMED
 
 *Alternatives*
@@ -164,6 +173,7 @@ Computes the absolute value of a variable's value and store the result in the sa
 
 Adds the value on the right multipled by the frame delta time to the variable on the left.
 
+[[alternator-def-sub-thing-from-thing-timed]]
 === SUB_THING_FROM_THING_TIMED
 
 *Alternatives*
@@ -179,6 +189,7 @@ Adds the value on the right multipled by the frame delta time to the variable on
 
 Substracts the value on the right multipled by the frame delta time from the variable on the left.
 
+[[alternator-def-is-thing-equal-to-thing]]
 === IS_THING_EQUAL_TO_THING
 
 *Alternatives*
@@ -204,6 +215,7 @@ Substracts the value on the right multipled by the frame delta time from the var
 
 Returns whether the value on the left is equal the value on the right.
 
+[[alternator-def-is-thing-greater-than-thing]]
 === IS_THING_GREATER_THAN_THING
 
 *Alternatives*
@@ -233,6 +245,7 @@ Returns whether the value on the left is equal the value on the right.
 
 Returns whether the value on the left is greater than the value on the right.
 
+[[alternator-def-is-thing-greater-or-equal-to-thing]]
 === IS_THING_GREATER_OR_EQUAL_TO_THING
 
 *Alternatives*

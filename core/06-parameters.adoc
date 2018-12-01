@@ -1,3 +1,4 @@
+[[parameters]]
 == Parameters
 
 A command receives several arguments. Every argument must obey the rules of its corresponding _parameter definition_.
@@ -8,6 +9,7 @@ A command must have the same amount of arguments as its amount of parameter defi
 
 If a variable is used in the same command both as an input and as an output, the input shall be evaluated before any output is assigned to the variable.
 
+[[string-constants]]
 === String Constants
 
 A _string constant_ is a name associated with an integer value. Such association is known in the translation environment.
@@ -20,6 +22,7 @@ There is an special enumeration called the _global string constants enumeration_
 
 If a parameter definition specifies an enumeration, the global string constants enumeration cannot be matched in the said parameter.
 
+[[entities]]
 === Entities
 
 An _entity_ is an object of the execution environment. Each entity has an _entity type_, which defines its purposes.
@@ -32,82 +35,99 @@ If an entity type is associated with an parameter and a variable is used as argu
 
 Further semantics for entities are defined along this document.
 
+[[parameter-types]]
 === Parameter Types
 
+[[parameter-type-int]]
 ==== INT
 
 An _INT parameter_ accepts an argument only if it is an integer literal or an identifier matching a global string constant.
 
+[[parameter-type-float]]
 ==== FLOAT
 
 A _FLOAT parameter_ accepts an argument only if it is a floating-point literal.
 
+[[parameter-type-var-int]]
 ==== VAR_INT
 
 A _VAR_INT parameter_ accepts an argument only if it is an identifier referencing a global variable of integer type.
 
+[[parameter-type-var-float]]
 ==== VAR_FLOAT
 
 A _VAR_FLOAT parameter_ accepts an argument only if it is an identifier referencing a global variable of floating-point type.
 
+[[parameter-type-lvar-int]]
 ==== LVAR_INT
 
 A _LVAR_INT parameter_ accepts an argument only if it is an identifier referencing a local variable of integer type.
 
+[[parameter-type-lvar-float]]
 ==== LVAR_FLOAT
 
 A _LVAR_FLOAT parameter_ accepts an argument only if it is an identifier referencing a local variable of floating-point type.
 
+[[parameter-type-input-int]]
 ==== INPUT_INT
 
 An _INPUT_INT parameter_ accepts an argument only if it is an integer literal or an identifier either matching a string constant, global string constant or referencing a variable of integer type (in this order).
 
+[[parameter-type-input-float]]
 ==== INPUT_FLOAT
 
 An _INPUT_FLOAT parameter_ accepts an argument only if it is a floating-point literal or an identifier referencing a variable of floating-point type.
 
+[[parameter-type-output-int]]
 ==== OUTPUT_INT
 
 An _OUTPUT_INT parameter_ accepts an argument only if it is an identifier referencing a variable of integer type.
 
 If an entity type is associated with the parameter, the variable must have the same entity type as the parameter, unless there is no entity type associated with the variable. In the latter case, the parameter's entity type is assigned to the variable.
 
+[[parameter-type-output-float]]
 ==== OUTPUT_FLOAT
 
 An _OUTPUT_FLOAT parameter_ accepts an argument only if it is a identifier referencing a variable of floating-point type.
 
+[[parameter-type-label]]
 ==== LABEL
 
 A _LABEL parameter_ accepts an argument only if it is an identifier whose name is a label in the multi-file.
 
+[[parameter-type-text-label]]
 ==== TEXT_LABEL
 
 A _TEXT_LABEL parameter_ accepts an argument only if it is an identifier. If the identifier begins with a dollar character (`$`), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.
 
+[[parameter-type-var-text-label]]
 ==== VAR_TEXT_LABEL
 
 A _VAR_TEXT_LABEL parameter_ accepts an argument only if it is an identifier referencing a global variable of text label type.
 
+[[parameter-type-lvar-text-label]]
 ==== LVAR_TEXT_LABEL
 
 A _LVAR_TEXT_LABEL parameter_ accepts an argument only if it is an identifier referencing a local variable of text label type.
 
+[[parameter-type-string]]
 ==== STRING
 
 A _STRING parameter_ accepts an argument only if it is a string literal.
 
+[[parameter-type-optional]]
 ==== Optional Parameters
 
 Additionally, the following parameters are defined as behaving equivalently to their correspondent parameters above, except that in case an argument is absent, parameter checking stops as if there are no more parameters to be checked.
 
-* _VAR_INT_OPT_
-* _VAR_FLOAT_OPT_
-* _LVAR_INT_OPT_
-* _LVAR_FLOAT_OPT_
-* _VAR_TEXT_LABEL_OPT_
-* _LVAR_TEXT_LABEL_OPT_
-* _INPUT_OPT_
+* [[parameter-type-var-int-opt]] _VAR_INT_OPT_
+* [[parameter-type-var-float-opt]] _VAR_FLOAT_OPT_
+* [[parameter-type-lvar-int-opt]] _LVAR_INT_OPT_
+* [[parameter-type-lvar-float-opt]] _LVAR_FLOAT_OPT_
+* [[parameter-type-var-text-label-opt]] _VAR_TEXT_LABEL_OPT_
+* [[parameter-type-lvar-text-label-opt]] LVAR_TEXT_LABEL_OPT_
+*  _INPUT_OPT_
 
 Such parameters are always trailing parameters.
 
-The _INPUT_OPT parameter_ accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer, floating-point or text label type.
+[[parameter-type-input-opt]] The _INPUT_OPT parameter_ accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer, floating-point or text label type.

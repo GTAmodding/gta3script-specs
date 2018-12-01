@@ -1,3 +1,4 @@
+[[scope]]
 == Scope
 
 This document is targeted at implementation writers and perhaps curious community members.

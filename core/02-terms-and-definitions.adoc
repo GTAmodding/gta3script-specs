@@ -1,4 +1,9 @@
+[[terms-and-definitions]]
 == Terms and Definitions
+
+For the purposes of this document, the terms and definitions given in <<itvocabulary>> and the following apply.
+
+Terms that are used only in a small portion of this document are defined where they are used and italicized where they are defined.
 
 *behaviour*
 
@@ -14,7 +19,7 @@ behavior which is not guaranteed to produce any specific result.
 
 *behaviour, unspecified*
 
-behavior for which this specification provides no requirements.
+behavior for which this specification provides two or more possibilities and imposes no further requirements on which is chosen in any instance.
 
 *constraint*
 
@@ -54,7 +59,7 @@ particular set of software, running in a particular translation environment unde
 
 *ill-formed program*
 
-program that is not well-formed. translators should produce diagnostic messages for such programs.
+program that is not well-formed.
 
 *well-formed program*
 
@@ -71,3 +76,8 @@ a value passed to a command that is intended to map to a corresponding parameter
 *parameter*
 
 the value to be received in a specific argument position of a command.
+
+*in-house compiler*
+
+the translation environment used by DMA Design. this document refers more specifically to <<references,Official GTA3 Script Compiler V413>>.
+

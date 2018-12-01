@@ -1,3 +1,4 @@
+[[statements]]
 == Statements
 
 A statement specifies an action to be executed.
@@ -7,6 +8,7 @@ statement := labeled_statement
            | embedded_statement ;
 ----
 
+[[statement-labeled]]
 === Labeled Statements
 
 Statements can be prefixed with a label.
@@ -29,6 +31,7 @@ This declares a label named after the given identifier.
 
 The label can be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
 
+[[statement-empty]]
 === Empty Statements
 
 ----
@@ -39,6 +42,7 @@ empty_statement := eol ;
 
 An empty statement does nothing.
 
+[[statement-embedded]]
 === Embedded Statements
 
 Embedded statements are statements not prefixed by a label.
@@ -59,6 +63,7 @@ embedded_statement := empty_statement
                      | require_statement ;
 ----
 
+[[statement-command]]
 === Command Statements
 
 ----
@@ -69,6 +74,7 @@ command_statement := command eol ;
 
 The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).
 
+[[statement-expression]]
 === Expression Statements
 
 ----
@@ -82,6 +88,7 @@ An expression statement executes the expression it embodies.
 
 The execution of the assignment expression `a = b` is favored over the execution of the conditional expression of the same form.
 
+[[statement-scope]]
 === Scope Statements
 
 ----
@@ -104,17 +111,18 @@ The transfer of control to any of the statements within the scope block activate
 
 The execution of a jump to outside the scope block leaves the lexical scope.
 
-Performing a subroutine call does not leave the active scope. The name of local variables become hidden if the subroutine is not within the scope block. The behaviour of the program is unspecified if such a subroutine activates another lexical scope.
+Performing a subroutine call does not leave the active scope. The name of local variables become hidden if the subroutine is not within the scope block. The behaviour of the program is undefined if such a subroutine activates another lexical scope.
 
 Leaving a lexical scope causes the storage for the declared local variables to be reclaimed.
 
+[[statement-variable-declaration]]
 === Variable Declaration Statements
 
 ----
 command_var_name := 'VAR_INT'
                     | 'LVAR_INT'
                     | 'VAR_FLOAT'
-                    | 'LVAR_FLOAT' ;
+                    | 'LVAR_FLOAT'
                     | 'VAR_TEXT_LABEL'
                     | 'LVAR_TEXT_LABEL' ;
 command_var_param := sep variable ;
@@ -150,6 +158,7 @@ Local variable names can be seen by their entire lexical scope.
 
 The initial value of variables is unspecified.
 
+[[statement-conditional]]
 === Conditional Statements
 
 Conditional statements produce changes in the script compare flag.
@@ -180,12 +189,14 @@ The compare flag is set to true if the compare flag of at least one conditional 
 
 A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.
 
-The behaviour is unspecified if the command used in a conditional element does not cause side-effects in the compare flag.
+The behaviour is undefined if the command used in a conditional element does not cause side-effects in the compare flag.
 
+[[statement-selection]]
 === Selection Statements
 
 Selection statements selects which statement to execute depending on certain conditions.
 
+[[statement-if]]
 ==== IF Statement
 
 ----
@@ -202,6 +213,7 @@ This statement executes a list of conditions, grabs its compare flag and chooses
 
 If the compare flag is true, control is transferred to the first set of statements. Otherwise, to the second set if an `ELSE` exists. Execution of the `ELSE` or the `ENDIF` command causes control to leave the IF block.
 
+[[statement-ifnot]]
 ==== IFNOT Statement
 
 ----
@@ -216,6 +228,7 @@ ifnot_statement := 'IFNOT' sep conditional_list
 
 The behaviour of this is the same as of the IF statement, except the complement of the compare flag is used to test which set of statements to execute.
 
+[[statement-if-goto]]
 ==== IF GOTO Statement
 
 ----
@@ -226,6 +239,7 @@ if_goto_statement := 'IF' sep conditional_element sep 'GOTO' sep identifier eol 
 
 This statement performs a jump to the label specified by identifier if the compare flag of the conditional element holds true. Otherwise, the flow of control is unchanged.
 
+[[statement-ifnot-goto]]
 ==== IFNOT GOTO Statement
 
 ----
@@ -236,8 +250,10 @@ ifnot_goto_statement := 'IFNOT' sep conditional_element sep 'GOTO' sep identifie
 
 The behaviour of this is the same as of the IF GOTO statement, except the complement of the compare flag is used to test whether to jump.
 
+[[statement-iteration]]
 === Iteration Statements
 
+[[statement-while]]
 ==== WHILE Statement
 
 ----
@@ -252,6 +268,7 @@ The WHILE statement executes a set of statements while the compare flag of the c
 
 The statement executes by grabbing the compare flag of the list of conditions and transferring control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the `ENDWHILE` command causes control to be transferred to beginning of the block, where the conditions are evaluated again.
 
+[[statement-whilenot]]
 ==== WHILENOT Statement
 
 ----
@@ -264,6 +281,7 @@ whilenot_statement := 'WHILENOT' sep conditional_list
 
 The behaviour of this is the same as of the WHILE statement, except the complement of the compare flag is used to test whether to continue executing the set of statements.
 
+[[statement-repeat]]
 ==== REPEAT Statement
 
 ----
@@ -286,6 +304,7 @@ The `REPEAT` command causes the variable to be set to zero. Execution of the `EN
 
 The statements are always executed at least once.
 
+[[statement-require]]
 === Require Statements
 
 ----
@@ -298,12 +317,13 @@ require_statement := command_gosub_file
 
 Require statements request script files to become part of the multi-file being translated.
 
-A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is unspecified.
+A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is undefined.
 
 *Constraints*
 
 Require statements shall only appear in the _main script file_ or _main extension files_.
 
+[[statement-gosub-file]]
 ==== GOSUB_FILE Statement
 
 ----
@@ -316,8 +336,9 @@ The `GOSUB_FILE` command requires a _main extension file_ to become part of the 
 
 It also calls the subroutine specified by label.
 
-The behaviour is unspecified if the label is not part of the required file.
+The behaviour is undefined if the label is not part of the required file.
 
+[[statement-launch-mission]]
 ==== LAUNCH_MISSION Statement
 
 ----
@@ -330,6 +351,7 @@ The `LAUNCH_MISSION` command requires a _subscript file_ to become part of the m
 
 It also starts a new subscript with the program counter at the `MISSION_START` directive of the specified script file.
 
+[[statement-load-and-launch-mission]]
 ==== LOAD_AND_LAUNCH_MISSION Statement
 
 ----

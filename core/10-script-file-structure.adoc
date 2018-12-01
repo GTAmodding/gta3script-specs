@@ -1,5 +1,7 @@
+[[script-file-structure]]
 == Script File Structure
 
+[[script-file-structure-main]]
 === Main Script Files
 
 ----
@@ -10,12 +12,13 @@ A main script file is a sequence of zero or more statements.
 
 *Semantics*
 
-The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is unspecified.
+The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is undefined.
 
 *Constraints*
 
 Commands in the main script file shall not refer to labels in mission script files.
 
+[[script-file-structure-main-extension]]
 === Main Extension Files
 
 ----
@@ -28,6 +31,7 @@ A main extension file is a sequence of zero or more statements.
 
 Commands in main extension files shall not refer to labels in mission script files.
 
+[[script-file-structure-subscript]]
 === Subscript Files
 
 ----
@@ -49,6 +53,7 @@ Commands in subscript files shall not refer to labels in mission script files.
 
 The `MISSION_END` command behaves as if by executing the `TERMINATE_THIS_SCRIPT` command.
 
+[[script-file-structure-mission]]
 === Mission Script Files
 
 ----

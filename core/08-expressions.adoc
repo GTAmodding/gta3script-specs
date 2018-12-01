@@ -1,3 +1,4 @@
+[[expressions]]
 == Expressions
 
 *Constraints*
@@ -6,6 +7,7 @@ An argument in an expression cannot be a string literal.
 
 The name of commands used to require script files (e.g. `GOSUB_FILE`) and its directive commands (i.e. `MISSION_START` and `MISSION_END`) cannot be on the left hand side of a expression.
 
+[[assignment-expressions]]
 === Assignment Expressions
 
 ----
@@ -82,6 +84,7 @@ The ternary assignment `a = b / c` behaves as if `a = b - c`, except by using `D
 
 The ternary assignments `a = b +@ c` and `a = b -@ c` behaves as if `a = b - c`, except by using `ADD_THING_TO_THING_TIMED` and `SUB_THING_FROM_THING_TIMED`, respectively, instead of `SUB_THING_FROM_THING`.
 
+[[conditional-expressions]]
 === Conditional Expressions
 
 ----

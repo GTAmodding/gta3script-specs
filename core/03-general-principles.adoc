@@ -1,0 +1,63 @@
+[[general-principles]]
+== General Principles
+
+[[implementation-conformance]]
+=== Implementation Conformance
+
+A conforming implementation must be able to translate and correctly execute, within its resource limits, any program which does not violate the rules in this document.
+
+A conforming implementation must produce diagnostics for violations of the syntactic and semantic rules of this document except for those resulting in undefined behaviour.
+
+A conforming implementation must document the choices made to implementation-defined portions of this specification as well as to unsupported optional features.
+
+A conforming implementation may have extensions, provided they do not alter the behaviour of any well-formed program.
+
+This specification does not impose any lower or upper bound restrictions on the resource limits of an implementation. An implementation should have reasonable limits given its problem domain, and should document them where known.
+
+[[structure-of-this-document]]
+=== Structure of this Document
+
+Section <<concepts>> through <<script-file-structure>> describes the GTA3script programming language. That description includes detailed syntactic specifications in a form detailed in <<syntax-notation>>. For convenience, <<grammar>> repeats all such syntactic specifications.
+
+Sections <<command-def>> and <<alternator-def>> describes a minimal set of commands to perform computations using the language.
+
+<<regular-lexical-grammar>> describes a regular grammar suitable for scanning the language.
+
+<<ambiguity>> describes ambiguities present in the language grammar and resolutions for them.
+
+<<how-to-miss2>> describes problematic elements in the in-house compiler that this specification choose not to follow.
+
+Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.
+
+Some changes demand more details than a footnote permits. These are marked with the footnote footnoteref:[howtomiss2,For consistency we have simplified this feature. Please refer to <<how-to-miss2>> for details on how the in-house compiler behaves.] and further details are presented in <<how-to-miss2>>.
+
+[[syntax-notation]]
+=== Syntax Notation
+
+The syntax in this document is specified using a variation of <<ebnf>> (also known as _EBNF_). This variant can be self-described as follow:
+
+----
+# EBNF Grammar Used In This Specification (informative)
+
+letter      := 'A'..'Z' | 'a'..'z' ;
+digit       := '0'..'9' ;
+character   := /* printable ASCII characters */ ;
+identifier  := letter { letter | digit | '_' } ;
+terminal    := "'" character { character } "'" 
+             | '"' character { character } '"' ;
+
+syntax      := { production } ;
+production  := identifier ':=' [ expression ] ';' ;
+expression  := alternative { '|' alternative } ;
+alternative := term { term } ;
+term        := factor { '-' factor } ;
+factor      := identifier | terminal [ '..' terminal ] | group | option | repetition ;
+group       := '(' expression ')' ;
+option      := '[' expression ']' ;
+repetition  := '{' expression '}' ;
+----
+
+The double-dot operator is an extension to EBNF. It represents the set of characters from the left to the right inclusive as alternatives.
+
+A syntax specification might refer to symbols in <<ascii>> (also known as _ASCII_) through comments, avoiding the alternation of a set of well known characters.
+

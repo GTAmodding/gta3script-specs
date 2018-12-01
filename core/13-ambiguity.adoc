@@ -36,5 +36,5 @@ The fourth line is ambiguous. Its actual meaning is `1` followed by the unary op
 
 The fifth line is not ambiguous.
 
-The token stream produced by the regular lexical grammar in the appendix should solve this issue naturally.
+The token stream produced by the regular lexical grammar in <<regular-lexical-grammar>> should solve this issue naturally.
 

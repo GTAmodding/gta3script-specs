@@ -6,20 +6,28 @@
 //:revnumber: {release-version}
 :revdate: {localdate}
 :nofooter:
+:sectanchors:
 :idprefix:
 :idseparator: -
+:xrefstyle: short
+:!section-refsig:
+
 
 NOTE: This is a draft. It may be wrong, incomplete and subject to change.
 
 toc::[]
 
+:!sectnums:
+
 include::00-introduction.adoc[]
+
+:sectnums:
 
 include::01-scope.adoc[]
 
 include::02-terms-and-definitions.adoc[]
 
-include::03-notation.adoc[]
+include::03-general-principles.adoc[]
 
 include::04-concepts.adoc[]
 
@@ -39,13 +47,15 @@ include::11-supporting-commands.adoc[]
 
 include::12-supporting-command-selectors.adoc[]
 
+include::13-grammar.adoc[]
+
 include::13-regular-lexical-grammar.adoc[]
 
 include::13-ambiguity.adoc[]
 
 include::13-how-to-miss2.adoc[]
 
-include::14-arachniography.adoc[]
+include::14-references.adoc[]
 
 TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
 TODO list of special command names (user cannot write these, include AND/OR/NOT)

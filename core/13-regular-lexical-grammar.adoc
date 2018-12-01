@@ -1,8 +1,9 @@
 [appendix]
+[[regular-lexical-grammar]]
 == Regular Lexical Grammar
 
 ----
-# A Regular Lexical Grammar for GTA3script
+# A Regular Lexical Grammar for GTA3script (informative)
 sep := sep ;
 eol := eol ;
 token := token_char {token_char}

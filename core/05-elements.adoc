@@ -1,7 +1,9 @@
+[[elements]]
 == Elements
 
 The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.
 
+[[element-source-code]]
 === Source Code
 
 _Source code_ is a stream of printable ASCII characters plus the control codes line feed (`\n`), horizontal tab (`\t`) and carriage return (`\r`).
@@ -44,6 +46,7 @@ sep := whitespace {whitespace} ;
 eol := newline | EOF ;
 ----
 
+[[element-comment]]
 === Comments
 
 _Comments_ serve as program documentation.
@@ -66,6 +69,7 @@ The contents of a comment shall be interpreted as if it is whitespaces in the so
 
 Comments cannot start inside string literals.
 
+[[element-command]]
 === Commands
 
 A command describes an operation for a script to perform.
@@ -84,6 +88,7 @@ argument := integer
           | string_literal ;
 ----
 
+[[element-integer-literal]]
 ==== Integer Literals
 
 ----
@@ -95,6 +100,7 @@ A _integer literal_ is a sequence of digits optionally preceded by a minus sign.
 
 If the literal begins with a minus, the number following it shall be negated.
 
+[[element-floating-point-literal]]
 ==== Floating-Point Literals
 
 ----
@@ -148,6 +154,7 @@ The following are examples of valid and invalid literals:
 | 1.0
 |===
 
+[[element-identifier]]
 ==== Identifiers
 
 ----
@@ -160,6 +167,7 @@ An _identifier_ is a sequence of token characters beggining with a dollar or alp
 
 An identifier shall not end with a `:` character.
 
+[[element-string-literal]]
 ==== String Literals
 
 A _string literal_ holds a string delimited by quotation marks.
@@ -168,6 +176,7 @@ A _string literal_ holds a string delimited by quotation marks.
 string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 ----
 
+[[element-variable-reference]]
 ==== Variable References
 
 A _variable name_ is a sequence of token characters, except the characters `[` and `]` cannot happen.

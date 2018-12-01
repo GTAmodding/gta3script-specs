@@ -1,7 +1,9 @@
+[[command-def]]
 == Supporting Commands
 
 In order to perform useful computation the following supporting commands may be available.
 
+[[command-def-wait]]
 === WAIT
 
 *Parameters*
@@ -16,6 +18,7 @@ Yields control to another script. The current script is not resumed for at least
 
 This command is useful due to the cooperative multitasking nature of the execution environment.
 
+[[command-def-goto]]
 === GOTO
 
 *Parameters*
@@ -28,6 +31,7 @@ GOTO LABEL
 
 Performs a jump to the specified location.
 
+[[command-def-gosub]]
 === GOSUB
 
 *Parameters*
@@ -40,6 +44,7 @@ GOSUB LABEL
 
 Calls the subroutine in the specified location.
 
+[[command-def-return]]
 === RETURN
 
 *Parameters*
@@ -54,6 +59,7 @@ Returns from the last called subroutine.
 
 The behaviour is undefined if there is no active subroutine.
 
+[[command-def-return-true]]
 === RETURN_TRUE
 
 *Parameters*
@@ -66,6 +72,7 @@ RETURN_TRUE
 
 Returns true (as in any command updating the compare flag to true).
 
+[[command-def-return-false]]
 === RETURN_FALSE
 
 *Parameters*
@@ -78,6 +85,7 @@ RETURN_FALSE
 
 Returns false (as in any command updating the compare flag to false).
 
+[[command-def-script-name]]
 === SCRIPT_NAME
 
 *Parameters*
@@ -96,8 +104,9 @@ The translation environment must enforce the following constraints.
 
 The name of a script must be unique across the multi-file.
 
-The behaviour of the translation is unspecified if the name is given by a text label variable.
+It is unspecified whether a name given by a text label variable is accepted.
 
+[[command-def-terminate-this-script]]
 === TERMINATE_THIS_SCRIPT
 
 *Parameters*
@@ -110,6 +119,7 @@ TERMINATE_THIS_SCRIPT
 
 Terminates the executing script.
 
+[[command-def-start-new-script]]
 === START_NEW_SCRIPT
 
 *Parameters*

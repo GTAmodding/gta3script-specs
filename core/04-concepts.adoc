@@ -1,5 +1,7 @@
+[[concepts]]
 == Concepts
 
+[[concept-scripts]]
 === Scripts
 
 A _script_ is a unit of execution which contains its own _program counter_, _local variables_ and _compare flag_.
@@ -24,6 +26,7 @@ A command is said to call a _subroutine_ if it changes the _flow of control_ but
 
 A command is said to _terminate_ a script if it halts and reclaims storage of such a script.
 
+[[concept-script-files]]
 === Script Files
 
 A _script file_ is a source file containing a sequence of commands.
@@ -44,7 +47,7 @@ A _mission script file_ is a script file required by the means of the _LOAD_AND_
 
 An implementation may contain special features regarding the way subscripts and mission scripts are executed.
 
-The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a `.sc` extension. If multiple script files with the same name are found, behaviour is unspecified.
+The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a `.sc` extension. If multiple script files with the same name are found, which script file is chosen is unspecified.
 
 A script type is said to come before another script type under the following total order:
 
@@ -61,6 +64,7 @@ A script file _A_ (first required from _X_) is said to come before a script file
 
 A line of code _A_ in a script file _X_ is said to come before a line _B_ in a script file _Y_ different from _X_ if and only if _X_ comes before _Y_.
 
+[[concept-types]]
 === Types
 
 An _integer_ is a binary signed two's-complement integral number. It represents 32 bits of data and the range of values _-2147483648_ through _2147483647_.

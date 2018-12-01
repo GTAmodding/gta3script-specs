@@ -1,3 +1,4 @@
+[[introduction]]
 == Introduction
 
 This is an attempt to produce a formal language specification for the GTA3script language.
@@ -6,4 +7,4 @@ GTA3script is an imperative, strong and statically typed scripting language buil
 
 The DMA Design compiler is very basic and contains a huge amount of bugs. These bugs introduce a lot of inconsistencies and quirks to the language. This document attempts to resolve these issues and set a coherent language.
 
-The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A non-exhaustive list of differences is presented on the appendix.
+The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A known list of differences is presented in <<how-to-miss2>>.

@@ -1,3 +1,4 @@
+[[alternators]]
 == Command Selectors
 
 A _command selector_ (or _alternator_) is a kind of command which gets rewritten by the translator to another command based on the supplied argument types.
