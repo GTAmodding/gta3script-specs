@@ -1,5 +1,5 @@
 [appendix]
-[[regular-lexical-grammar]]
+[[grammar-lex]]
 == Regular Lexical Grammar
 
 ----

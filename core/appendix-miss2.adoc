@@ -1,5 +1,5 @@
 [appendix]
-[[how-to-miss2]]
+[[miss2]]
 == How to MISS2
 The leaked script compiler is full of bugs. It was written for in-house use, so it's meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn't. For the conservative, the following is a list of known things miss2 accepts that this specification does not.
 

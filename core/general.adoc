@@ -1,7 +1,7 @@
-[[general-principles]]
+[[general]]
 == General Principles
 
-[[implementation-conformance]]
+[[conformance]]
 === Implementation Conformance
 
 A conforming implementation must be able to translate and correctly execute, within its resource limits, any program which does not violate the rules in this document.
@@ -14,22 +14,22 @@ A conforming implementation may have extensions, provided they do not alter the 
 
 This specification does not impose any lower or upper bound restrictions on the resource limits of an implementation. An implementation should have reasonable limits given its problem domain, and should document them where known.
 
-[[structure-of-this-document]]
+[[document-structure]]
 === Structure of this Document
 
-Section <<concepts>> through <<script-file-structure>> describes the GTA3script programming language. That description includes detailed syntactic specifications in a form detailed in <<syntax-notation>>. For convenience, <<grammar>> repeats all such syntactic specifications.
+Section <<concepts>> through <<structure>> describes the GTA3script programming language. That description includes detailed syntactic specifications in a form detailed in <<syntax-notation>>. For convenience, <<grammar>> repeats all such syntactic specifications.
 
 Sections <<command-def>> and <<alternator-def>> describes a minimal set of commands to perform computations using the language.
 
-<<regular-lexical-grammar>> describes a regular grammar suitable for scanning the language.
+<<grammar-lex>> describes a regular grammar suitable for scanning the language.
 
 <<ambiguity>> describes ambiguities present in the language grammar and resolutions for them.
 
-<<how-to-miss2>> describes problematic elements in the in-house compiler that this specification choose not to follow.
+<<miss2>> describes problematic elements in the in-house compiler that this specification choose not to follow.
 
 Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.
 
-Some changes demand more details than a footnote permits. These are marked with the footnote footnoteref:[howtomiss2,For consistency we have simplified this feature. Please refer to <<how-to-miss2>> for details on how the in-house compiler behaves.] and further details are presented in <<how-to-miss2>>.
+Some changes demand more details than a footnote permits. These are marked with the footnote footnoteref:[miss2,For consistency we have simplified this feature. Please refer to <<miss2>> for details on how the in-house compiler behaves.] and further details are presented in <<miss2>>.
 
 [[syntax-notation]]
 === Syntax Notation

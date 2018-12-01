@@ -17,47 +17,55 @@ NOTE: This is a draft. It may be wrong, incomplete and subject to change.
 
 toc::[]
 
+// Introduction
+
 :!sectnums:
 
-include::00-introduction.adoc[]
+include::introduction.adoc[]
 
 :sectnums:
 
-include::01-scope.adoc[]
+include::scope.adoc[]
 
-include::02-terms-and-definitions.adoc[]
+include::definitions.adoc[]
 
-include::03-general-principles.adoc[]
+include::general.adoc[]
 
-include::04-concepts.adoc[]
+// Language
 
-include::05-elements.adoc[]
+include::concepts.adoc[]
 
-include::06-parameters.adoc[]
+include::elements.adoc[]
 
-include::07-command-selectors.adoc[]
+include::parameters.adoc[]
 
-include::08-expressions.adoc[]
+include::alternators.adoc[]
 
-include::09-statements.adoc[]
+include::expressions.adoc[]
 
-include::10-script-file-structure.adoc[]
+include::statements.adoc[]
 
-include::11-supporting-commands.adoc[]
+include::structure.adoc[]
 
-include::12-supporting-command-selectors.adoc[]
+// Supporting Commands
 
-include::13-grammar.adoc[]
+include::command-def.adoc[]
 
-include::13-regular-lexical-grammar.adoc[]
+include::alternator-def.adoc[]
 
-include::13-ambiguity.adoc[]
+// Appendix
 
-include::13-how-to-miss2.adoc[]
+include::appendix-grammar.adoc[]
 
-include::14-references.adoc[]
+include::appendix-grammar-lex.adoc[]
 
-TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
+include::appendix-ambiguity.adoc[]
+
+include::appendix-miss2.adoc[]
+
+include::references.adoc[]
+
+
 TODO list of special command names (user cannot write these, include AND/OR/NOT)
 TODO label semantics of start new script (GTA3 allows label: {})
 TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES

@@ -1,8 +1,10 @@
 [appendix]
+[[ambiguity]]
 == Ambiguity
 
 Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.
 
+[[ambiguity-if-goto]]
 === IF GOTO
 
 ----
@@ -16,6 +18,7 @@ The second line is unambiguous due to context.
 
 We suggest an implementation to emit an warnings to declarations of names and the use of text labels equal to `goto`.
 
+[[ambiguity-minus-one]]
 === Ternary Minus One
 
 ----
@@ -36,5 +39,5 @@ The fourth line is ambiguous. Its actual meaning is `1` followed by the unary op
 
 The fifth line is not ambiguous.
 
-The token stream produced by the regular lexical grammar in <<regular-lexical-grammar>> should solve this issue naturally.
+The token stream produced by the regular lexical grammar in <<grammar-lex>> should solve this issue naturally.
 
