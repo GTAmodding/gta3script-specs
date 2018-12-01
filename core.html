@@ -52,7 +52,7 @@ ol>li p, ul>li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .ol
 <div id="header">
 <h1>GTA3script Specification</h1>
 <div class="details">
-<span id="revdate">2018-11-30</span>
+<span id="revdate">2018-12-01</span>
 </div>
 </div>
 <div id="content">
@@ -73,151 +73,158 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <div id="toc" class="toc">
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
-<li><a href="#introduction">1. Introduction</a></li>
-<li><a href="#scope">2. Scope</a></li>
-<li><a href="#terms-and-definitions">3. Terms and Definitions</a></li>
-<li><a href="#notation">4. Notation</a></li>
-<li><a href="#concepts">5. Concepts</a>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#scope">1. Scope</a></li>
+<li><a href="#terms-and-definitions">2. Terms and Definitions</a></li>
+<li><a href="#general-principles">3. General Principles</a>
 <ul class="sectlevel2">
-<li><a href="#scripts">5.1. Scripts</a></li>
-<li><a href="#script-files">5.2. Script Files</a></li>
-<li><a href="#types">5.3. Types</a></li>
+<li><a href="#implementation-conformance">3.1. Implementation Conformance</a></li>
+<li><a href="#structure-of-this-document">3.2. Structure of this Document</a></li>
+<li><a href="#syntax-notation">3.3. Syntax Notation</a></li>
 </ul>
 </li>
-<li><a href="#elements">6. Elements</a>
+<li><a href="#concepts">4. Concepts</a>
 <ul class="sectlevel2">
-<li><a href="#source-code">6.1. Source Code</a></li>
-<li><a href="#comments">6.2. Comments</a></li>
-<li><a href="#commands">6.3. Commands</a>
+<li><a href="#concept-scripts">4.1. Scripts</a></li>
+<li><a href="#concept-script-files">4.2. Script Files</a></li>
+<li><a href="#concept-types">4.3. Types</a></li>
+</ul>
+</li>
+<li><a href="#elements">5. Elements</a>
+<ul class="sectlevel2">
+<li><a href="#element-source-code">5.1. Source Code</a></li>
+<li><a href="#element-comment">5.2. Comments</a></li>
+<li><a href="#element-command">5.3. Commands</a>
 <ul class="sectlevel3">
-<li><a href="#integer-literals">6.3.1. Integer Literals</a></li>
-<li><a href="#floating-point-literals">6.3.2. Floating-Point Literals</a></li>
-<li><a href="#identifiers">6.3.3. Identifiers</a></li>
-<li><a href="#string-literals">6.3.4. String Literals</a></li>
-<li><a href="#variable-references">6.3.5. Variable References</a></li>
+<li><a href="#element-integer-literal">5.3.1. Integer Literals</a></li>
+<li><a href="#element-floating-point-literal">5.3.2. Floating-Point Literals</a></li>
+<li><a href="#element-identifier">5.3.3. Identifiers</a></li>
+<li><a href="#element-string-literal">5.3.4. String Literals</a></li>
+<li><a href="#element-variable-reference">5.3.5. Variable References</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#parameters">7. Parameters</a>
+<li><a href="#parameters">6. Parameters</a>
 <ul class="sectlevel2">
-<li><a href="#string-constants">7.1. String Constants</a></li>
-<li><a href="#entities">7.2. Entities</a></li>
-<li><a href="#parameter-types">7.3. Parameter Types</a>
+<li><a href="#string-constants">6.1. String Constants</a></li>
+<li><a href="#entities">6.2. Entities</a></li>
+<li><a href="#parameter-types">6.3. Parameter Types</a>
 <ul class="sectlevel3">
-<li><a href="#int">7.3.1. INT</a></li>
-<li><a href="#float">7.3.2. FLOAT</a></li>
-<li><a href="#var_int">7.3.3. VAR_INT</a></li>
-<li><a href="#var_float">7.3.4. VAR_FLOAT</a></li>
-<li><a href="#lvar_int">7.3.5. LVAR_INT</a></li>
-<li><a href="#lvar_float">7.3.6. LVAR_FLOAT</a></li>
-<li><a href="#input_int">7.3.7. INPUT_INT</a></li>
-<li><a href="#input_float">7.3.8. INPUT_FLOAT</a></li>
-<li><a href="#output_int">7.3.9. OUTPUT_INT</a></li>
-<li><a href="#output_float">7.3.10. OUTPUT_FLOAT</a></li>
-<li><a href="#label">7.3.11. LABEL</a></li>
-<li><a href="#text_label">7.3.12. TEXT_LABEL</a></li>
-<li><a href="#var_text_label">7.3.13. VAR_TEXT_LABEL</a></li>
-<li><a href="#lvar_text_label">7.3.14. LVAR_TEXT_LABEL</a></li>
-<li><a href="#string">7.3.15. STRING</a></li>
-<li><a href="#optional-parameters">7.3.16. Optional Parameters</a></li>
+<li><a href="#parameter-type-int">6.3.1. INT</a></li>
+<li><a href="#parameter-type-float">6.3.2. FLOAT</a></li>
+<li><a href="#parameter-type-var-int">6.3.3. VAR_INT</a></li>
+<li><a href="#parameter-type-var-float">6.3.4. VAR_FLOAT</a></li>
+<li><a href="#parameter-type-lvar-int">6.3.5. LVAR_INT</a></li>
+<li><a href="#parameter-type-lvar-float">6.3.6. LVAR_FLOAT</a></li>
+<li><a href="#parameter-type-input-int">6.3.7. INPUT_INT</a></li>
+<li><a href="#parameter-type-input-float">6.3.8. INPUT_FLOAT</a></li>
+<li><a href="#parameter-type-output-int">6.3.9. OUTPUT_INT</a></li>
+<li><a href="#parameter-type-output-float">6.3.10. OUTPUT_FLOAT</a></li>
+<li><a href="#parameter-type-label">6.3.11. LABEL</a></li>
+<li><a href="#parameter-type-text-label">6.3.12. TEXT_LABEL</a></li>
+<li><a href="#parameter-type-var-text-label">6.3.13. VAR_TEXT_LABEL</a></li>
+<li><a href="#parameter-type-lvar-text-label">6.3.14. LVAR_TEXT_LABEL</a></li>
+<li><a href="#parameter-type-string">6.3.15. STRING</a></li>
+<li><a href="#parameter-type-optional">6.3.16. Optional Parameters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#command-selectors">8. Command Selectors</a></li>
-<li><a href="#expressions">9. Expressions</a>
+<li><a href="#alternators">7. Command Selectors</a></li>
+<li><a href="#expressions">8. Expressions</a>
 <ul class="sectlevel2">
-<li><a href="#assignment-expressions">9.1. Assignment Expressions</a></li>
-<li><a href="#conditional-expressions">9.2. Conditional Expressions</a></li>
+<li><a href="#assignment-expressions">8.1. Assignment Expressions</a></li>
+<li><a href="#conditional-expressions">8.2. Conditional Expressions</a></li>
 </ul>
 </li>
-<li><a href="#statements">10. Statements</a>
+<li><a href="#statements">9. Statements</a>
 <ul class="sectlevel2">
-<li><a href="#labeled-statements">10.1. Labeled Statements</a></li>
-<li><a href="#empty-statements">10.2. Empty Statements</a></li>
-<li><a href="#embedded-statements">10.3. Embedded Statements</a></li>
-<li><a href="#command-statements">10.4. Command Statements</a></li>
-<li><a href="#expression-statements">10.5. Expression Statements</a></li>
-<li><a href="#scope-statements">10.6. Scope Statements</a></li>
-<li><a href="#variable-declaration-statements">10.7. Variable Declaration Statements</a></li>
-<li><a href="#conditional-statements">10.8. Conditional Statements</a></li>
-<li><a href="#selection-statements">10.9. Selection Statements</a>
+<li><a href="#statement-labeled">9.1. Labeled Statements</a></li>
+<li><a href="#statement-empty">9.2. Empty Statements</a></li>
+<li><a href="#statement-embedded">9.3. Embedded Statements</a></li>
+<li><a href="#statement-command">9.4. Command Statements</a></li>
+<li><a href="#statement-expression">9.5. Expression Statements</a></li>
+<li><a href="#statement-scope">9.6. Scope Statements</a></li>
+<li><a href="#statement-variable-declaration">9.7. Variable Declaration Statements</a></li>
+<li><a href="#statement-conditional">9.8. Conditional Statements</a></li>
+<li><a href="#statement-selection">9.9. Selection Statements</a>
 <ul class="sectlevel3">
-<li><a href="#if-statement">10.9.1. IF Statement</a></li>
-<li><a href="#ifnot-statement">10.9.2. IFNOT Statement</a></li>
-<li><a href="#if-goto-statement">10.9.3. IF GOTO Statement</a></li>
-<li><a href="#ifnot-goto-statement">10.9.4. IFNOT GOTO Statement</a></li>
+<li><a href="#statement-if">9.9.1. IF Statement</a></li>
+<li><a href="#statement-ifnot">9.9.2. IFNOT Statement</a></li>
+<li><a href="#statement-if-goto">9.9.3. IF GOTO Statement</a></li>
+<li><a href="#statement-ifnot-goto">9.9.4. IFNOT GOTO Statement</a></li>
 </ul>
 </li>
-<li><a href="#iteration-statements">10.10. Iteration Statements</a>
+<li><a href="#statement-iteration">9.10. Iteration Statements</a>
 <ul class="sectlevel3">
-<li><a href="#while-statement">10.10.1. WHILE Statement</a></li>
-<li><a href="#whilenot-statement">10.10.2. WHILENOT Statement</a></li>
-<li><a href="#repeat-statement">10.10.3. REPEAT Statement</a></li>
+<li><a href="#statement-while">9.10.1. WHILE Statement</a></li>
+<li><a href="#statement-whilenot">9.10.2. WHILENOT Statement</a></li>
+<li><a href="#statement-repeat">9.10.3. REPEAT Statement</a></li>
 </ul>
 </li>
-<li><a href="#require-statements">10.11. Require Statements</a>
+<li><a href="#statement-require">9.11. Require Statements</a>
 <ul class="sectlevel3">
-<li><a href="#gosub_file-statement">10.11.1. GOSUB_FILE Statement</a></li>
-<li><a href="#launch_mission-statement">10.11.2. LAUNCH_MISSION Statement</a></li>
-<li><a href="#load_and_launch_mission-statement">10.11.3. LOAD_AND_LAUNCH_MISSION Statement</a></li>
+<li><a href="#statement-gosub-file">9.11.1. GOSUB_FILE Statement</a></li>
+<li><a href="#statement-launch-mission">9.11.2. LAUNCH_MISSION Statement</a></li>
+<li><a href="#statement-load-and-launch-mission">9.11.3. LOAD_AND_LAUNCH_MISSION Statement</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#script-file-structure">11. Script File Structure</a>
+<li><a href="#script-file-structure">10. Script File Structure</a>
 <ul class="sectlevel2">
-<li><a href="#main-script-files">11.1. Main Script Files</a></li>
-<li><a href="#main-extension-files">11.2. Main Extension Files</a></li>
-<li><a href="#subscript-files">11.3. Subscript Files</a></li>
-<li><a href="#mission-script-files">11.4. Mission Script Files</a></li>
+<li><a href="#script-file-structure-main">10.1. Main Script Files</a></li>
+<li><a href="#script-file-structure-main-extension">10.2. Main Extension Files</a></li>
+<li><a href="#script-file-structure-subscript">10.3. Subscript Files</a></li>
+<li><a href="#script-file-structure-mission">10.4. Mission Script Files</a></li>
 </ul>
 </li>
-<li><a href="#supporting-commands">12. Supporting Commands</a>
+<li><a href="#command-def">11. Supporting Commands</a>
 <ul class="sectlevel2">
-<li><a href="#wait">12.1. WAIT</a></li>
-<li><a href="#goto">12.2. GOTO</a></li>
-<li><a href="#gosub">12.3. GOSUB</a></li>
-<li><a href="#return">12.4. RETURN</a></li>
-<li><a href="#return_true">12.5. RETURN_TRUE</a></li>
-<li><a href="#return_false">12.6. RETURN_FALSE</a></li>
-<li><a href="#script_name">12.7. SCRIPT_NAME</a></li>
-<li><a href="#terminate_this_script">12.8. TERMINATE_THIS_SCRIPT</a></li>
-<li><a href="#start_new_script">12.9. START_NEW_SCRIPT</a></li>
+<li><a href="#command-def-wait">11.1. WAIT</a></li>
+<li><a href="#command-def-goto">11.2. GOTO</a></li>
+<li><a href="#command-def-gosub">11.3. GOSUB</a></li>
+<li><a href="#command-def-return">11.4. RETURN</a></li>
+<li><a href="#command-def-return-true">11.5. RETURN_TRUE</a></li>
+<li><a href="#command-def-return-false">11.6. RETURN_FALSE</a></li>
+<li><a href="#command-def-script-name">11.7. SCRIPT_NAME</a></li>
+<li><a href="#command-def-terminate-this-script">11.8. TERMINATE_THIS_SCRIPT</a></li>
+<li><a href="#command-def-start-new-script">11.9. START_NEW_SCRIPT</a></li>
 </ul>
 </li>
-<li><a href="#supporting-command-selectors">13. Supporting Command Selectors</a>
+<li><a href="#alternator-def">12. Supporting Command Selectors</a>
 <ul class="sectlevel2">
-<li><a href="#set">13.1. SET</a></li>
-<li><a href="#cset">13.2. CSET</a></li>
-<li><a href="#add_thing_to_thing">13.3. ADD_THING_TO_THING</a></li>
-<li><a href="#sub_thing_from_thing">13.4. SUB_THING_FROM_THING</a></li>
-<li><a href="#mult_thing_by_thing">13.5. MULT_THING_BY_THING</a></li>
-<li><a href="#div_thing_by_thing">13.6. DIV_THING_BY_THING</a></li>
-<li><a href="#abs">13.7. ABS</a></li>
-<li><a href="#add_thing_to_thing_timed">13.8. ADD_THING_TO_THING_TIMED</a></li>
-<li><a href="#sub_thing_from_thing_timed">13.9. SUB_THING_FROM_THING_TIMED</a></li>
-<li><a href="#is_thing_equal_to_thing">13.10. IS_THING_EQUAL_TO_THING</a></li>
-<li><a href="#is_thing_greater_than_thing">13.11. IS_THING_GREATER_THAN_THING</a></li>
-<li><a href="#is_thing_greater_or_equal_to_thing">13.12. IS_THING_GREATER_OR_EQUAL_TO_THING</a></li>
+<li><a href="#alternator-def-set">12.1. SET</a></li>
+<li><a href="#alternator-def-cset">12.2. CSET</a></li>
+<li><a href="#alternator-def-add-thing-to-thing">12.3. ADD_THING_TO_THING</a></li>
+<li><a href="#alternator-def-sub-thing-from-thing">12.4. SUB_THING_FROM_THING</a></li>
+<li><a href="#alternator-def-mult-thing-by-thing">12.5. MULT_THING_BY_THING</a></li>
+<li><a href="#alternator-def-div-thing-by-thing">12.6. DIV_THING_BY_THING</a></li>
+<li><a href="#alternator-def-abs">12.7. ABS</a></li>
+<li><a href="#alternator-def-add-thing-to-thing-timed">12.8. ADD_THING_TO_THING_TIMED</a></li>
+<li><a href="#alternator-def-sub-thing-from-thing-timed">12.9. SUB_THING_FROM_THING_TIMED</a></li>
+<li><a href="#alternator-def-is-thing-equal-to-thing">12.10. IS_THING_EQUAL_TO_THING</a></li>
+<li><a href="#alternator-def-is-thing-greater-than-thing">12.11. IS_THING_GREATER_THAN_THING</a></li>
+<li><a href="#alternator-def-is-thing-greater-or-equal-to-thing">12.12. IS_THING_GREATER_OR_EQUAL_TO_THING</a></li>
 </ul>
 </li>
-<li><a href="#regular-lexical-grammar">Appendix A: Regular Lexical Grammar</a></li>
-<li><a href="#ambiguity">Appendix B: Ambiguity</a>
+<li><a href="#grammar">Appendix A: Grammar Summary</a></li>
+<li><a href="#regular-lexical-grammar">Appendix B: Regular Lexical Grammar</a></li>
+<li><a href="#ambiguity">Appendix C: Ambiguity</a>
 <ul class="sectlevel2">
-<li><a href="#if-goto">B.1. IF GOTO</a></li>
-<li><a href="#ternary-minus-one">B.2. Ternary Minus One</a></li>
+<li><a href="#if-goto">C.1. IF GOTO</a></li>
+<li><a href="#ternary-minus-one">C.2. Ternary Minus One</a></li>
 </ul>
 </li>
-<li><a href="#how-to-miss2">Appendix C: How to MISS2</a></li>
-<li><a href="#arachniography">Arachniography</a></li>
+<li><a href="#how-to-miss2">Appendix D: How to MISS2</a></li>
+<li><a href="#references">References</a></li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="introduction">1. Introduction</h2>
+<h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is an attempt to produce a formal language specification for the GTA3script language.</p>
@@ -229,12 +236,12 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p>The DMA Design compiler is very basic and contains a huge amount of bugs. These bugs introduce a lot of inconsistencies and quirks to the language. This document attempts to resolve these issues and set a coherent language.</p>
 </div>
 <div class="paragraph">
-<p>The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A non-exhaustive list of differences is presented on the appendix.</p>
+<p>The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A known list of differences is presented in <a href="#how-to-miss2">Appendix D</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="scope">2. Scope</h2>
+<h2 id="scope"><a class="anchor" href="#scope"></a>1. Scope</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This document is targeted at implementation writers and perhaps curious community members.</p>
@@ -248,8 +255,14 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </div>
 </div>
 <div class="sect1">
-<h2 id="terms-and-definitions">3. Terms and Definitions</h2>
+<h2 id="terms-and-definitions"><a class="anchor" href="#terms-and-definitions"></a>2. Terms and Definitions</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>For the purposes of this document, the terms and definitions given in <a href="#itvocabulary">[ISO/IEC 2382:2015]</a> and the following apply.</p>
+</div>
+<div class="paragraph">
+<p>Terms that are used only in a small portion of this document are defined where they are used and italicized where they are defined.</p>
+</div>
 <div class="paragraph">
 <p><strong>behaviour</strong></p>
 </div>
@@ -272,7 +285,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p><strong>behaviour, unspecified</strong></p>
 </div>
 <div class="paragraph">
-<p>behavior for which this specification provides no requirements.</p>
+<p>behavior for which this specification provides two or more possibilities and imposes no further requirements on which is chosen in any instance.</p>
 </div>
 <div class="paragraph">
 <p><strong>constraint</strong></p>
@@ -332,7 +345,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p><strong>ill-formed program</strong></p>
 </div>
 <div class="paragraph">
-<p>program that is not well-formed. translators should produce diagnostic messages for such programs.</p>
+<p>program that is not well-formed.</p>
 </div>
 <div class="paragraph">
 <p><strong>well-formed program</strong></p>
@@ -358,21 +371,100 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <div class="paragraph">
 <p>the value to be received in a specific argument position of a command.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="notation">4. Notation</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>TODO</p>
+<p><strong>in-house compiler</strong></p>
+</div>
+<div class="paragraph">
+<p>the translation environment used by DMA Design. this document refers more specifically to <a href="#references">Official GTA3 Script Compiler V413</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="concepts">5. Concepts</h2>
+<h2 id="general-principles"><a class="anchor" href="#general-principles"></a>3. General Principles</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="scripts">5.1. Scripts</h3>
+<h3 id="implementation-conformance"><a class="anchor" href="#implementation-conformance"></a>3.1. Implementation Conformance</h3>
+<div class="paragraph">
+<p>A conforming implementation must be able to translate and correctly execute, within its resource limits, any program which does not violate the rules in this document.</p>
+</div>
+<div class="paragraph">
+<p>A conforming implementation must produce diagnostics for violations of the syntactic and semantic rules of this document except for those resulting in undefined behaviour.</p>
+</div>
+<div class="paragraph">
+<p>A conforming implementation must document the choices made to implementation-defined portions of this specification as well as to unsupported optional features.</p>
+</div>
+<div class="paragraph">
+<p>A conforming implementation may have extensions, provided they do not alter the behaviour of any well-formed program.</p>
+</div>
+<div class="paragraph">
+<p>This specification does not impose any lower or upper bound restrictions on the resource limits of an implementation. An implementation should have reasonable limits given its problem domain, and should document them where known.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="structure-of-this-document"><a class="anchor" href="#structure-of-this-document"></a>3.2. Structure of this Document</h3>
+<div class="paragraph">
+<p>Section <a href="#concepts">4</a> through <a href="#script-file-structure">10</a> describes the GTA3script programming language. That description includes detailed syntactic specifications in a form detailed in <a href="#syntax-notation">3.3</a>. For convenience, <a href="#grammar">Appendix A</a> repeats all such syntactic specifications.</p>
+</div>
+<div class="paragraph">
+<p>Sections <a href="#command-def">11</a> and <a href="#alternator-def">12</a> describes a minimal set of commands to perform computations using the language.</p>
+</div>
+<div class="paragraph">
+<p><a href="#regular-lexical-grammar">Appendix B</a> describes a regular grammar suitable for scanning the language.</p>
+</div>
+<div class="paragraph">
+<p><a href="#ambiguity">Appendix C</a> describes ambiguities present in the language grammar and resolutions for them.</p>
+</div>
+<div class="paragraph">
+<p><a href="#how-to-miss2">Appendix D</a> describes problematic elements in the in-house compiler that this specification choose not to follow.</p>
+</div>
+<div class="paragraph">
+<p>Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.</p>
+</div>
+<div class="paragraph">
+<p>Some changes demand more details than a footnote permits. These are marked with the footnote <sup class="footnote" id="_footnote_howtomiss2">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and further details are presented in <a href="#how-to-miss2">Appendix D</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="syntax-notation"><a class="anchor" href="#syntax-notation"></a>3.3. Syntax Notation</h3>
+<div class="paragraph">
+<p>The syntax in this document is specified using a variation of <a href="#ebnf">[ISO/IEC 14977:1996]</a> (also known as <em>EBNF</em>). This variant can be self-described as follow:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># EBNF Grammar Used In This Specification (informative)
+
+letter      := 'A'..'Z' | 'a'..'z' ;
+digit       := '0'..'9' ;
+character   := /* printable ASCII characters */ ;
+identifier  := letter { letter | digit | '_' } ;
+terminal    := "'" character { character } "'"
+             | '"' character { character } '"' ;
+
+syntax      := { production } ;
+production  := identifier ':=' [ expression ] ';' ;
+expression  := alternative { '|' alternative } ;
+alternative := term { term } ;
+term        := factor { '-' factor } ;
+factor      := identifier | terminal [ '..' terminal ] | group | option | repetition ;
+group       := '(' expression ')' ;
+option      := '[' expression ']' ;
+repetition  := '{' expression '}' ;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The double-dot operator is an extension to EBNF. It represents the set of characters from the left to the right inclusive as alternatives.</p>
+</div>
+<div class="paragraph">
+<p>A syntax specification might refer to symbols in <a href="#ascii">[ISO 646:1991 IRV]</a> (also known as <em>ASCII</em>) through comments, avoiding the alternation of a set of well known characters.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="concepts"><a class="anchor" href="#concepts"></a>4. Concepts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="concept-scripts"><a class="anchor" href="#concept-scripts"></a>4.1. Scripts</h3>
 <div class="paragraph">
 <p>A <em>script</em> is a unit of execution which contains its own <em>program counter</em>, <em>local variables</em> and <em>compare flag</em>.</p>
 </div>
@@ -408,7 +500,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </div>
 </div>
 <div class="sect2">
-<h3 id="script-files">5.2. Script Files</h3>
+<h3 id="concept-script-files"><a class="anchor" href="#concept-script-files"></a>4.2. Script Files</h3>
 <div class="paragraph">
 <p>A <em>script file</em> is a source file containing a sequence of commands.</p>
 </div>
@@ -437,7 +529,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p>An implementation may contain special features regarding the way subscripts and mission scripts are executed.</p>
 </div>
 <div class="paragraph">
-<p>The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a <code>.sc</code> extension. If multiple script files with the same name are found, behaviour is unspecified.</p>
+<p>The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a <code>.sc</code> extension. If multiple script files with the same name are found, which script file is chosen is unspecified.</p>
 </div>
 <div class="paragraph">
 <p>A script type is said to come before another script type under the following total order:</p>
@@ -479,7 +571,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </div>
 </div>
 <div class="sect2">
-<h3 id="types">5.3. Types</h3>
+<h3 id="concept-types"><a class="anchor" href="#concept-types"></a>4.3. Types</h3>
 <div class="paragraph">
 <p>An <em>integer</em> is a binary signed two&#8217;s-complement integral number. It represents 32 bits of data and the range of values <em>-2147483648</em> through <em>2147483647</em>.</p>
 </div>
@@ -502,13 +594,13 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </div>
 </div>
 <div class="sect1">
-<h2 id="elements">6. Elements</h2>
+<h2 id="elements"><a class="anchor" href="#elements"></a>5. Elements</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.</p>
 </div>
 <div class="sect2">
-<h3 id="source-code">6.1. Source Code</h3>
+<h3 id="element-source-code"><a class="anchor" href="#element-source-code"></a>5.1. Source Code</h3>
 <div class="paragraph">
 <p><em>Source code</em> is a stream of printable ASCII characters plus the control codes line feed (<code>\n</code>), horizontal tab (<code>\t</code>) and carriage return (<code>\r</code>).</p>
 </div>
@@ -564,7 +656,7 @@ eol := newline | EOF ;</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="comments">6.2. Comments</h3>
+<h3 id="element-comment"><a class="anchor" href="#element-comment"></a>5.2. Comments</h3>
 <div class="paragraph">
 <p><em>Comments</em> serve as program documentation.</p>
 </div>
@@ -606,7 +698,7 @@ block_comment := '/*' {block_comment | ascii_char} '*/' ;</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="commands">6.3. Commands</h3>
+<h3 id="element-command"><a class="anchor" href="#element-command"></a>5.3. Commands</h3>
 <div class="paragraph">
 <p>A command describes an operation for a script to perform.</p>
 </div>
@@ -628,7 +720,7 @@ command := command_name { sep argument } ;</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="integer-literals">6.3.1. Integer Literals</h4>
+<h4 id="element-integer-literal"><a class="anchor" href="#element-integer-literal"></a>5.3.1. Integer Literals</h4>
 <div class="listingblock">
 <div class="content">
 <pre>digit := '0'..'9' ;
@@ -643,7 +735,7 @@ integer := ['-'] digit {digit} ;</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="floating-point-literals">6.3.2. Floating-Point Literals</h4>
+<h4 id="element-floating-point-literal"><a class="anchor" href="#element-floating-point-literal"></a>5.3.2. Floating-Point Literals</h4>
 <div class="listingblock">
 <div class="content">
 <pre>floating_form1 := '.' digit { digit | '.' | 'F' } ;
@@ -723,7 +815,7 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="identifiers">6.3.3. Identifiers</h4>
+<h4 id="element-identifier"><a class="anchor" href="#element-identifier"></a>5.3.3. Identifiers</h4>
 <div class="listingblock">
 <div class="content">
 <pre>identifier := ('$' | 'A'..'Z') {token_char} ;</pre>
@@ -740,7 +832,7 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="string-literals">6.3.4. String Literals</h4>
+<h4 id="element-string-literal"><a class="anchor" href="#element-string-literal"></a>5.3.4. String Literals</h4>
 <div class="paragraph">
 <p>A <em>string literal</em> holds a string delimited by quotation marks.</p>
 </div>
@@ -751,7 +843,7 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="variable-references">6.3.5. Variable References</h4>
+<h4 id="element-variable-reference"><a class="anchor" href="#element-variable-reference"></a>5.3.5. Variable References</h4>
 <div class="paragraph">
 <p>A <em>variable name</em> is a sequence of token characters, except the characters <code>[</code> and <code>]</code> cannot happen.</p>
 </div>
@@ -790,7 +882,7 @@ variable := variable_name [ subscript ] ;</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="parameters">7. Parameters</h2>
+<h2 id="parameters"><a class="anchor" href="#parameters"></a>6. Parameters</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A command receives several arguments. Every argument must obey the rules of its corresponding <em>parameter definition</em>.</p>
@@ -805,7 +897,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>If a variable is used in the same command both as an input and as an output, the input shall be evaluated before any output is assigned to the variable.</p>
 </div>
 <div class="sect2">
-<h3 id="string-constants">7.1. String Constants</h3>
+<h3 id="string-constants"><a class="anchor" href="#string-constants"></a>6.1. String Constants</h3>
 <div class="paragraph">
 <p>A <em>string constant</em> is a name associated with an integer value. Such association is known in the translation environment.</p>
 </div>
@@ -823,7 +915,7 @@ variable := variable_name [ subscript ] ;</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="entities">7.2. Entities</h3>
+<h3 id="entities"><a class="anchor" href="#entities"></a>6.2. Entities</h3>
 <div class="paragraph">
 <p>An <em>entity</em> is an object of the execution environment. Each entity has an <em>entity type</em>, which defines its purposes.</p>
 </div>
@@ -841,57 +933,57 @@ variable := variable_name [ subscript ] ;</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="parameter-types">7.3. Parameter Types</h3>
+<h3 id="parameter-types"><a class="anchor" href="#parameter-types"></a>6.3. Parameter Types</h3>
 <div class="sect3">
-<h4 id="int">7.3.1. INT</h4>
+<h4 id="parameter-type-int"><a class="anchor" href="#parameter-type-int"></a>6.3.1. INT</h4>
 <div class="paragraph">
 <p>An <em>INT parameter</em> accepts an argument only if it is an integer literal or an identifier matching a global string constant.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="float">7.3.2. FLOAT</h4>
+<h4 id="parameter-type-float"><a class="anchor" href="#parameter-type-float"></a>6.3.2. FLOAT</h4>
 <div class="paragraph">
 <p>A <em>FLOAT parameter</em> accepts an argument only if it is a floating-point literal.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="var_int">7.3.3. VAR_INT</h4>
+<h4 id="parameter-type-var-int"><a class="anchor" href="#parameter-type-var-int"></a>6.3.3. VAR_INT</h4>
 <div class="paragraph">
 <p>A <em>VAR_INT parameter</em> accepts an argument only if it is an identifier referencing a global variable of integer type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="var_float">7.3.4. VAR_FLOAT</h4>
+<h4 id="parameter-type-var-float"><a class="anchor" href="#parameter-type-var-float"></a>6.3.4. VAR_FLOAT</h4>
 <div class="paragraph">
 <p>A <em>VAR_FLOAT parameter</em> accepts an argument only if it is an identifier referencing a global variable of floating-point type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="lvar_int">7.3.5. LVAR_INT</h4>
+<h4 id="parameter-type-lvar-int"><a class="anchor" href="#parameter-type-lvar-int"></a>6.3.5. LVAR_INT</h4>
 <div class="paragraph">
 <p>A <em>LVAR_INT parameter</em> accepts an argument only if it is an identifier referencing a local variable of integer type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="lvar_float">7.3.6. LVAR_FLOAT</h4>
+<h4 id="parameter-type-lvar-float"><a class="anchor" href="#parameter-type-lvar-float"></a>6.3.6. LVAR_FLOAT</h4>
 <div class="paragraph">
 <p>A <em>LVAR_FLOAT parameter</em> accepts an argument only if it is an identifier referencing a local variable of floating-point type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="input_int">7.3.7. INPUT_INT</h4>
+<h4 id="parameter-type-input-int"><a class="anchor" href="#parameter-type-input-int"></a>6.3.7. INPUT_INT</h4>
 <div class="paragraph">
 <p>An <em>INPUT_INT parameter</em> accepts an argument only if it is an integer literal or an identifier either matching a string constant, global string constant or referencing a variable of integer type (in this order).</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="input_float">7.3.8. INPUT_FLOAT</h4>
+<h4 id="parameter-type-input-float"><a class="anchor" href="#parameter-type-input-float"></a>6.3.8. INPUT_FLOAT</h4>
 <div class="paragraph">
 <p>An <em>INPUT_FLOAT parameter</em> accepts an argument only if it is a floating-point literal or an identifier referencing a variable of floating-point type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="output_int">7.3.9. OUTPUT_INT</h4>
+<h4 id="parameter-type-output-int"><a class="anchor" href="#parameter-type-output-int"></a>6.3.9. OUTPUT_INT</h4>
 <div class="paragraph">
 <p>An <em>OUTPUT_INT parameter</em> accepts an argument only if it is an identifier referencing a variable of integer type.</p>
 </div>
@@ -900,65 +992,65 @@ variable := variable_name [ subscript ] ;</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="output_float">7.3.10. OUTPUT_FLOAT</h4>
+<h4 id="parameter-type-output-float"><a class="anchor" href="#parameter-type-output-float"></a>6.3.10. OUTPUT_FLOAT</h4>
 <div class="paragraph">
 <p>An <em>OUTPUT_FLOAT parameter</em> accepts an argument only if it is a identifier referencing a variable of floating-point type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="label">7.3.11. LABEL</h4>
+<h4 id="parameter-type-label"><a class="anchor" href="#parameter-type-label"></a>6.3.11. LABEL</h4>
 <div class="paragraph">
 <p>A <em>LABEL parameter</em> accepts an argument only if it is an identifier whose name is a label in the multi-file.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="text_label">7.3.12. TEXT_LABEL</h4>
+<h4 id="parameter-type-text-label"><a class="anchor" href="#parameter-type-text-label"></a>6.3.12. TEXT_LABEL</h4>
 <div class="paragraph">
 <p>A <em>TEXT_LABEL parameter</em> accepts an argument only if it is an identifier. If the identifier begins with a dollar character (<code>$</code>), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="var_text_label">7.3.13. VAR_TEXT_LABEL</h4>
+<h4 id="parameter-type-var-text-label"><a class="anchor" href="#parameter-type-var-text-label"></a>6.3.13. VAR_TEXT_LABEL</h4>
 <div class="paragraph">
 <p>A <em>VAR_TEXT_LABEL parameter</em> accepts an argument only if it is an identifier referencing a global variable of text label type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="lvar_text_label">7.3.14. LVAR_TEXT_LABEL</h4>
+<h4 id="parameter-type-lvar-text-label"><a class="anchor" href="#parameter-type-lvar-text-label"></a>6.3.14. LVAR_TEXT_LABEL</h4>
 <div class="paragraph">
 <p>A <em>LVAR_TEXT_LABEL parameter</em> accepts an argument only if it is an identifier referencing a local variable of text label type.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="string">7.3.15. STRING</h4>
+<h4 id="parameter-type-string"><a class="anchor" href="#parameter-type-string"></a>6.3.15. STRING</h4>
 <div class="paragraph">
 <p>A <em>STRING parameter</em> accepts an argument only if it is a string literal.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="optional-parameters">7.3.16. Optional Parameters</h4>
+<h4 id="parameter-type-optional"><a class="anchor" href="#parameter-type-optional"></a>6.3.16. Optional Parameters</h4>
 <div class="paragraph">
 <p>Additionally, the following parameters are defined as behaving equivalently to their correspondent parameters above, except that in case an argument is absent, parameter checking stops as if there are no more parameters to be checked.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><em>VAR_INT_OPT</em></p>
+<p><a id="parameter-type-var-int-opt"></a> <em>VAR_INT_OPT</em></p>
 </li>
 <li>
-<p><em>VAR_FLOAT_OPT</em></p>
+<p><a id="parameter-type-var-float-opt"></a> <em>VAR_FLOAT_OPT</em></p>
 </li>
 <li>
-<p><em>LVAR_INT_OPT</em></p>
+<p><a id="parameter-type-lvar-int-opt"></a> <em>LVAR_INT_OPT</em></p>
 </li>
 <li>
-<p><em>LVAR_FLOAT_OPT</em></p>
+<p><a id="parameter-type-lvar-float-opt"></a> <em>LVAR_FLOAT_OPT</em></p>
 </li>
 <li>
-<p><em>VAR_TEXT_LABEL_OPT</em></p>
+<p><a id="parameter-type-var-text-label-opt"></a> <em>VAR_TEXT_LABEL_OPT</em></p>
 </li>
 <li>
-<p><em>LVAR_TEXT_LABEL_OPT</em></p>
+<p><a id="parameter-type-lvar-text-label-opt"></a> LVAR_TEXT_LABEL_OPT_</p>
 </li>
 <li>
 <p><em>INPUT_OPT</em></p>
@@ -969,14 +1061,14 @@ variable := variable_name [ subscript ] ;</pre>
 <p>Such parameters are always trailing parameters.</p>
 </div>
 <div class="paragraph">
-<p>The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer, floating-point or text label type.</p>
+<p><a id="parameter-type-input-opt"></a> The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer, floating-point or text label type.</p>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="command-selectors">8. Command Selectors</h2>
+<h2 id="alternators"><a class="anchor" href="#alternators"></a>7. Command Selectors</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A <em>command selector</em> (or <em>alternator</em>) is a kind of command which gets rewritten by the translator to another command based on the supplied argument types.</p>
@@ -1028,7 +1120,7 @@ variable := variable_name [ subscript ] ;</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="expressions">9. Expressions</h2>
+<h2 id="expressions"><a class="anchor" href="#expressions"></a>8. Expressions</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Constraints</strong></p>
@@ -1040,7 +1132,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>The name of commands used to require script files (e.g. <code>GOSUB_FILE</code>) and its directive commands (i.e. <code>MISSION_START</code> and <code>MISSION_END</code>) cannot be on the left hand side of a expression.</p>
 </div>
 <div class="sect2">
-<h3 id="assignment-expressions">9.1. Assignment Expressions</h3>
+<h3 id="assignment-expressions"><a class="anchor" href="#assignment-expressions"></a>8.1. Assignment Expressions</h3>
 <div class="listingblock">
 <div class="content">
 <pre>binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
@@ -1170,7 +1262,7 @@ assignment_expression := expr_assign_unary
 </div>
 </div>
 <div class="sect2">
-<h3 id="conditional-expressions">9.2. Conditional Expressions</h3>
+<h3 id="conditional-expressions"><a class="anchor" href="#conditional-expressions"></a>8.2. Conditional Expressions</h3>
 <div class="listingblock">
 <div class="content">
 <pre>relop := '=' | '&lt;' | '&gt;' | '&gt;=' | '&lt;=' ;
@@ -1218,7 +1310,7 @@ conditional_expression := argument {whitespace} relop {whitespace} argument ;</p
 </div>
 </div>
 <div class="sect1">
-<h2 id="statements">10. Statements</h2>
+<h2 id="statements"><a class="anchor" href="#statements"></a>9. Statements</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A statement specifies an action to be executed.</p>
@@ -1230,7 +1322,7 @@ conditional_expression := argument {whitespace} relop {whitespace} argument ;</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="labeled-statements">10.1. Labeled Statements</h3>
+<h3 id="statement-labeled"><a class="anchor" href="#statement-labeled"></a>9.1. Labeled Statements</h3>
 <div class="paragraph">
 <p>Statements can be prefixed with a label.</p>
 </div>
@@ -1260,7 +1352,7 @@ labeled_statement := label_prefix embedded_statement
 </div>
 </div>
 <div class="sect2">
-<h3 id="empty-statements">10.2. Empty Statements</h3>
+<h3 id="statement-empty"><a class="anchor" href="#statement-empty"></a>9.2. Empty Statements</h3>
 <div class="listingblock">
 <div class="content">
 <pre>empty_statement := eol ;</pre>
@@ -1274,7 +1366,7 @@ labeled_statement := label_prefix embedded_statement
 </div>
 </div>
 <div class="sect2">
-<h3 id="embedded-statements">10.3. Embedded Statements</h3>
+<h3 id="statement-embedded"><a class="anchor" href="#statement-embedded"></a>9.3. Embedded Statements</h3>
 <div class="paragraph">
 <p>Embedded statements are statements not prefixed by a label.</p>
 </div>
@@ -1297,7 +1389,7 @@ labeled_statement := label_prefix embedded_statement
 </div>
 </div>
 <div class="sect2">
-<h3 id="command-statements">10.4. Command Statements</h3>
+<h3 id="statement-command"><a class="anchor" href="#statement-command"></a>9.4. Command Statements</h3>
 <div class="listingblock">
 <div class="content">
 <pre>command_statement := command eol ;</pre>
@@ -1311,7 +1403,7 @@ labeled_statement := label_prefix embedded_statement
 </div>
 </div>
 <div class="sect2">
-<h3 id="expression-statements">10.5. Expression Statements</h3>
+<h3 id="statement-expression"><a class="anchor" href="#statement-expression"></a>9.5. Expression Statements</h3>
 <div class="listingblock">
 <div class="content">
 <pre>expression_statement := assignment_expression eol
@@ -1329,7 +1421,7 @@ labeled_statement := label_prefix embedded_statement
 </div>
 </div>
 <div class="sect2">
-<h3 id="scope-statements">10.6. Scope Statements</h3>
+<h3 id="statement-scope"><a class="anchor" href="#statement-scope"></a>9.6. Scope Statements</h3>
 <div class="listingblock">
 <div class="content">
 <pre>scope_statement := '{' eol
@@ -1359,20 +1451,20 @@ labeled_statement := label_prefix embedded_statement
 <p>The execution of a jump to outside the scope block leaves the lexical scope.</p>
 </div>
 <div class="paragraph">
-<p>Performing a subroutine call does not leave the active scope. The name of local variables become hidden if the subroutine is not within the scope block. The behaviour of the program is unspecified if such a subroutine activates another lexical scope.</p>
+<p>Performing a subroutine call does not leave the active scope. The name of local variables become hidden if the subroutine is not within the scope block. The behaviour of the program is undefined if such a subroutine activates another lexical scope.</p>
 </div>
 <div class="paragraph">
 <p>Leaving a lexical scope causes the storage for the declared local variables to be reclaimed.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="variable-declaration-statements">10.7. Variable Declaration Statements</h3>
+<h3 id="statement-variable-declaration"><a class="anchor" href="#statement-variable-declaration"></a>9.7. Variable Declaration Statements</h3>
 <div class="listingblock">
 <div class="content">
 <pre>command_var_name := 'VAR_INT'
                     | 'LVAR_INT'
                     | 'VAR_FLOAT'
-                    | 'LVAR_FLOAT' ;
+                    | 'LVAR_FLOAT'
                     | 'VAR_TEXT_LABEL'
                     | 'LVAR_TEXT_LABEL' ;
 command_var_param := sep variable ;
@@ -1424,7 +1516,7 @@ var_statement := command_var_name command_var_param {command_var_param} eol ;</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="conditional-statements">10.8. Conditional Statements</h3>
+<h3 id="statement-conditional"><a class="anchor" href="#statement-conditional"></a>9.8. Conditional Statements</h3>
 <div class="paragraph">
 <p>Conditional statements produce changes in the script compare flag.</p>
 </div>
@@ -1464,16 +1556,16 @@ conditional_list := conditional_element eol
 <p>A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.</p>
 </div>
 <div class="paragraph">
-<p>The behaviour is unspecified if the command used in a conditional element does not cause side-effects in the compare flag.</p>
+<p>The behaviour is undefined if the command used in a conditional element does not cause side-effects in the compare flag.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="selection-statements">10.9. Selection Statements</h3>
+<h3 id="statement-selection"><a class="anchor" href="#statement-selection"></a>9.9. Selection Statements</h3>
 <div class="paragraph">
 <p>Selection statements selects which statement to execute depending on certain conditions.</p>
 </div>
 <div class="sect3">
-<h4 id="if-statement">10.9.1. IF Statement</h4>
+<h4 id="statement-if"><a class="anchor" href="#statement-if"></a>9.9.1. IF Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>if_statement := 'IF' sep conditional_list
@@ -1494,7 +1586,7 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect3">
-<h4 id="ifnot-statement">10.9.2. IFNOT Statement</h4>
+<h4 id="statement-ifnot"><a class="anchor" href="#statement-ifnot"></a>9.9.2. IFNOT Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>ifnot_statement := 'IFNOT' sep conditional_list
@@ -1512,7 +1604,7 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect3">
-<h4 id="if-goto-statement">10.9.3. IF GOTO Statement</h4>
+<h4 id="statement-if-goto"><a class="anchor" href="#statement-if-goto"></a>9.9.3. IF GOTO Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>if_goto_statement := 'IF' sep conditional_element sep 'GOTO' sep identifier eol ;</pre>
@@ -1526,7 +1618,7 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect3">
-<h4 id="ifnot-goto-statement">10.9.4. IFNOT GOTO Statement</h4>
+<h4 id="statement-ifnot-goto"><a class="anchor" href="#statement-ifnot-goto"></a>9.9.4. IFNOT GOTO Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>ifnot_goto_statement := 'IFNOT' sep conditional_element sep 'GOTO' sep identifier eol ;</pre>
@@ -1541,9 +1633,9 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect2">
-<h3 id="iteration-statements">10.10. Iteration Statements</h3>
+<h3 id="statement-iteration"><a class="anchor" href="#statement-iteration"></a>9.10. Iteration Statements</h3>
 <div class="sect3">
-<h4 id="while-statement">10.10.1. WHILE Statement</h4>
+<h4 id="statement-while"><a class="anchor" href="#statement-while"></a>9.10.1. WHILE Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>while_statement := 'WHILE' sep conditional_list
@@ -1562,7 +1654,7 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect3">
-<h4 id="whilenot-statement">10.10.2. WHILENOT Statement</h4>
+<h4 id="statement-whilenot"><a class="anchor" href="#statement-whilenot"></a>9.10.2. WHILENOT Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>whilenot_statement := 'WHILENOT' sep conditional_list
@@ -1578,7 +1670,7 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect3">
-<h4 id="repeat-statement">10.10.3. REPEAT Statement</h4>
+<h4 id="statement-repeat"><a class="anchor" href="#statement-repeat"></a>9.10.3. REPEAT Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>repeat_statement := 'REPEAT' sep integer sep identifier eol
@@ -1610,7 +1702,7 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect2">
-<h3 id="require-statements">10.11. Require Statements</h3>
+<h3 id="statement-require"><a class="anchor" href="#statement-require"></a>9.11. Require Statements</h3>
 <div class="listingblock">
 <div class="content">
 <pre>filename := {graph_char} '.SC' ;
@@ -1624,7 +1716,7 @@ require_statement := command_gosub_file
 <p>Require statements request script files to become part of the multi-file being translated.</p>
 </div>
 <div class="paragraph">
-<p>A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is unspecified.</p>
+<p>A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is undefined.</p>
 </div>
 <div class="paragraph">
 <p><strong>Constraints</strong></p>
@@ -1633,7 +1725,7 @@ require_statement := command_gosub_file
 <p>Require statements shall only appear in the <em>main script file</em> or <em>main extension files</em>.</p>
 </div>
 <div class="sect3">
-<h4 id="gosub_file-statement">10.11.1. GOSUB_FILE Statement</h4>
+<h4 id="statement-gosub-file"><a class="anchor" href="#statement-gosub-file"></a>9.11.1. GOSUB_FILE Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>command_gosub_file := 'GOSUB_FILE' sep identifier sep filename eol ;</pre>
@@ -1649,11 +1741,11 @@ require_statement := command_gosub_file
 <p>It also calls the subroutine specified by label.</p>
 </div>
 <div class="paragraph">
-<p>The behaviour is unspecified if the label is not part of the required file.</p>
+<p>The behaviour is undefined if the label is not part of the required file.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="launch_mission-statement">10.11.2. LAUNCH_MISSION Statement</h4>
+<h4 id="statement-launch-mission"><a class="anchor" href="#statement-launch-mission"></a>9.11.2. LAUNCH_MISSION Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>command_launch_mission := 'LAUNCH_MISSION' sep filename eol ;</pre>
@@ -1670,7 +1762,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect3">
-<h4 id="load_and_launch_mission-statement">10.11.3. LOAD_AND_LAUNCH_MISSION Statement</h4>
+<h4 id="statement-load-and-launch-mission"><a class="anchor" href="#statement-load-and-launch-mission"></a>9.11.3. LOAD_AND_LAUNCH_MISSION Statement</h4>
 <div class="listingblock">
 <div class="content">
 <pre>command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;</pre>
@@ -1696,10 +1788,10 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect1">
-<h2 id="script-file-structure">11. Script File Structure</h2>
+<h2 id="script-file-structure"><a class="anchor" href="#script-file-structure"></a>10. Script File Structure</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="main-script-files">11.1. Main Script Files</h3>
+<h3 id="script-file-structure-main"><a class="anchor" href="#script-file-structure-main"></a>10.1. Main Script Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>main_script_file := {statement} ;</pre>
@@ -1712,7 +1804,7 @@ require_statement := command_gosub_file
 <p><strong>Semantics</strong></p>
 </div>
 <div class="paragraph">
-<p>The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is unspecified.</p>
+<p>The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is undefined.</p>
 </div>
 <div class="paragraph">
 <p><strong>Constraints</strong></p>
@@ -1722,7 +1814,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="main-extension-files">11.2. Main Extension Files</h3>
+<h3 id="script-file-structure-main-extension"><a class="anchor" href="#script-file-structure-main-extension"></a>10.2. Main Extension Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>main_extension_file := {statement} ;</pre>
@@ -1739,7 +1831,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="subscript-files">11.3. Subscript Files</h3>
+<h3 id="script-file-structure-subscript"><a class="anchor" href="#script-file-structure-subscript"></a>10.3. Subscript Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>subscript_file := 'MISSION_START' eol
@@ -1768,7 +1860,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="mission-script-files">11.4. Mission Script Files</h3>
+<h3 id="script-file-structure-mission"><a class="anchor" href="#script-file-structure-mission"></a>10.4. Mission Script Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>mission_script_file := subscript_file ;</pre>
@@ -1787,13 +1879,13 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect1">
-<h2 id="supporting-commands">12. Supporting Commands</h2>
+<h2 id="command-def"><a class="anchor" href="#command-def"></a>11. Supporting Commands</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In order to perform useful computation the following supporting commands may be available.</p>
 </div>
 <div class="sect2">
-<h3 id="wait">12.1. WAIT</h3>
+<h3 id="command-def-wait"><a class="anchor" href="#command-def-wait"></a>11.1. WAIT</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1813,7 +1905,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="goto">12.2. GOTO</h3>
+<h3 id="command-def-goto"><a class="anchor" href="#command-def-goto"></a>11.2. GOTO</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1830,7 +1922,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="gosub">12.3. GOSUB</h3>
+<h3 id="command-def-gosub"><a class="anchor" href="#command-def-gosub"></a>11.3. GOSUB</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1847,7 +1939,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="return">12.4. RETURN</h3>
+<h3 id="command-def-return"><a class="anchor" href="#command-def-return"></a>11.4. RETURN</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1867,7 +1959,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="return_true">12.5. RETURN_TRUE</h3>
+<h3 id="command-def-return-true"><a class="anchor" href="#command-def-return-true"></a>11.5. RETURN_TRUE</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1884,7 +1976,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="return_false">12.6. RETURN_FALSE</h3>
+<h3 id="command-def-return-false"><a class="anchor" href="#command-def-return-false"></a>11.6. RETURN_FALSE</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1901,7 +1993,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="script_name">12.7. SCRIPT_NAME</h3>
+<h3 id="command-def-script-name"><a class="anchor" href="#command-def-script-name"></a>11.7. SCRIPT_NAME</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1926,11 +2018,11 @@ require_statement := command_gosub_file
 <p>The name of a script must be unique across the multi-file.</p>
 </div>
 <div class="paragraph">
-<p>The behaviour of the translation is unspecified if the name is given by a text label variable.</p>
+<p>It is unspecified whether a name given by a text label variable is accepted.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="terminate_this_script">12.8. TERMINATE_THIS_SCRIPT</h3>
+<h3 id="command-def-terminate-this-script"><a class="anchor" href="#command-def-terminate-this-script"></a>11.8. TERMINATE_THIS_SCRIPT</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1947,7 +2039,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="start_new_script">12.9. START_NEW_SCRIPT</h3>
+<h3 id="command-def-start-new-script"><a class="anchor" href="#command-def-start-new-script"></a>11.9. START_NEW_SCRIPT</h3>
 <div class="paragraph">
 <p><strong>Parameters</strong></p>
 </div>
@@ -1987,7 +2079,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect1">
-<h2 id="supporting-command-selectors">13. Supporting Command Selectors</h2>
+<h2 id="alternator-def"><a class="anchor" href="#alternator-def"></a>12. Supporting Command Selectors</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To further enchance the set of minimal commands for useful computation, the following command selectors and its supportive alternatives are defined.</p>
@@ -1996,7 +2088,7 @@ require_statement := command_gosub_file
 <p>An implementation is required to support these selectors, but it may not support all of its alternatives.</p>
 </div>
 <div class="sect2">
-<h3 id="set">13.1. SET</h3>
+<h3 id="alternator-def-set"><a class="anchor" href="#alternator-def-set"></a>12.1. SET</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2037,7 +2129,7 @@ SET_LVAR_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="cset">13.2. CSET</h3>
+<h3 id="alternator-def-cset"><a class="anchor" href="#alternator-def-cset"></a>12.2. CSET</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2061,7 +2153,7 @@ CSET_LVAR_FLOAT_TO_LVAR_INT LVAR_FLOAT LVAR_INT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="add_thing_to_thing">13.3. ADD_THING_TO_THING</h3>
+<h3 id="alternator-def-add-thing-to-thing"><a class="anchor" href="#alternator-def-add-thing-to-thing"></a>12.3. ADD_THING_TO_THING</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2089,7 +2181,7 @@ ADD_FLOAT_LVAR_TO_FLOAT_VAR VAR_FLOAT LVAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sub_thing_from_thing">13.4. SUB_THING_FROM_THING</h3>
+<h3 id="alternator-def-sub-thing-from-thing"><a class="anchor" href="#alternator-def-sub-thing-from-thing"></a>12.4. SUB_THING_FROM_THING</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2117,7 +2209,7 @@ SUB_FLOAT_LVAR_FROM_FLOAT_VAR VAR_FLOAT LVAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="mult_thing_by_thing">13.5. MULT_THING_BY_THING</h3>
+<h3 id="alternator-def-mult-thing-by-thing"><a class="anchor" href="#alternator-def-mult-thing-by-thing"></a>12.5. MULT_THING_BY_THING</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2145,7 +2237,7 @@ MULT_FLOAT_LVAR_BY_FLOAT_VAR LVAR_FLOAT VAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="div_thing_by_thing">13.6. DIV_THING_BY_THING</h3>
+<h3 id="alternator-def-div-thing-by-thing"><a class="anchor" href="#alternator-def-div-thing-by-thing"></a>12.6. DIV_THING_BY_THING</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2173,7 +2265,7 @@ DIV_FLOAT_LVAR_BY_FLOAT_VAR LVAR_FLOAT VAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="abs">13.7. ABS</h3>
+<h3 id="alternator-def-abs"><a class="anchor" href="#alternator-def-abs"></a>12.7. ABS</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2193,7 +2285,7 @@ ABS_LVAR_FLOAT LVAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="add_thing_to_thing_timed">13.8. ADD_THING_TO_THING_TIMED</h3>
+<h3 id="alternator-def-add-thing-to-thing-timed"><a class="anchor" href="#alternator-def-add-thing-to-thing-timed"></a>12.8. ADD_THING_TO_THING_TIMED</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2215,7 +2307,7 @@ ADD_TIMED_FLOAT_VAR_TO_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="sub_thing_from_thing_timed">13.9. SUB_THING_FROM_THING_TIMED</h3>
+<h3 id="alternator-def-sub-thing-from-thing-timed"><a class="anchor" href="#alternator-def-sub-thing-from-thing-timed"></a>12.9. SUB_THING_FROM_THING_TIMED</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2237,7 +2329,7 @@ SUB_TIMED_FLOAT_VAR_FROM_FLOAT_LVAR LVAR_FLOAT VAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="is_thing_equal_to_thing">13.10. IS_THING_EQUAL_TO_THING</h3>
+<h3 id="alternator-def-is-thing-equal-to-thing"><a class="anchor" href="#alternator-def-is-thing-equal-to-thing"></a>12.10. IS_THING_EQUAL_TO_THING</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2269,7 +2361,7 @@ IS_FLOAT_LVAR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="is_thing_greater_than_thing">13.11. IS_THING_GREATER_THAN_THING</h3>
+<h3 id="alternator-def-is-thing-greater-than-thing"><a class="anchor" href="#alternator-def-is-thing-greater-than-thing"></a>12.11. IS_THING_GREATER_THAN_THING</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2305,7 +2397,7 @@ IS_CONSTANT_GREATER_THAN_INT_LVAR INPUT_INT LVAR_INT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="is_thing_greater_or_equal_to_thing">13.12. IS_THING_GREATER_OR_EQUAL_TO_THING</h3>
+<h3 id="alternator-def-is-thing-greater-or-equal-to-thing"><a class="anchor" href="#alternator-def-is-thing-greater-or-equal-to-thing"></a>12.12. IS_THING_GREATER_OR_EQUAL_TO_THING</h3>
 <div class="paragraph">
 <p><strong>Alternatives</strong></p>
 </div>
@@ -2343,11 +2435,19 @@ IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR INPUT_INT LVAR_INT</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="regular-lexical-grammar">Appendix A: Regular Lexical Grammar</h2>
+<h2 id="grammar"><a class="anchor" href="#grammar"></a>Appendix A: Grammar Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="regular-lexical-grammar"><a class="anchor" href="#regular-lexical-grammar"></a>Appendix B: Regular Lexical Grammar</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre># A Regular Lexical Grammar for GTA3script
+<pre># A Regular Lexical Grammar for GTA3script (informative)
 sep := sep ;
 eol := eol ;
 token := token_char {token_char}
@@ -2426,13 +2526,13 @@ ENDIF</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="ambiguity">Appendix B: Ambiguity</h2>
+<h2 id="ambiguity"><a class="anchor" href="#ambiguity"></a>Appendix C: Ambiguity</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.</p>
 </div>
 <div class="sect2">
-<h3 id="if-goto">B.1. IF GOTO</h3>
+<h3 id="if-goto"><a class="anchor" href="#if-goto"></a>C.1. IF GOTO</h3>
 <div class="listingblock">
 <div class="content">
 <pre>IF COMMAND goto other
@@ -2450,7 +2550,7 @@ COMMAND goto other</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ternary-minus-one">B.2. Ternary Minus One</h3>
+<h3 id="ternary-minus-one"><a class="anchor" href="#ternary-minus-one"></a>C.2. Ternary Minus One</h3>
 <div class="listingblock">
 <div class="content">
 <pre>x = 1-1
@@ -2476,13 +2576,13 @@ x = 1- -1</pre>
 <p>The fifth line is not ambiguous.</p>
 </div>
 <div class="paragraph">
-<p>The token stream produced by the regular lexical grammar in the appendix should solve this issue naturally.</p>
+<p>The token stream produced by the regular lexical grammar in <a href="#regular-lexical-grammar">Appendix B</a> should solve this issue naturally.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="how-to-miss2">Appendix C: How to MISS2</h2>
+<h2 id="how-to-miss2"><a class="anchor" href="#how-to-miss2"></a>Appendix D: How to MISS2</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The leaked script compiler is full of bugs. It was written for in-house use, so it&#8217;s meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn&#8217;t. For the conservative, the following is a list of known things miss2 accepts that this specification does not.</p>
@@ -2712,17 +2812,28 @@ COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>WAIT arr[0]anything // recognized
+<pre>WAIT array[1]anything // recognized
+WAIT non_array[1]     // recognized
+WAIT non_array[2]     // not recognized
 // this specification does not accept this</pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="arachniography">Arachniography</h2>
+<h2 id="references"><a class="anchor" href="#references"></a>References</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist bibliography">
+<ul class="bibliography">
+<li>
+<p><a id="itvocabulary"></a>[ISO/IEC 2382:2015] <a href="https://www.iso.org/standard/63598.html">Information technology&#8201;&#8212;&#8201;Vocabulary</a>.</p>
+</li>
+<li>
+<p><a id="ebnf"></a>[ISO/IEC 14977:1996] <a href="https://www.iso.org/standard/26153.html">Information technology&#8201;&#8212;&#8201;Syntactic metalanguage&#8201;&#8212;&#8201;Extended BNF</a>.</p>
+</li>
+<li>
+<p><a id="ascii"></a>[ISO 646:1991 IRV] <a href="https://www.iso.org/standard/4777.html">Information technology&#8201;&#8212;&#8201;ISO 7-bit coded character set for information interchange</a>.</p>
+</li>
 <li>
 <p><a href="http://gtamp.com/GTA2/gta2script.7z">Official GTA2script Compiler V9.6</a> by DMA Design.</p>
 </li>
@@ -2750,7 +2861,7 @@ COMMAND_INPUT_CAR_OUTPUT_CAR vcar vcar
 <li>
 <p><a href="http://web.archive.org/web/20170111193059/http://www.gtamodding.com/wiki/GTA3script">Ancient SCM Language Article</a> by Wesser.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="paragraph">
 <p>TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
@@ -2777,6 +2888,12 @@ TODO &lt;=255 line
 TODO &lt;=127 string</p>
 </div>
 </div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. For consistency we have simplified this feature. Please refer to <a href="#how-to-miss2">Appendix D</a> for details on how the in-house compiler behaves.
 </div>
 </div>
 </body>
