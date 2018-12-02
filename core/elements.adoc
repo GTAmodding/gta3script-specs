@@ -165,6 +165,8 @@ An _identifier_ is a sequence of token characters beggining with a dollar or alp
 
 *Constraints*
 
+If text label variables are not supported by the implementation, the first character of an identifier shall not be a dollar.
+
 An identifier shall not end with a `:` character.
 
 [[element-string-literal]]
@@ -179,7 +181,7 @@ string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 [[element-variable-reference]]
 ==== Variable References
 
-A _variable name_ is a sequence of token characters, except the characters `[` and `]` cannot happen.
+A _variable name_ is a identifier, except the characters `[` and `]` cannot happen. If text label variables are not supported, the first character of a variable name shall not be a dollar.
 
 ----
 variable_char := token_char - ('[' | ']') ;

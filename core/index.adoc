@@ -69,7 +69,6 @@ include::references.adoc[]
 TODO list of special command names (user cannot write these, include AND/OR/NOT)
 TODO label semantics of start new script (GTA3 allows label: {})
 TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES
-TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
 TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb)
 TODO interesting NOP is not compiled
 TODO creating packages and such are declarations too (not only var decls)

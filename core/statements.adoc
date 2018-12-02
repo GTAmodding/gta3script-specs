@@ -134,6 +134,8 @@ The name of the command is a pair of storage duration and variable type.
 
 The commands with the `VAR_` prefix declares global variables. The ones with `LVAR_` declares local variables. The `INT` suffix declares variables capable of storing integers. The `FLOAT` suffix declares floating-point ones. Finally, the `TEXT_LABEL` one declares variables capable of storing text labels.
 
+An implementation may not support variables of text label type. In such case, a program declaring a text label variable is ill-formed.
+
 *Constraints*
 
 Global variable names must be unique across the multi-file.
