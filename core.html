@@ -211,13 +211,9 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </li>
 <li><a href="#grammar">Appendix A: Grammar Summary</a></li>
 <li><a href="#grammar-lex">Appendix B: Regular Lexical Grammar</a></li>
-<li><a href="#ambiguity">Appendix C: Ambiguity</a>
-<ul class="sectlevel2">
-<li><a href="#ambiguity-if-goto">C.1. IF GOTO</a></li>
-<li><a href="#ambiguity-minus-one">C.2. Ternary Minus One</a></li>
-</ul>
-</li>
-<li><a href="#miss2">Appendix D: How to MISS2</a></li>
+<li><a href="#ambiguity">Appendix C: Ambiguity</a></li>
+<li><a href="#complex-commands">Appendix D: Complex Commands</a></li>
+<li><a href="#miss2">Appendix E: How to MISS2</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 </div>
@@ -236,7 +232,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p>The DMA Design compiler is very basic and contains a huge amount of bugs. These bugs introduce a lot of inconsistencies and quirks to the language. This document attempts to resolve these issues and set a coherent language.</p>
 </div>
 <div class="paragraph">
-<p>The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A known list of differences is presented in <a href="#miss2">Appendix D</a>.</p>
+<p>The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A known list of differences is presented in <a href="#miss2">Appendix E</a>.</p>
 </div>
 </div>
 </div>
@@ -264,118 +260,87 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p>Terms that are used only in a small portion of this document are defined where they are used and italicized where they are defined.</p>
 </div>
 <div class="paragraph">
-<p><strong>behaviour</strong></p>
+<p>Because of the lack of information about the original language, some terms in this document are community defined.</p>
 </div>
-<div class="paragraph">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">behaviour</dt>
+<dd>
 <p>external appearance or action.</p>
-</div>
-<div class="paragraph">
-<p><strong>behaviour, implementation-defined</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">behaviour, implementation-defined</dt>
+<dd>
 <p>behavior specific to an implementation, where that implementation must document that behavior.</p>
-</div>
-<div class="paragraph">
-<p><strong>behaviour, undefined</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">behaviour, undefined</dt>
+<dd>
 <p>behavior which is not guaranteed to produce any specific result.</p>
-</div>
-<div class="paragraph">
-<p><strong>behaviour, unspecified</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">behaviour, unspecified</dt>
+<dd>
 <p>behavior for which this specification provides two or more possibilities and imposes no further requirements on which is chosen in any instance.</p>
-</div>
-<div class="paragraph">
-<p><strong>constraint</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">constraint</dt>
+<dd>
 <p>restriction, either syntactic or semantic, on how language elements can be used.</p>
-</div>
-<div class="paragraph">
-<p><strong>must</strong></p>
-</div>
-<div class="paragraph">
-<p>describes an absolute requirement of the specification. synonymous with <strong>shall</strong>.</p>
-</div>
-<div class="paragraph">
-<p><strong>must not</strong></p>
-</div>
-<div class="paragraph">
-<p>describes an absolute prohibition of the specification. synonymous with <strong>shall not</strong>.</p>
-</div>
-<div class="paragraph">
-<p><strong>should</strong></p>
-</div>
-<div class="paragraph">
-<p>describes a recommended but not absolutely necessary requirement of the specification.</p>
-</div>
-<div class="paragraph">
-<p><strong>should not</strong></p>
-</div>
-<div class="paragraph">
-<p>describes an unrecommended but not absolutely necessary requirement of the specifcation.</p>
-</div>
-<div class="paragraph">
-<p><strong>may</strong></p>
-</div>
-<div class="paragraph">
-<p>describes an optional feature or behaviour of the specification.</p>
-</div>
-<div class="paragraph">
-<p><strong>execution environment</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">must</dt>
+<dd>
+<p>describes an absolute requirement. synonymous with <strong>shall</strong>.</p>
+</dd>
+<dt class="hdlist1">must not</dt>
+<dd>
+<p>describes an absolute prohibition. synonymous with <strong>shall not</strong>.</p>
+</dd>
+<dt class="hdlist1">should</dt>
+<dd>
+<p>describes a recommended but not absolutely necessary requirement.</p>
+</dd>
+<dt class="hdlist1">should not</dt>
+<dd>
+<p>describes an unrecommended but not absolutely prohibited requirement.</p>
+</dd>
+<dt class="hdlist1">may</dt>
+<dd>
+<p>describes an optional requirement.</p>
+</dd>
+<dt class="hdlist1">execution environment</dt>
+<dd>
 <p>the software on which the result of translation is executed on.</p>
-</div>
-<div class="paragraph">
-<p><strong>translation environment</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">translation environment</dt>
+<dd>
 <p>the software on which the language is translated for use by an execution environment.</p>
-</div>
-<div class="paragraph">
-<p><strong>implementation</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">implementation</dt>
+<dd>
 <p>particular set of software, running in a particular translation environment under particular control options, that performs translation of programs for, and supports execution of commands in, a particular execution environment.</p>
-</div>
-<div class="paragraph">
-<p><strong>ill-formed program</strong></p>
-</div>
-<div class="paragraph">
-<p>program that is not well-formed.</p>
-</div>
-<div class="paragraph">
-<p><strong>well-formed program</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">well-formed program</dt>
+<dd>
 <p>program constructed according to the synctatic and semantic rules as defined by this specification.</p>
-</div>
-<div class="paragraph">
-<p><strong>value</strong></p>
-</div>
-<div class="paragraph">
-<p>precise meaning of the contents of an name when interpreted as having a specific type.</p>
-</div>
-<div class="paragraph">
-<p><strong>argument</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">ill-formed program</dt>
+<dd>
+<p>program that is not well-formed.</p>
+</dd>
+<dt class="hdlist1">value</dt>
+<dd>
+<p>precise meaning of the contents of a name when interpreted as having a specific type.</p>
+</dd>
+<dt class="hdlist1">argument</dt>
+<dd>
 <p>a value passed to a command that is intended to map to a corresponding parameter.</p>
-</div>
-<div class="paragraph">
-<p><strong>parameter</strong></p>
-</div>
-<div class="paragraph">
-<p>the value to be received in a specific argument position of a command.</p>
-</div>
-<div class="paragraph">
-<p><strong>in-house compiler</strong></p>
-</div>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">parameter</dt>
+<dd>
+<p>the value to be received in a specific argument of a command.</p>
+</dd>
+<dt class="hdlist1">in-house compiler</dt>
+<dd>
 <p>the translation environment used by DMA Design. this document refers more specifically to <a href="#references">Official GTA3 Script Compiler V413</a>.</p>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -415,13 +380,16 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p><a href="#ambiguity">Appendix C</a> describes ambiguities present in the language grammar and resolutions for them.</p>
 </div>
 <div class="paragraph">
-<p><a href="#miss2">Appendix D</a> describes problematic elements in the in-house compiler that this specification choose not to follow.</p>
+<p><a href="#complex-commands">Appendix D</a> lists commands that cannot happen outside of their very specific syntactical context.</p>
+</div>
+<div class="paragraph">
+<p><a href="#miss2">Appendix E</a> describes problematic elements in the in-house compiler that this specification choose not to follow.</p>
 </div>
 <div class="paragraph">
 <p>Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.</p>
 </div>
 <div class="paragraph">
-<p>Some changes demand more details than a footnote permits. These are marked with the footnote <sup class="footnote" id="_footnote_miss2">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and further details are presented in <a href="#miss2">Appendix D</a>.</p>
+<p>Some changes demand more details than a footnote permits. These are marked with the footnote <sup class="footnote" id="_footnote_miss2">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and further details are presented in <a href="#miss2">Appendix E</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -466,7 +434,7 @@ repetition  := '{' expression '}' ;</pre>
 <div class="sect2">
 <h3 id="concept-scripts"><a class="anchor" href="#concept-scripts"></a>4.1. Scripts</h3>
 <div class="paragraph">
-<p>A <em>script</em> is a unit of execution which contains its own <em>program counter</em>, <em>local variables</em> and <em>compare flag</em>.</p>
+<p>A <em>script</em> is a unit of execution which contains its own program counter, local variables and compare flag.</p>
 </div>
 <div class="paragraph">
 <p>A <em>program</em> is a collection of scripts running concurrently in a cooperative fashion.</p>
@@ -475,25 +443,25 @@ repetition  := '{' expression '}' ;</pre>
 <p>A <em>variable</em> is a named storage location. This location holds a value of specific type.</p>
 </div>
 <div class="paragraph">
-<p>There are global and local variables. <em>Global variables</em> are stored in a way they are accessible from any script. <em>Local variables</em> pertains to its particular script and is only accessible from it.</p>
+<p>There are global and local variables. <em>Global variables</em> are stored in a way they are accessible from any script. <em>Local variables</em> pertain to its particular script and is only accessible from it.</p>
 </div>
 <div class="paragraph">
-<p>The lifetime of a <em>global variable</em> is the same as of the execution of all scripts. The lifetime of a <em>local variable</em> is the same as its script and lexical scope.</p>
+<p>The lifetime of a global variable is the same as of the execution of all scripts. The lifetime of a local variable is the same as its script and lexical scope.</p>
 </div>
 <div class="paragraph">
-<p>A <em>command</em> is an operation to be performed by a script. Commands produces <em>side-effects</em> which are described by each command description.</p>
+<p>A <em>command</em> is an operation to be performed by a script. Commands produce side effects which are described by their command description.</p>
 </div>
 <div class="paragraph">
-<p>A possible side-effect of executing a command is the updating of the <em>compare flag</em>. The <em>compare flag</em> of a command is the boolean result it produces. The <em>compare flag of a script</em> is the <em>compare flag</em> of the its last executed command. The <em>compare flag</em> is useful for conditionally changing the <em>flow of control</em>.</p>
+<p>A possible side effect of executing a command is the updating of the compare flag. The <em>compare flag</em> of a command is the boolean result it produces. The <em>compare flag of a script</em> is the compare flag of its last executed command.</p>
 </div>
 <div class="paragraph">
-<p>The <em>program counter</em> of a script indicates its currently executing command. Unless one of the <em>side-effects</em> of a command is to change the <em>program counter</em>, the counter goes from the current command to the next sequentially. An explicit change in the <em>program counter</em> is said to be a change in the <em>flow of control</em>.</p>
+<p>The <em>program counter</em> of a script indicates its currently executing command. Unless one of the side effects of a command is to change the program counter, the counter goes from the current command to the next sequentially. An explicit change in the program counter is said to be a change in the flow of control.</p>
 </div>
 <div class="paragraph">
-<p>A command is said to perform a <em>jump</em> if it changes the <em>flow of control</em> irreversibly.</p>
+<p>A command is said to perform a <em>jump</em> if it changes the flow of control irreversibly.</p>
 </div>
 <div class="paragraph">
-<p>A command is said to call a <em>subroutine</em> if it changes the <em>flow of control</em> but saves the current <em>program counter</em> in a stack to be restored later.</p>
+<p>A command is said to call a <em>subroutine</em> if it changes the flow of control but saves the current program counter in a stack to be restored later.</p>
 </div>
 <div class="paragraph">
 <p>A command is said to <em>terminate</em> a script if it halts and reclaims storage of such a script.</p>
@@ -511,25 +479,22 @@ repetition  := '{' expression '}' ;</pre>
 <p>The <em>main script file</em> is the entry script file. This is where the first script (called the <em>main script</em>) starts execution.</p>
 </div>
 <div class="paragraph">
-<p>Other script files are <em>required</em> to become part of the multi-file by the means of require statements within the main script file. The main script file itself is required from the translation environment.</p>
+<p>Other script files are <em>required</em> to become part of the multi-file by the means of require statements within the main script file or main extension files. The main script file itself is required from the translation environment.</p>
 </div>
 <div class="paragraph">
-<p>Many kinds of script files can be required.</p>
+<p>A <em>main extension file</em> (or <em>foreign gosub file</em>) is a script file required by the means of a GOSUB_FILE statement.</p>
 </div>
 <div class="paragraph">
-<p>A <em>main extension file</em> (or <em>foreign gosub file</em>) is a script file required by the means of a <em>GOSUB_FILE statement</em>. Other script files can be required from main extension files.</p>
+<p>A <em>subscript file</em> is a script file required by the means of a LAUNCH_MISSION statement. A <em>subscript</em> is a script started by the same statement.</p>
 </div>
 <div class="paragraph">
-<p>A <em>subscript file</em> is a script file required by the means of the <em>LAUNCH_MISSION statement</em>. A <em>subscript</em> is a script started by the same statement.</p>
-</div>
-<div class="paragraph">
-<p>A <em>mission script file</em> is a script file required by the means of the <em>LOAD_AND_LAUNCH_MISSION statement</em>. A <em>mission script</em> is a script started by the same statement. Only a single mission script can be running at once.</p>
+<p>A <em>mission script file</em> is a script file required by the means of a LOAD_AND_LAUNCH_MISSION statement. A <em>mission script</em> is a script started by the same statement.</p>
 </div>
 <div class="paragraph">
 <p>An implementation may contain special features regarding the way subscripts and mission scripts are executed.</p>
 </div>
 <div class="paragraph">
-<p>The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a <code>.sc</code> extension. If multiple script files with the same name are found, which script file is chosen is unspecified.</p>
+<p>The main script file is found in an unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a <code>.sc</code> extension. If multiple script files with the same name are found, which script file is chosen is unspecified.</p>
 </div>
 <div class="paragraph">
 <p>A script type is said to come before another script type under the following total order:</p>
@@ -573,7 +538,7 @@ repetition  := '{' expression '}' ;</pre>
 <div class="sect2">
 <h3 id="concept-types"><a class="anchor" href="#concept-types"></a>4.3. Types</h3>
 <div class="paragraph">
-<p>An <em>integer</em> is a binary signed two&#8217;s-complement integral number. It represents 32 bits of data and the range of values <em>-2147483648</em> through <em>2147483647</em>.</p>
+<p>An <em>integer</em> is a binary signed two&#8217;s-complement integral number. It represents 32 bits of data and the range of values <code>-2147483648</code> through <code>2147483647</code>.</p>
 </div>
 <div class="paragraph">
 <p>A <em>floating-point</em> is a representation of a real number. Its exact representation, precision and range of values is implementation-defined.</p>
@@ -597,12 +562,12 @@ repetition  := '{' expression '}' ;</pre>
 <h2 id="elements"><a class="anchor" href="#elements"></a>5. Elements</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.</p>
+<p>The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="sect2">
 <h3 id="element-source-code"><a class="anchor" href="#element-source-code"></a>5.1. Source Code</h3>
 <div class="paragraph">
-<p><em>Source code</em> is a stream of printable ASCII characters plus the control codes line feed (<code>\n</code>), horizontal tab (<code>\t</code>) and carriage return (<code>\r</code>).</p>
+<p><em>Source code</em> is a stream of printable ASCII characters plus the control codes line feed (<code>\n</code>), horizontal tab (<code>\t</code>) and carriage return (<code>\r</code>).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -612,13 +577,13 @@ ascii_control := '\n' | '\t' | '\r' ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Carriage returns should appear only before a line feed.</p>
+<p>Carriage returns should appear only before a line feed.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>Lowercase letters in the stream shall be interpreted as its uppercase equivalent.</p>
 </div>
 <div class="paragraph">
-<p>Space, horizontal tab, parentheses and comma are defined as whitespace characters.</p>
+<p>Space, horizontal tab, parentheses and comma are defined as <em>whitespace</em> characters.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -634,7 +599,7 @@ ascii_control := '\n' | '\t' | '\r' ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Each line should be interpreted as if there is no whitespaces in either ends of the line.</p>
+<p>Each line should be interpreted as if there is no whitespaces in either ends of the line.<sup class="footnote" id="_footnote_simplify-whitespace">[<a id="_footnoteref_4" class="footnote" href="#_footnotedef_4" title="View footnote.">4</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>A <em>token character</em> is any character capable of forming a single token.</p>
@@ -681,7 +646,7 @@ block_comment := '/*' {block_comment | ascii_char} '*/' ;</pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>The contents of a comment shall be interpreted as if it is whitespaces in the source code. More specifically:</p>
+<p>The contents of a comment shall be interpreted as if it is whitespaces in the source code.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_4" title="View footnote.">4</a>]</sup> More specifically:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -694,7 +659,7 @@ block_comment := '/*' {block_comment | ascii_char} '*/' ;</pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>Comments cannot start inside string literals.</p>
+<p>Comments cannot start inside string literals.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnotedef_5" title="View footnote.">5</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -728,7 +693,7 @@ integer := ['-'] digit {digit} ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>A <em>integer literal</em> is a sequence of digits optionally preceded by a minus sign.</p>
+<p>An <em>integer literal</em> is a sequence of digits optionally preceded by a minus sign.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>If the literal begins with a minus, the number following it shall be negated.</p>
@@ -744,10 +709,10 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>A <em>floating-point literal</em> is a nonempty sequence of digits which must contain at least one occurrence of the characters <code>.</code> or <code>F</code>.</p>
+<p>A <em>floating-point literal</em> is a sequence of digits which must contain at least one occurrence of the characters <code>.</code> or <code>F</code>.</p>
 </div>
 <div class="paragraph">
-<p>Once the <code>F</code> characters is found, all characters including and following it shall be ignored. The same shall happen when the character <code>.</code> is found a second time.</p>
+<p>Once the <code>F</code> characters is found, all characters including and following it shall be ignored. The same shall happen when the character <code>.</code> is found a second time.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnotedef_6" title="View footnote.">6</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>The literal can be preceded by a minus sign, which shall negate the floating-point number.</p>
@@ -828,6 +793,9 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
+<p>If text label variables are not supported by the implementation, the first character of an identifier shall not be a dollar.</p>
+</div>
+<div class="paragraph">
 <p>An identifier shall not end with a <code>:</code> character.</p>
 </div>
 </div>
@@ -845,7 +813,7 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 <div class="sect3">
 <h4 id="element-variable-reference"><a class="anchor" href="#element-variable-reference"></a>5.3.5. Variable References</h4>
 <div class="paragraph">
-<p>A <em>variable name</em> is a sequence of token characters, except the characters <code>[</code> and <code>]</code> cannot happen.</p>
+<p>A <em>variable name</em> is a identifier, except the characters <code>[</code> and <code>]</code> cannot happen. If text label variables are not supported, the first character of a variable name shall not be a dollar.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -854,7 +822,7 @@ variable_name := ('$' | 'A'..'Z') {variable_char} ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>A <em>variable reference</em> is a variable name optionally followed by an array subscript.</p>
+<p>A <em>variable reference</em> is a variable name optionally followed by an array subscript.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -866,13 +834,13 @@ variable := variable_name [ subscript ] ;</pre>
 <p>The type of a variable reference is the type of the variable name being referenced.</p>
 </div>
 <div class="paragraph">
-<p>The subscript uses an integer literal or another variable name of integer type for zero-based indexing.</p>
+<p>The subscript uses an integer literal or another variable name of integer type for zero-based indexing.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnotedef_7" title="View footnote.">7</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.</p>
 </div>
 <div class="paragraph">
-<p>The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.</p>
+<p>The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.</p>
@@ -891,7 +859,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>A <em>parameter definition</em> is a set of definitions regarding a single parameter for a specific command.</p>
 </div>
 <div class="paragraph">
-<p>A command must have the same amount of arguments as its amount of parameter definitions, unless the missing arguments correspond to <em>optional parameters</em> (defined below).</p>
+<p>A command must have the same amount of arguments as its amount of parameter definitions, unless the missing arguments correspond to optional parameters.</p>
 </div>
 <div class="paragraph">
 <p>If a variable is used in the same command both as an input and as an output, the input shall be evaluated before any output is assigned to the variable.</p>
@@ -926,10 +894,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>An entity can be assigned to a variable. In such case, the variable is said to be of that specific entity type from that line of code on. Previous lines of code are not affected.</p>
 </div>
 <div class="paragraph">
-<p>If an entity type is associated with an parameter and a variable is used as argument, the variable must have the same entity type as the parameter.</p>
-</div>
-<div class="paragraph">
-<p>Further semantics for entities are defined along this document.</p>
+<p>If an entity type is associated with an parameter and a variable is used as argument, the variable must have the same entity type as the formal parameter.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1006,7 +971,7 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="sect3">
 <h4 id="parameter-type-text-label"><a class="anchor" href="#parameter-type-text-label"></a>6.3.12. TEXT_LABEL</h4>
 <div class="paragraph">
-<p>A <em>TEXT_LABEL parameter</em> accepts an argument only if it is an identifier. If the identifier begins with a dollar character (<code>$</code>), its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.</p>
+<p>A <em>TEXT_LABEL parameter</em> accepts an argument only if it is an identifier. If the identifier begins with a dollar character, its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1050,7 +1015,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p><a id="parameter-type-var-text-label-opt"></a> <em>VAR_TEXT_LABEL_OPT</em></p>
 </li>
 <li>
-<p><a id="parameter-type-lvar-text-label-opt"></a> LVAR_TEXT_LABEL_OPT_</p>
+<p><a id="parameter-type-lvar-text-label-opt"></a> <em>LVAR_TEXT_LABEL_OPT</em></p>
 </li>
 <li>
 <p><em>INPUT_OPT</em></p>
@@ -1061,7 +1026,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>Such parameters are always trailing parameters.</p>
 </div>
 <div class="paragraph">
-<p><a id="parameter-type-input-opt"></a> The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer, floating-point or text label type.</p>
+<p><a id="parameter-type-input-opt"></a> The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer or floating-point type. A variable of text label type may be accepted by an INPUT_OPT parameter.</p>
 </div>
 </div>
 </div>
@@ -1077,7 +1042,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>A command selector consists of a name and a finite sequence of commands which are alternatives for replacement.</p>
 </div>
 <div class="paragraph">
-<p>A command name which is the name of a selector shall behave as if its command name is rewritten as a <em>matching alternative</em> before any parameter checking takes place.</p>
+<p>A command name which is the name of a selector shall behave as if its command name is rewritten as a matching alternative before any parameter checking takes place.</p>
 </div>
 <div class="paragraph">
 <p>A <em>matching alternative</em> is the first command in the alternative sequence to have the same amount of parameters as arguments in the actual command, and to obey the following rules for every argument and its corresponding parameter:</p>
@@ -1129,7 +1094,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>An argument in an expression cannot be a string literal.</p>
 </div>
 <div class="paragraph">
-<p>The name of commands used to require script files (e.g. <code>GOSUB_FILE</code>) and its directive commands (i.e. <code>MISSION_START</code> and <code>MISSION_END</code>) cannot be on the left hand side of a expression.</p>
+<p>The name of commands used to require script files (e.g. <code>GOSUB_FILE</code>) and its directive commands (i.e. <code>MISSION_START</code> and <code>MISSION_END</code>) cannot be on the left hand side of an expression.</p>
 </div>
 <div class="sect2">
 <h3 id="assignment-expressions"><a class="anchor" href="#assignment-expressions"></a>8.1. Assignment Expressions</h3>
@@ -1244,7 +1209,7 @@ assignment_expression := expr_assign_unary
 <p><code>SUB_THING_FROM_THING a c</code> if the name <code>a</code> is the same as the name <code>b</code>.</p>
 </li>
 <li>
-<p>Implementation-defined if <code>a</code> is the same name as <code>c</code>.</p>
+<p>Implementation-defined if <code>a</code> is the same name as <code>c</code>.<sup class="footnote">[<a id="_footnoteref_8" class="footnote" href="#_footnotedef_8" title="View footnote.">8</a>]</sup></p>
 </li>
 <li>
 <p><code>SET a b</code> followed by <code>SUB_THING_BY_THING a c</code> otherwise.</p>
@@ -1348,7 +1313,7 @@ labeled_statement := label_prefix embedded_statement
 <p>This declares a label named after the given identifier.</p>
 </div>
 <div class="paragraph">
-<p>The label can be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.</p>
+<p>The label can be referenced in certain commands to transfer (or start) control to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1399,7 +1364,7 @@ labeled_statement := label_prefix embedded_statement
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).</p>
+<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -1473,10 +1438,10 @@ var_statement := command_var_name command_var_param {command_var_param} eol ;</p
 </div>
 </div>
 <div class="paragraph">
-<p>The name of the command is a pair of storage duration and variable type.</p>
+<p>The commands with the <code>VAR_</code> prefix declares global variables. The ones with <code>LVAR_</code> declares local variables. The <code>INT</code> suffix declares variables capable of storing integers. The <code>FLOAT</code> suffix declares floating-point ones. Finally, the <code>TEXT_LABEL</code> one declares variables capable of storing text labels.</p>
 </div>
 <div class="paragraph">
-<p>The commands with the <code>VAR_</code> prefix declares global variables. The ones with <code>LVAR_</code> declares local variables. The <code>INT</code> suffix declares variables capable of storing integers. The <code>FLOAT</code> suffix declares floating-point ones. Finally, the <code>TEXT_LABEL</code> one declares variables capable of storing text labels.</p>
+<p>An implementation may not support variables of text label type. In such case, a program declaring a text label variable is ill-formed.</p>
 </div>
 <div class="paragraph">
 <p><strong>Constraints</strong></p>
@@ -1512,7 +1477,7 @@ var_statement := command_var_name command_var_param {command_var_param} eol ;</p
 <p>Local variable names can be seen by their entire lexical scope.</p>
 </div>
 <div class="paragraph">
-<p>The initial value of variables is unspecified.</p>
+<p>The initial value of variables is unspecified.<sup class="footnote">[<a id="_footnoteref_9" class="footnote" href="#_footnotedef_9" title="View footnote.">9</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -1535,7 +1500,7 @@ conditional_list := conditional_element eol
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).</p>
+<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p><strong>Semantics</strong></p>
@@ -1556,7 +1521,7 @@ conditional_list := conditional_element eol
 <p>A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.</p>
 </div>
 <div class="paragraph">
-<p>The behaviour is undefined if the command used in a conditional element does not cause side-effects in the compare flag.</p>
+<p>The behaviour is undefined if the command used in a conditional element does not cause side effects in the compare flag.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1650,7 +1615,7 @@ conditional_list := conditional_element eol
 <p>The WHILE statement executes a set of statements while the compare flag of the conditional list holds true.</p>
 </div>
 <div class="paragraph">
-<p>The statement executes by grabbing the compare flag of the list of conditions and transferring control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the <code>ENDWHILE</code> command causes control to be transferred to beginning of the block, where the conditions are evaluated again.</p>
+<p>The statement executes by grabbing the compare flag of the list of conditions and transferring control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the <code>ENDWHILE</code> command causes control to be transferred to the beginning of the block, where the conditions are evaluated again.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1673,7 +1638,7 @@ conditional_list := conditional_element eol
 <h4 id="statement-repeat"><a class="anchor" href="#statement-repeat"></a>9.10.3. REPEAT Statement</h4>
 <div class="listingblock">
 <div class="content">
-<pre>repeat_statement := 'REPEAT' sep integer sep identifier eol
+<pre>repeat_statement := 'REPEAT' sep integer sep variable eol
                     {statement}
                     [label_prefix] 'ENDREPEAT' eol ;</pre>
 </div>
@@ -1682,10 +1647,7 @@ conditional_list := conditional_element eol
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>The first argument to REPEAT must be an integer literal.</p>
-</div>
-<div class="paragraph">
-<p>The second argument must be a variable of integer type.</p>
+<p>The associated variable must be of integer type.<sup class="footnote">[<a id="_footnoteref_10" class="footnote" href="#_footnotedef_10" title="View footnote.">10</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p><strong>Semantics</strong></p>
@@ -1694,7 +1656,7 @@ conditional_list := conditional_element eol
 <p>The REPEAT statement executes a set of statements until a counter variable reaches a threshold.</p>
 </div>
 <div class="paragraph">
-<p>The <code>REPEAT</code> command causes the variable to be set to zero. Execution of the <code>ENDREPEAT</code> command causes the variable to be incremented and if it compares less than the threshold, it transfers control back to the set of statements. Otherwise, it leaves the block.</p>
+<p>The <code>REPEAT</code> command causes the associated variable to be set to zero. Execution of the <code>ENDREPEAT</code> command causes the variable to be incremented and if it compares less than the threshold, control is transfered back to the set of statements. Otherwise, it leaves the block.</p>
 </div>
 <div class="paragraph">
 <p>The statements are always executed at least once.</p>
@@ -1716,13 +1678,13 @@ require_statement := command_gosub_file
 <p>Require statements request script files to become part of the multi-file being translated.</p>
 </div>
 <div class="paragraph">
-<p>A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is undefined.</p>
+<p>A file can be required more than once. In such case, if it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is undefined.</p>
 </div>
 <div class="paragraph">
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>Require statements shall only appear in the <em>main script file</em> or <em>main extension files</em>.</p>
+<p>Require statements shall only appear in the main script file or main extension files.</p>
 </div>
 <div class="sect3">
 <h4 id="statement-gosub-file"><a class="anchor" href="#statement-gosub-file"></a>9.11.1. GOSUB_FILE Statement</h4>
@@ -1735,7 +1697,7 @@ require_statement := command_gosub_file
 <p><strong>Semantics</strong></p>
 </div>
 <div class="paragraph">
-<p>The <code>GOSUB_FILE</code> command requires a <em>main extension file</em> to become part of the multi-file.</p>
+<p>The <code>GOSUB_FILE</code> command requires a main extension file to become part of the multi-file.</p>
 </div>
 <div class="paragraph">
 <p>It also calls the subroutine specified by label.</p>
@@ -1755,7 +1717,7 @@ require_statement := command_gosub_file
 <p><strong>Semantics</strong></p>
 </div>
 <div class="paragraph">
-<p>The <code>LAUNCH_MISSION</code> command requires a <em>subscript file</em> to become part of the multi-file.</p>
+<p>The <code>LAUNCH_MISSION</code> command requires a subscript file to become part of the multi-file.</p>
 </div>
 <div class="paragraph">
 <p>It also starts a new subscript with the program counter at the <code>MISSION_START</code> directive of the specified script file.</p>
@@ -1772,16 +1734,16 @@ require_statement := command_gosub_file
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>Only a single <em>mission script</em> can be running at once.</p>
+<p>Only a single mission script can be running at once.</p>
 </div>
 <div class="paragraph">
 <p><strong>Semantics</strong></p>
 </div>
 <div class="paragraph">
-<p>The <code>LOAD_AND_LAUNCH_MISSION</code> command requires a <em>mission script file</em> to become part of the multi-file.</p>
+<p>The <code>LOAD_AND_LAUNCH_MISSION</code> command requires a mission script file to become part of the multi-file.</p>
 </div>
 <div class="paragraph">
-<p>It also starts a new <em>mission script</em> with the program counter at the <code>MISSION_START</code> directive of the specified script file.</p>
+<p>It also starts a new mission script with the program counter at the <code>MISSION_START</code> directive of the specified script file.</p>
 </div>
 </div>
 </div>
@@ -1841,13 +1803,13 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p>A subscript file is a sequence of zero or more statements in a <code>MISSION_START</code> and <code>MISSION_END</code> block. More statements can follow.</p>
+<p>A subscript file is a sequence of zero or more statements within a <code>MISSION_START</code>&#8230;&#8203;<code>MISSION_END</code> block. More statements can follow.</p>
 </div>
 <div class="paragraph">
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>The <code>MISSION_START</code> command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (<code> </code>) and horizontal tabs (<code>\t</code>). Even comments are disallowed.</p>
+<p>The <code>MISSION_START</code> command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (<code> </code>) and horizontal tabs (<code>\t</code>). Comments instead of whitespaces are disallowed.</p>
 </div>
 <div class="paragraph">
 <p>Commands in subscript files shall not refer to labels in mission script files.</p>
@@ -1867,7 +1829,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p>A mission script file has the same structure of a subscript file.</p>
+<p>A mission script file has the same structure as of a subscript file.</p>
 </div>
 <div class="paragraph">
 <p><strong>Constraints</strong></p>
@@ -1895,13 +1857,10 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Yields control to another script. The current script is not resumed for at least the specified number of milliseconds.</p>
-</div>
-<div class="paragraph">
-<p>This command is useful due to the cooperative multitasking nature of the execution environment.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1915,7 +1874,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Performs a jump to the specified location.</p>
@@ -1932,7 +1891,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Calls the subroutine in the specified location.</p>
@@ -1949,7 +1908,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Returns from the last called subroutine.</p>
@@ -1969,7 +1928,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Returns true (as in any command updating the compare flag to true).</p>
@@ -1986,7 +1945,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Returns false (as in any command updating the compare flag to false).</p>
@@ -2003,7 +1962,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Associates a name to the executing script.</p>
@@ -2018,7 +1977,7 @@ require_statement := command_gosub_file
 <p>The name of a script must be unique across the multi-file.</p>
 </div>
 <div class="paragraph">
-<p>It is unspecified whether a name given by a text label variable is accepted.</p>
+<p>It is unspecified whether a name given by a text label variable is accepted.<sup class="footnote">[<a id="_footnoteref_11" class="footnote" href="#_footnotedef_11" title="View footnote.">11</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -2032,7 +1991,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Terminates the executing script.</p>
@@ -2049,7 +2008,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Side-effects</strong></p>
+<p><strong>Side effects</strong></p>
 </div>
 <div class="paragraph">
 <p>Creates a script and sets its program counter to the specified label location.</p>
@@ -2064,7 +2023,7 @@ require_statement := command_gosub_file
 <p>The translation environment must enforce the following constraints.</p>
 </div>
 <div class="paragraph">
-<p>The specified label location must be within a scope.</p>
+<p>The specified label location must be within a scope. Such scope may begin at the next non-empty embedded statement relative to the label location.<sup class="footnote">[<a id="_footnoteref_12" class="footnote" href="#_footnotedef_12" title="View footnote.">12</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>The type of a local variable and its respective input argument must match. For instance, if an input argument is an integer literal or variable of integer type, its corresponding local variable in the target scope must be of integer type.</p>
@@ -2073,7 +2032,7 @@ require_statement := command_gosub_file
 <p>If there are not enough local variables in the target scope to accomodate the input arguments the program is ill-formed.</p>
 </div>
 <div class="paragraph">
-<p>If an input argument is a variable, the value assignment to the variable in the target scope shall obey the same constraints as specified in the SET alternator.</p>
+<p>If an input argument is a variable, the value assignment to the variable in the target scope shall obey the same constraints as specified for <code>SET</code> (<a href="#alternator-def-set">12.1</a>).</p>
 </div>
 </div>
 </div>
@@ -2578,7 +2537,7 @@ whilenot_statement := 'WHILENOT' sep conditional_list
                       {statement}
                       [label_prefix] 'ENDWHILE' eol ;
 
-repeat_statement := 'REPEAT' sep integer sep identifier eol
+repeat_statement := 'REPEAT' sep integer sep variable eol
                     {statement}
                     [label_prefix] 'ENDREPEAT' eol ;
 
@@ -2697,8 +2656,7 @@ ENDIF</pre>
 <div class="paragraph">
 <p>Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.</p>
 </div>
-<div class="sect2">
-<h3 id="ambiguity-if-goto"><a class="anchor" href="#ambiguity-if-goto"></a>C.1. IF GOTO</h3>
+<h3 id="ambiguity-if-goto" class="discrete">IF GOTO</h3>
 <div class="listingblock">
 <div class="content">
 <pre>IF COMMAND goto other
@@ -2714,9 +2672,7 @@ COMMAND goto other</pre>
 <div class="paragraph">
 <p>We suggest an implementation to emit an warnings to declarations of names and the use of text labels equal to <code>goto</code>.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="ambiguity-minus-one"><a class="anchor" href="#ambiguity-minus-one"></a>C.2. Ternary Minus One</h3>
+<h3 id="ambiguity-minus-one" class="discrete">Ternary Minus One</h3>
 <div class="listingblock">
 <div class="content">
 <pre>x = 1-1
@@ -2746,9 +2702,16 @@ x = 1- -1</pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="complex-commands"><a class="anchor" href="#complex-commands"></a>Appendix D: Complex Commands</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TODO list of special command names (user cannot write these, include AND/OR/NOT)</p>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="miss2"><a class="anchor" href="#miss2"></a>Appendix D: How to MISS2</h2>
+<h2 id="miss2"><a class="anchor" href="#miss2"></a>Appendix E: How to MISS2</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The leaked script compiler is full of bugs. It was written for in-house use, so it&#8217;s meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn&#8217;t. For the conservative, the following is a list of known things miss2 accepts that this specification does not.</p>
@@ -2764,6 +2727,9 @@ x = 1- -1</pre>
 </div>
 <div class="paragraph">
 <p>You may use custom characters (c &gt; 127), but you may clash with the characters DMA used to tokenize string literals.</p>
+</div>
+<div class="paragraph">
+<p>BLA BLA The in-house compiler recognizes all of the octets in the range 01 through FF almost indiscriminately. Some of these codes produce unexpected results, while others are used internally during translation (for e.g. escaping string literals). In practice, only the printable characters were used by designers. For simplicity we restrict source code to these characters. BLA BLA</p>
 </div>
 <div class="paragraph">
 <p><strong>A string literal is the same as four tokens</strong></p>
@@ -3029,36 +2995,46 @@ WAIT non_array[2]     // not recognized
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>TODO list of special command names (user cannot write these, include AND/OR/NOT)
-TODO label semantics of start new script (GTA3 allows label: {})
-TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES
-TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
-TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb)
-TODO interesting NOP is not compiled
-TODO creating packages and such are declarations too (not only var decls)
-TODO translation limits
-LIMITS
-TODO gxtsema gxt key length &lt;8
-TODO gxtsema filename (excluding extension must be) &lt;16
-TODO label name &lt;=38
-TODO varname &lt;40
-TODO scriptname &lt;=7
-TODO scriptnames &lt;= 300
-TODO &lt;=9216 gvar storage words
-TODO &lt;=16 lvars storage words
-TODO &lt;=255 array size
-TODO &lt;=35000 label refs
-TODO &lt;=255 line
-TODO &lt;=127 string</p>
-</div>
 </div>
 </div>
 </div>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. For consistency we have simplified this feature. Please refer to <a href="#miss2">Appendix D</a> for details on how the in-house compiler behaves.
+<a href="#_footnoteref_1">1</a>. For consistency we have simplified this feature. Please refer to <a href="#miss2">Appendix E</a> for details on how the in-house compiler behaves.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. The in-house compiler is an ad-hoc parser, introducing a lot of contextual problems to the language.
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. The in-house compiler does not have such a restriction. We introduce it for simplicity.
+</div>
+<div class="footnote" id="_footnotedef_4">
+<a href="#_footnoteref_4">4</a>. This simplifies the syntactic specification.
+</div>
+<div class="footnote" id="_footnotedef_5">
+<a href="#_footnoteref_5">5</a>. i.e. <code>"This // is a string"</code> is a string literal, not an incomplete string.
+</div>
+<div class="footnote" id="_footnotedef_6">
+<a href="#_footnoteref_6">6</a>. We have not simplified this misfeature because it is used in one of the GTA III 10th Anniversary scripts.
+</div>
+<div class="footnote" id="_footnotedef_7">
+<a href="#_footnoteref_7">7</a>. The in-house compiler uses one-based indexing. Its array feature is incomplete and produces problematic bytecode when subscripting variables. Additionally, the GTA Vice City runtime (the target of the in-house compiler) does not support arrays. Thus it&#8217;s believed this feature is still incomplete in V413 and was never used. Not until GTA San Andreas, which introduces arrays in the execution environment. Its runtime performs zero-based indexing on variable subscripts, but for literal subscripts we can only guess. The compiled multifile contains debug strings that suggests zero-based indexing for literals.
+</div>
+<div class="footnote" id="_footnotedef_8">
+<a href="#_footnoteref_8">8</a>. The in-house compiler uses unsupported command selectors (<code>NEGATE</code> for substraction and <code>ONEOVER</code> for division) to perform this operation.
+</div>
+<div class="footnote" id="_footnotedef_9">
+<a href="#_footnoteref_9">9</a>. In Grand Theft Auto, the memory storage of local variables is not zeroed after leaving a scope (nor while entering one). This means local variables preserve values from previous scopes. Additionally, the Stories chapters share the storage of global variables between mission scripts, having the very same implications (no in-depth research has been conduced though).
+</div>
+<div class="footnote" id="_footnotedef_10">
+<a href="#_footnoteref_10">10</a>. The parameter definition of <code>REPEAT</code> in the in-house compiler disallows local variables. Due to being a complex command, however, the compiler ignores this parametric restriction and ends up permiting local variables (which is likely the intended behaviour).
+</div>
+<div class="footnote" id="_footnotedef_11">
+<a href="#_footnoteref_11">11</a>. The in-house compiler does not handle the case of text label variables in <code>SCRIPT_NAME</code>, but this does not tell much because it barely supports any text label variable feature. No compiled multi-file contains script names assigned by a variable. Thus, we refrain from defining any semantics for this case.
+</div>
+<div class="footnote" id="_footnotedef_12">
+<a href="#_footnoteref_12">12</a>. For GTA III 10th Anniversary multi-files, all target scopes are a line after its target label, which would emit an error in the in-house compiler (for GTA Vice City).
 </div>
 </div>
 </body>
