@@ -52,7 +52,7 @@ ol>li p, ul>li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .ol
 <div id="header">
 <h1>GTA3script Specification</h1>
 <div class="details">
-<span id="revdate">2018-12-01</span>
+<span id="revdate">2018-12-02</span>
 </div>
 </div>
 <div id="content">
@@ -75,11 +75,11 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <ul class="sectlevel1">
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#scope">1. Scope</a></li>
-<li><a href="#terms-and-definitions">2. Terms and Definitions</a></li>
-<li><a href="#general-principles">3. General Principles</a>
+<li><a href="#definitions">2. Terms and Definitions</a></li>
+<li><a href="#general">3. General Principles</a>
 <ul class="sectlevel2">
-<li><a href="#implementation-conformance">3.1. Implementation Conformance</a></li>
-<li><a href="#structure-of-this-document">3.2. Structure of this Document</a></li>
+<li><a href="#conformance">3.1. Implementation Conformance</a></li>
+<li><a href="#document-structure">3.2. Structure of this Document</a></li>
 <li><a href="#syntax-notation">3.3. Syntax Notation</a></li>
 </ul>
 </li>
@@ -172,12 +172,12 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </li>
 </ul>
 </li>
-<li><a href="#script-file-structure">10. Script File Structure</a>
+<li><a href="#structure">10. Script File Structure</a>
 <ul class="sectlevel2">
-<li><a href="#script-file-structure-main">10.1. Main Script Files</a></li>
-<li><a href="#script-file-structure-main-extension">10.2. Main Extension Files</a></li>
-<li><a href="#script-file-structure-subscript">10.3. Subscript Files</a></li>
-<li><a href="#script-file-structure-mission">10.4. Mission Script Files</a></li>
+<li><a href="#structure-main">10.1. Main Script Files</a></li>
+<li><a href="#structure-main-extension">10.2. Main Extension Files</a></li>
+<li><a href="#structure-subscript">10.3. Subscript Files</a></li>
+<li><a href="#structure-mission">10.4. Mission Script Files</a></li>
 </ul>
 </li>
 <li><a href="#command-def">11. Supporting Commands</a>
@@ -210,14 +210,14 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </ul>
 </li>
 <li><a href="#grammar">Appendix A: Grammar Summary</a></li>
-<li><a href="#regular-lexical-grammar">Appendix B: Regular Lexical Grammar</a></li>
+<li><a href="#grammar-lex">Appendix B: Regular Lexical Grammar</a></li>
 <li><a href="#ambiguity">Appendix C: Ambiguity</a>
 <ul class="sectlevel2">
-<li><a href="#if-goto">C.1. IF GOTO</a></li>
-<li><a href="#ternary-minus-one">C.2. Ternary Minus One</a></li>
+<li><a href="#ambiguity-if-goto">C.1. IF GOTO</a></li>
+<li><a href="#ambiguity-minus-one">C.2. Ternary Minus One</a></li>
 </ul>
 </li>
-<li><a href="#how-to-miss2">Appendix D: How to MISS2</a></li>
+<li><a href="#miss2">Appendix D: How to MISS2</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 </div>
@@ -236,7 +236,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p>The DMA Design compiler is very basic and contains a huge amount of bugs. These bugs introduce a lot of inconsistencies and quirks to the language. This document attempts to resolve these issues and set a coherent language.</p>
 </div>
 <div class="paragraph">
-<p>The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A known list of differences is presented in <a href="#how-to-miss2">Appendix D</a>.</p>
+<p>The language specified by this document is thus a subset of the language accepted by the in-house compiler. Any source code translated by an implementation of this should be able to be translated by the original compiler. The reverse is not true. A known list of differences is presented in <a href="#miss2">Appendix D</a>.</p>
 </div>
 </div>
 </div>
@@ -255,7 +255,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </div>
 </div>
 <div class="sect1">
-<h2 id="terms-and-definitions"><a class="anchor" href="#terms-and-definitions"></a>2. Terms and Definitions</h2>
+<h2 id="definitions"><a class="anchor" href="#definitions"></a>2. Terms and Definitions</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>For the purposes of this document, the terms and definitions given in <a href="#itvocabulary">[ISO/IEC 2382:2015]</a> and the following apply.</p>
@@ -380,10 +380,10 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </div>
 </div>
 <div class="sect1">
-<h2 id="general-principles"><a class="anchor" href="#general-principles"></a>3. General Principles</h2>
+<h2 id="general"><a class="anchor" href="#general"></a>3. General Principles</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="implementation-conformance"><a class="anchor" href="#implementation-conformance"></a>3.1. Implementation Conformance</h3>
+<h3 id="conformance"><a class="anchor" href="#conformance"></a>3.1. Implementation Conformance</h3>
 <div class="paragraph">
 <p>A conforming implementation must be able to translate and correctly execute, within its resource limits, any program which does not violate the rules in this document.</p>
 </div>
@@ -401,27 +401,27 @@ This is a draft. It may be wrong, incomplete and subject to change.
 </div>
 </div>
 <div class="sect2">
-<h3 id="structure-of-this-document"><a class="anchor" href="#structure-of-this-document"></a>3.2. Structure of this Document</h3>
+<h3 id="document-structure"><a class="anchor" href="#document-structure"></a>3.2. Structure of this Document</h3>
 <div class="paragraph">
-<p>Section <a href="#concepts">4</a> through <a href="#script-file-structure">10</a> describes the GTA3script programming language. That description includes detailed syntactic specifications in a form detailed in <a href="#syntax-notation">3.3</a>. For convenience, <a href="#grammar">Appendix A</a> repeats all such syntactic specifications.</p>
+<p>Section <a href="#concepts">4</a> through <a href="#structure">10</a> describes the GTA3script programming language. That description includes detailed syntactic specifications in a form detailed in <a href="#syntax-notation">3.3</a>. For convenience, <a href="#grammar">Appendix A</a> repeats all such syntactic specifications.</p>
 </div>
 <div class="paragraph">
 <p>Sections <a href="#command-def">11</a> and <a href="#alternator-def">12</a> describes a minimal set of commands to perform computations using the language.</p>
 </div>
 <div class="paragraph">
-<p><a href="#regular-lexical-grammar">Appendix B</a> describes a regular grammar suitable for scanning the language.</p>
+<p><a href="#grammar-lex">Appendix B</a> describes a regular grammar suitable for scanning the language.</p>
 </div>
 <div class="paragraph">
 <p><a href="#ambiguity">Appendix C</a> describes ambiguities present in the language grammar and resolutions for them.</p>
 </div>
 <div class="paragraph">
-<p><a href="#how-to-miss2">Appendix D</a> describes problematic elements in the in-house compiler that this specification choose not to follow.</p>
+<p><a href="#miss2">Appendix D</a> describes problematic elements in the in-house compiler that this specification choose not to follow.</p>
 </div>
 <div class="paragraph">
 <p>Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.</p>
 </div>
 <div class="paragraph">
-<p>Some changes demand more details than a footnote permits. These are marked with the footnote <sup class="footnote" id="_footnote_howtomiss2">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and further details are presented in <a href="#how-to-miss2">Appendix D</a>.</p>
+<p>Some changes demand more details than a footnote permits. These are marked with the footnote <sup class="footnote" id="_footnote_miss2">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and further details are presented in <a href="#miss2">Appendix D</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1788,10 +1788,10 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect1">
-<h2 id="script-file-structure"><a class="anchor" href="#script-file-structure"></a>10. Script File Structure</h2>
+<h2 id="structure"><a class="anchor" href="#structure"></a>10. Script File Structure</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="script-file-structure-main"><a class="anchor" href="#script-file-structure-main"></a>10.1. Main Script Files</h3>
+<h3 id="structure-main"><a class="anchor" href="#structure-main"></a>10.1. Main Script Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>main_script_file := {statement} ;</pre>
@@ -1814,7 +1814,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="script-file-structure-main-extension"><a class="anchor" href="#script-file-structure-main-extension"></a>10.2. Main Extension Files</h3>
+<h3 id="structure-main-extension"><a class="anchor" href="#structure-main-extension"></a>10.2. Main Extension Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>main_extension_file := {statement} ;</pre>
@@ -1831,7 +1831,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="script-file-structure-subscript"><a class="anchor" href="#script-file-structure-subscript"></a>10.3. Subscript Files</h3>
+<h3 id="structure-subscript"><a class="anchor" href="#structure-subscript"></a>10.3. Subscript Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>subscript_file := 'MISSION_START' eol
@@ -1860,7 +1860,7 @@ require_statement := command_gosub_file
 </div>
 </div>
 <div class="sect2">
-<h3 id="script-file-structure-mission"><a class="anchor" href="#script-file-structure-mission"></a>10.4. Mission Script Files</h3>
+<h3 id="structure-mission"><a class="anchor" href="#structure-mission"></a>10.4. Mission Script Files</h3>
 <div class="listingblock">
 <div class="content">
 <pre>mission_script_file := subscript_file ;</pre>
@@ -2437,13 +2437,179 @@ IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR INPUT_INT LVAR_INT</pre>
 <div class="sect1">
 <h2 id="grammar"><a class="anchor" href="#grammar"></a>Appendix A: Grammar Summary</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>TODO</p>
+<div class="listingblock">
+<div class="content">
+<pre># The GTA3script Grammar (informative)
+
+ascii_char := ascii_printable | ascii_control ;
+ascii_printable := /* printable ASCII characters */ ;
+ascii_control := '\n' | '\t' | '\r' ;
+
+whitespace := ' ' | '\t' | '(' | ')' | ',' ;
+
+newline := ['\r'] `\n` ;
+
+graph_char := ascii_printable - (whitespace | '"') ;
+token_char := graph_char - ('+' | '-' | '*' | '/' | '=' | '&lt;' | '&gt;') ;
+
+sep := whitespace {whitespace} ;
+eol := newline | EOF ;
+
+comment := line_comment | block_comment ;
+line_comment := '//' {ascii_char} eol ;
+block_comment := '/*' {block_comment | ascii_char} '*/' ;
+
+command_name := token_char {token_char} ;
+command := command_name { sep argument } ;
+
+argument := integer
+          | floating
+          | identifier
+          | string_literal ;
+
+digit := '0'..'9' ;
+integer := ['-'] digit {digit} ;
+
+floating_form1 := '.' digit { digit | '.' | 'F' } ;
+floating_form2 := digit { digit } ('.' | 'F') { digit | '.' | 'F' } ;
+floating := ['-'] (floating_form1 | floating_form2) ;
+
+identifier := ('$' | 'A'..'Z') {token_char} ;
+
+string_literal := '"' { ascii_char - (newline | '"') } '"' ;
+
+variable_char := token_char - ('[' | ']') ;
+variable_name := ('$' | 'A'..'Z') {variable_char} ;
+
+subscript := '[' (variable_name | integer) ']' ;
+variable := variable_name [ subscript ] ;
+
+binop := '+' | '-' | '*' | '/' | '+@' | '-@' ;
+asop := '=' | '=#' | '+=' | '-=' | '*=' | '/=' | '+=@' | '-=@' ;
+unop := '--' | '++' ;
+
+expr_assign_abs := identifier {whitespace} '=' {whitespace} 'ABS' {whitespace} argument ;
+expr_assign_binary := identifier {whitespace} asop {whitespace} argument ;
+expr_assign_ternary := identifier {whitespace} '=' {whitespace} argument {whitespace} binop {whitespace} argument ;
+expr_assign_unary := (unop {whitespace} identifier)
+                   | (identifier {whitespace} unop) ;
+
+assignment_expression := expr_assign_unary
+                       | expr_assign_binary
+                       | expr_assign_ternary
+                       | expr_assign_abs ;
+
+relop := '=' | '&lt;' | '&gt;' | '&gt;=' | '&lt;=' ;
+conditional_expression := argument {whitespace} relop {whitespace} argument ;
+
+statement := labeled_statement
+           | embedded_statement ;
+
+label_def := identifier ':' ;
+label_prefix := label_def sep ;
+
+labeled_statement := label_prefix embedded_statement
+                   | label_def empty_statement ;
+
+empty_statement := eol ;
+
+embedded_statement := empty_statement
+                     | command_statement
+                     | expression_statement
+                     | scope_statement
+                     | var_statement
+                     | if_statement
+                     | ifnot_statement
+                     | if_goto_statement
+                     | ifnot_goto_statement
+                     | while_statement
+                     | whilenot_statement
+                     | repeat_statement
+                     | require_statement ;
+
+command_statement := command eol ;
+
+expression_statement := assignment_expression eol
+                      | conditional_expression eol ;
+
+scope_statement := '{' eol
+                   {statement}
+                   [label_prefix] '}' eol ;
+
+command_var_name := 'VAR_INT'
+                    | 'LVAR_INT'
+                    | 'VAR_FLOAT'
+                    | 'LVAR_FLOAT'
+                    | 'VAR_TEXT_LABEL'
+                    | 'LVAR_TEXT_LABEL' ;
+command_var_param := sep variable ;
+
+var_statement := command_var_name command_var_param {command_var_param} eol ;
+
+conditional_element := ['NOT' sep] (command | conditional_expression) ;
+
+and_conditional_stmt := 'AND' sep conditional_element eol ;
+or_conditional_stmt := 'OR' sep conditional_element eol ;
+
+conditional_list := conditional_element eol
+                    ({and_conditional_stmt} | {or_conditional_stmt}) ;
+
+if_statement := 'IF' sep conditional_list
+                {statement}
+                [[label_prefix] 'ELSE' eol
+                {statement}]
+                [label_prefix] 'ENDIF' eol ;
+
+ifnot_statement := 'IFNOT' sep conditional_list
+                   {statement}
+                   [[label_prefix] 'ELSE' eol
+                   {statement}]
+                   [label_prefix] 'ENDIF' eol ;
+
+if_goto_statement := 'IF' sep conditional_element sep 'GOTO' sep identifier eol ;
+
+ifnot_goto_statement := 'IFNOT' sep conditional_element sep 'GOTO' sep identifier eol ;
+
+while_statement := 'WHILE' sep conditional_list
+                   {statement}
+                   [label_prefix] 'ENDWHILE' eol ;
+
+whilenot_statement := 'WHILENOT' sep conditional_list
+                      {statement}
+                      [label_prefix] 'ENDWHILE' eol ;
+
+repeat_statement := 'REPEAT' sep integer sep identifier eol
+                    {statement}
+                    [label_prefix] 'ENDREPEAT' eol ;
+
+filename := {graph_char} '.SC' ;
+
+require_statement := command_gosub_file
+                   | command_launch_mission
+                   | command_load_and_launch_mission ;
+
+command_gosub_file := 'GOSUB_FILE' sep identifier sep filename eol ;
+
+command_launch_mission := 'LAUNCH_MISSION' sep filename eol ;
+
+command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;
+
+main_script_file := {statement} ;
+
+main_extension_file := {statement} ;
+
+subscript_file := 'MISSION_START' eol
+                  {statement}
+                  [label_prefix] 'MISSION_END' eol
+                  {statement} ;
+
+mission_script_file := subscript_file ;</pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="regular-lexical-grammar"><a class="anchor" href="#regular-lexical-grammar"></a>Appendix B: Regular Lexical Grammar</h2>
+<h2 id="grammar-lex"><a class="anchor" href="#grammar-lex"></a>Appendix B: Regular Lexical Grammar</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
@@ -2532,7 +2698,7 @@ ENDIF</pre>
 <p>Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.</p>
 </div>
 <div class="sect2">
-<h3 id="if-goto"><a class="anchor" href="#if-goto"></a>C.1. IF GOTO</h3>
+<h3 id="ambiguity-if-goto"><a class="anchor" href="#ambiguity-if-goto"></a>C.1. IF GOTO</h3>
 <div class="listingblock">
 <div class="content">
 <pre>IF COMMAND goto other
@@ -2550,7 +2716,7 @@ COMMAND goto other</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ternary-minus-one"><a class="anchor" href="#ternary-minus-one"></a>C.2. Ternary Minus One</h3>
+<h3 id="ambiguity-minus-one"><a class="anchor" href="#ambiguity-minus-one"></a>C.2. Ternary Minus One</h3>
 <div class="listingblock">
 <div class="content">
 <pre>x = 1-1
@@ -2576,13 +2742,13 @@ x = 1- -1</pre>
 <p>The fifth line is not ambiguous.</p>
 </div>
 <div class="paragraph">
-<p>The token stream produced by the regular lexical grammar in <a href="#regular-lexical-grammar">Appendix B</a> should solve this issue naturally.</p>
+<p>The token stream produced by the regular lexical grammar in <a href="#grammar-lex">Appendix B</a> should solve this issue naturally.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="how-to-miss2"><a class="anchor" href="#how-to-miss2"></a>Appendix D: How to MISS2</h2>
+<h2 id="miss2"><a class="anchor" href="#miss2"></a>Appendix D: How to MISS2</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The leaked script compiler is full of bugs. It was written for in-house use, so it&#8217;s meant to work and recognize at least the intended language. The problem is, the language is too inconsistent in this buggy superset. After constantly trying to make those bugs part of this specification, I strongly believe we shouldn&#8217;t. For the conservative, the following is a list of known things miss2 accepts that this specification does not.</p>
@@ -2864,8 +3030,7 @@ WAIT non_array[2]     // not recognized
 </ul>
 </div>
 <div class="paragraph">
-<p>TODO should we fix the floating point literals (e.g. '1.9.2')? I think there are DMA scripts that need this.
-TODO list of special command names (user cannot write these, include AND/OR/NOT)
+<p>TODO list of special command names (user cannot write these, include AND/OR/NOT)
 TODO label semantics of start new script (GTA3 allows label: {})
 TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES
 TODO remember GTASA INPUT_OPT does not accept text label vars at all (not at runtime level)
@@ -2893,7 +3058,7 @@ TODO &lt;=127 string</p>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. For consistency we have simplified this feature. Please refer to <a href="#how-to-miss2">Appendix D</a> for details on how the in-house compiler behaves.
+<a href="#_footnoteref_1">1</a>. For consistency we have simplified this feature. Please refer to <a href="#miss2">Appendix D</a> for details on how the in-house compiler behaves.
 </div>
 </div>
 </body>
