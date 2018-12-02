@@ -2,5 +2,6 @@
 [[grammar]]
 == Grammar Summary
 
-TODO
-
+// The build process automatically joins all the grammar
+// in the specification into the following line
+AUTO_REPLACE_WITH_GRAMMAR
