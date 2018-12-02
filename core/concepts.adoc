@@ -41,7 +41,7 @@ A _main extension file_ (or _foreign gosub file_) is a script file required by t
 
 A _subscript file_ is a script file required by the means of a LAUNCH_MISSION statement. A _subscript_ is a script started by the same statement.
 
-A _mission script file_ is a script file required by the means of a LOAD_AND_LAUNCH_MISSION statement. A _mission script_ is a script started by the same statement. Only a single mission script can be running at once.
+A _mission script file_ is a script file required by the means of a LOAD_AND_LAUNCH_MISSION statement. A _mission script_ is a script started by the same statement.
 
 An implementation may contain special features regarding the way subscripts and mission scripts are executed.
 

@@ -11,6 +11,8 @@ More control codes than the specified are _accepted_ by miss2 (such as `\r` anyw
 
 You may use custom characters (c > 127), but you may clash with the characters DMA used to tokenize string literals.
 
+BLA BLA The in-house compiler recognizes all of the octets in the range 01 through FF almost indiscriminately. Some of these codes produce unexpected results, while others are used internally during translation (for e.g. escaping string literals). In practice, only the printable characters were used by designers. For simplicity we restrict source code to these characters. BLA BLA
+
 *A string literal is the same as four tokens*
 
 ----

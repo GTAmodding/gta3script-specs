@@ -5,7 +5,7 @@ A command receives several arguments. Every argument must obey the rules of its 
 
 A _parameter definition_ is a set of definitions regarding a single parameter for a specific command.
 
-A command must have the same amount of arguments as its amount of parameter definitions, unless the missing arguments correspond to _optional parameters_ (defined below).
+A command must have the same amount of arguments as its amount of parameter definitions, unless the missing arguments correspond to optional parameters.
 
 If a variable is used in the same command both as an input and as an output, the input shall be evaluated before any output is assigned to the variable.
 
@@ -31,9 +31,7 @@ A parameter definition can have an associated entity type.
 
 An entity can be assigned to a variable. In such case, the variable is said to be of that specific entity type from that line of code on. Previous lines of code are not affected.
 
-If an entity type is associated with an parameter and a variable is used as argument, the variable must have the same entity type as the parameter.
-
-Further semantics for entities are defined along this document.
+If an entity type is associated with an parameter and a variable is used as argument, the variable must have the same entity type as the formal parameter.
 
 [[parameter-types]]
 === Parameter Types

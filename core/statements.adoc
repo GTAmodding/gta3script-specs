@@ -29,7 +29,7 @@ The name of a label must be unique across the multi-file.
 
 This declares a label named after the given identifier.
 
-The label can be referenced in certain commands to transfer (or start) control of execution to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
+The label can be referenced in certain commands to transfer (or start) control to the statement it prefixes. Labels themselves do not alter the flow of control, which continues to the statement it embodies.
 
 [[statement-empty]]
 === Empty Statements
@@ -72,7 +72,7 @@ command_statement := command eol ;
 
 *Constraints*
 
-The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).
+The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).footnoteref:[miss2]
 
 [[statement-expression]]
 === Expression Statements
@@ -130,8 +130,6 @@ command_var_param := sep variable ;
 var_statement := command_var_name command_var_param {command_var_param} eol ;
 ----
 
-The name of the command is a pair of storage duration and variable type.
-
 The commands with the `VAR_` prefix declares global variables. The ones with `LVAR_` declares local variables. The `INT` suffix declares variables capable of storing integers. The `FLOAT` suffix declares floating-point ones. Finally, the `TEXT_LABEL` one declares variables capable of storing text labels.
 
 An implementation may not support variables of text label type. In such case, a program declaring a text label variable is ill-formed.
@@ -158,7 +156,7 @@ Global variable names can be seen by the entire multi-file.
 
 Local variable names can be seen by their entire lexical scope.
 
-The initial value of variables is unspecified.
+The initial value of variables is unspecified.footnote:[In Grand Theft Auto, the memory storage of local variables is not zeroed after leaving a scope (nor while entering one). This means local variables preserve values from previous scopes. Additionally, the Stories chapters share the storage of global variables between mission scripts, having the very same implications (no in-depth research has been conduced though).]
 
 [[statement-conditional]]
 === Conditional Statements
@@ -177,7 +175,7 @@ conditional_list := conditional_element eol
 
 *Constraints*
 
-The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).
+The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).footnoteref:[miss2]
 
 *Semantics*
 
@@ -191,7 +189,7 @@ The compare flag is set to true if the compare flag of at least one conditional 
 
 A conditional list shall not be short-circuit evaluated. All conditional elements are executed in order.
 
-The behaviour is undefined if the command used in a conditional element does not cause side-effects in the compare flag.
+The behaviour is undefined if the command used in a conditional element does not cause side effects in the compare flag.
 
 [[statement-selection]]
 === Selection Statements
@@ -268,7 +266,7 @@ while_statement := 'WHILE' sep conditional_list
 
 The WHILE statement executes a set of statements while the compare flag of the conditional list holds true.
 
-The statement executes by grabbing the compare flag of the list of conditions and transferring control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the `ENDWHILE` command causes control to be transferred to beginning of the block, where the conditions are evaluated again.
+The statement executes by grabbing the compare flag of the list of conditions and transferring control to after the WHILE block if it holds false. Otherwise, it executes the given set of statements. Execution of the `ENDWHILE` command causes control to be transferred to the beginning of the block, where the conditions are evaluated again.
 
 [[statement-whilenot]]
 ==== WHILENOT Statement
@@ -287,22 +285,20 @@ The behaviour of this is the same as of the WHILE statement, except the compleme
 ==== REPEAT Statement
 
 ----
-repeat_statement := 'REPEAT' sep integer sep identifier eol
+repeat_statement := 'REPEAT' sep integer sep variable eol
                     {statement}
                     [label_prefix] 'ENDREPEAT' eol ;
 ----
 
 *Constraints*
 
-The first argument to REPEAT must be an integer literal.
-
-The second argument must be a variable of integer type.
+The associated variable must be of integer type.footnote:[The parameter definition of `REPEAT` in the in-house compiler disallows local variables. Due to being a complex command, however, the compiler ignores this parametric restriction and ends up permiting local variables (which is likely the intended behaviour).]
 
 *Semantics*
 
 The REPEAT statement executes a set of statements until a counter variable reaches a threshold.
 
-The `REPEAT` command causes the variable to be set to zero. Execution of the `ENDREPEAT` command causes the variable to be incremented and if it compares less than the threshold, it transfers control back to the set of statements. Otherwise, it leaves the block.
+The `REPEAT` command causes the associated variable to be set to zero. Execution of the `ENDREPEAT` command causes the variable to be incremented and if it compares less than the threshold, control is transfered back to the set of statements. Otherwise, it leaves the block.
 
 The statements are always executed at least once.
 
@@ -319,11 +315,11 @@ require_statement := command_gosub_file
 
 Require statements request script files to become part of the multi-file being translated.
 
-A file can be required more than once. If it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is undefined.
+A file can be required more than once. In such case, if it is required using the same statement as the first request, the latter request is ignored. Otherwise, behaviour is undefined.
 
 *Constraints*
 
-Require statements shall only appear in the _main script file_ or _main extension files_.
+Require statements shall only appear in the main script file or main extension files.
 
 [[statement-gosub-file]]
 ==== GOSUB_FILE Statement
@@ -334,7 +330,7 @@ command_gosub_file := 'GOSUB_FILE' sep identifier sep filename eol ;
 
 *Semantics*
 
-The `GOSUB_FILE` command requires a _main extension file_ to become part of the multi-file.
+The `GOSUB_FILE` command requires a main extension file to become part of the multi-file.
 
 It also calls the subroutine specified by label.
 
@@ -349,7 +345,7 @@ command_launch_mission := 'LAUNCH_MISSION' sep filename eol ;
 
 *Semantics*
 
-The `LAUNCH_MISSION` command requires a _subscript file_ to become part of the multi-file.
+The `LAUNCH_MISSION` command requires a subscript file to become part of the multi-file.
 
 It also starts a new subscript with the program counter at the `MISSION_START` directive of the specified script file.
 
@@ -362,10 +358,10 @@ command_load_and_launch_mission := 'LOAD_AND_LAUNCH_MISSION' sep filename eol ;
 
 *Constraints*
 
-Only a single _mission script_ can be running at once.
+Only a single mission script can be running at once.
 
 *Semantics*
 
-The `LOAD_AND_LAUNCH_MISSION` command requires a _mission script file_ to become part of the multi-file.
+The `LOAD_AND_LAUNCH_MISSION` command requires a mission script file to become part of the multi-file.
 
-It also starts a new _mission script_ with the program counter at the `MISSION_START` directive of the specified script file.
+It also starts a new mission script with the program counter at the `MISSION_START` directive of the specified script file.

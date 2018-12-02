@@ -1,12 +1,12 @@
 [[elements]]
 == Elements
 
-The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.
+The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.footnote:[The in-house compiler is an ad-hoc parser, introducing a lot of contextual problems to the language.]
 
 [[element-source-code]]
 === Source Code
 
-_Source code_ is a stream of printable ASCII characters plus the control codes line feed (`\n`), horizontal tab (`\t`) and carriage return (`\r`).
+_Source code_ is a stream of printable ASCII characters plus the control codes line feed (`\n`), horizontal tab (`\t`) and carriage return (`\r`).footnoteref:[miss2]
 
 ----
 ascii_char := ascii_printable | ascii_control ;
@@ -14,11 +14,11 @@ ascii_printable := /* printable ASCII characters */ ;
 ascii_control := '\n' | '\t' | '\r' ;
 ----
 
-Carriage returns should appear only before a line feed.
+Carriage returns should appear only before a line feed.footnote:[The in-house compiler does not have such a restriction. We introduce it for simplicity.]
 
 Lowercase letters in the stream shall be interpreted as its uppercase equivalent.
 
-Space, horizontal tab, parentheses and comma are defined as whitespace characters.
+Space, horizontal tab, parentheses and comma are defined as _whitespace_ characters.
 
 ----
 whitespace := ' ' | '\t' | '(' | ')' | ',' ;
@@ -30,7 +30,7 @@ A _line_ is a sequence of characters delimited by a newline. The start of the st
 newline := ['\r'] `\n` ;
 ----
 
-Each line should be interpreted as if there is no whitespaces in either ends of the line.
+Each line should be interpreted as if there is no whitespaces in either ends of the line.footnoteref:[simplify-whitespace,This simplifies the syntactic specification.]
 
 A _token character_ is any character capable of forming a single token.
 
@@ -62,12 +62,12 @@ There are two forms:
 * _Line comments_ starts with the character sequence `//` and stop at the end of the line.
 * _Block comments_ starts with the character sequence `/\*` and stop with its matching `*/`. Block comments can be nested inside each other.
 
-The contents of a comment shall be interpreted as if it is whitespaces in the source code. More specifically:
+The contents of a comment shall be interpreted as if it is whitespaces in the source code.footnoteref:[simplify-whitespace] More specifically:
 
 * A line comment should be interpreted as an `eol`.
 * A single, nested, block comment should be interpreted as an `eol` on each line boundary it crosses. On its last line (i.e. the one it does not cross), it should be interpreted as one or more whitespace characters.
 
-Comments cannot start inside string literals.
+Comments cannot start inside string literals.footnote:[i.e. `"This // is a string"` is a string literal, not an incomplete string.]
 
 [[element-command]]
 === Commands
@@ -96,7 +96,7 @@ digit := '0'..'9' ;
 integer := ['-'] digit {digit} ;
 ----
 
-An _integer literal_ is a sequence of digits optionally preceded by a minus sign.
+An _integer literal_ is a sequence of digits optionally preceded by a minus sign.footnoteref:[miss2]
 
 If the literal begins with a minus, the number following it shall be negated.
 
@@ -111,7 +111,7 @@ floating := ['-'] (floating_form1 | floating_form2) ;
 
 A _floating-point literal_ is a sequence of digits which must contain at least one occurrence of the characters `.` or `F`.
 
-Once the `F` characters is found, all characters including and following it shall be ignored. The same shall happen when the character `.` is found a second time.
+Once the `F` characters is found, all characters including and following it shall be ignored. The same shall happen when the character `.` is found a second time.footnote:[We have not simplified this misfeature because it is used in one of the GTA III 10th Anniversary scripts.]
 
 The literal can be preceded by a minus sign, which shall negate the floating-point number.
 
@@ -188,7 +188,7 @@ variable_char := token_char - ('[' | ']') ;
 variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ----
 
-A _variable reference_ is a variable name optionally followed by an array subscript.
+A _variable reference_ is a variable name optionally followed by an array subscript.footnoteref:[miss2]
 
 ----
 subscript := '[' (variable_name | integer) ']' ;
@@ -197,10 +197,10 @@ variable := variable_name [ subscript ] ;
 
 The type of a variable reference is the type of the variable name being referenced.
 
-The subscript uses an integer literal or another variable name of integer type for zero-based indexing.
+The subscript uses an integer literal or another variable name of integer type for zero-based indexing.footnote:[The in-house compiler uses one-based indexing. Its array feature is incomplete and produces problematic bytecode when subscripting variables. Additionally, the GTA Vice City runtime (the target of the in-house compiler) does not support arrays. Thus it's believed this feature is still incomplete in V413 and was never used. Not until GTA San Andreas, which introduces arrays in the execution environment. Its runtime performs zero-based indexing on variable subscripts, but for literal subscripts we can only guess. The compiled multifile contains debug strings that suggests zero-based indexing for literals.]
 
 The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.
 
-The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.
+The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.footnoteref:[miss2]
 
 An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.

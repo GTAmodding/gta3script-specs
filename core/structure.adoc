@@ -41,11 +41,11 @@ subscript_file := 'MISSION_START' eol
                   {statement} ;
 ----
 
-A subscript file is a sequence of zero or more statements in a `MISSION_START` and `MISSION_END` block. More statements can follow.
+A subscript file is a sequence of zero or more statements within a `MISSION_START`...`MISSION_END` block. More statements can follow.
 
 *Constraints*
 
-The `MISSION_START` command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (`` ``) and horizontal tabs (``\t``). Even comments are disallowed.
+The `MISSION_START` command shall be the very first line of the subscript file and shall not be preceded by anything but ASCII spaces (`` ``) and horizontal tabs (``\t``). Comments instead of whitespaces are disallowed.
 
 Commands in subscript files shall not refer to labels in mission script files.
 
@@ -60,7 +60,7 @@ The `MISSION_END` command behaves as if by executing the `TERMINATE_THIS_SCRIPT`
 mission_script_file := subscript_file ;
 ----
 
-A mission script file has the same structure of a subscript file.
+A mission script file has the same structure as of a subscript file.
 
 *Constraints*
 
