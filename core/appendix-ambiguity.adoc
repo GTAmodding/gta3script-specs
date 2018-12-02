@@ -4,6 +4,7 @@
 
 Not only the language, but the grammar presented in this document is ambiguous. Here are all the instances of ambiguity, which is the correct derivation, and suggestions to avoid users getting trapped in them.
 
+[discrete]
 [[ambiguity-if-goto]]
 === IF GOTO
 
@@ -18,6 +19,7 @@ The second line is unambiguous due to context.
 
 We suggest an implementation to emit an warnings to declarations of names and the use of text labels equal to `goto`.
 
+[discrete]
 [[ambiguity-minus-one]]
 === Ternary Minus One
 

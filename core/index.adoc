@@ -61,28 +61,8 @@ include::appendix-grammar-lex.adoc[]
 
 include::appendix-ambiguity.adoc[]
 
+include::appendix-complex-commands.adoc[]
+
 include::appendix-miss2.adoc[]
 
 include::references.adoc[]
-
-
-TODO list of special command names (user cannot write these, include AND/OR/NOT)
-TODO label semantics of start new script (GTA3 allows label: {})
-TODO SAN ANDREAS ALLOWS IDENTIFIERS TO BEGIN WITH UNDERSCORES
-TODO timera timerb (remember, only within scope; cannot declare var with same name; global shall not be named timera/timerb)
-TODO interesting NOP is not compiled
-TODO creating packages and such are declarations too (not only var decls)
-TODO translation limits
-LIMITS
-TODO gxtsema gxt key length <8
-TODO gxtsema filename (excluding extension must be) <16
-TODO label name \<=38
-TODO varname <40
-TODO scriptname \<=7
-TODO scriptnames \<= 300
-TODO \<=9216 gvar storage words
-TODO \<=16 lvars storage words
-TODO \<=255 array size
-TODO \<=35000 label refs
-TODO \<=255 line
-TODO \<=127 string

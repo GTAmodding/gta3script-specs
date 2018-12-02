@@ -25,6 +25,8 @@ Sections <<command-def>> and <<alternator-def>> describes a minimal set of comma
 
 <<ambiguity>> describes ambiguities present in the language grammar and resolutions for them.
 
+<<complex-commands>> lists commands that cannot happen outside of their very specific syntactical context.
+
 <<miss2>> describes problematic elements in the in-house compiler that this specification choose not to follow.
 
 Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.
