@@ -96,7 +96,7 @@ digit := '0'..'9' ;
 integer := ['-'] digit {digit} ;
 ----
 
-A _integer literal_ is a sequence of digits optionally preceded by a minus sign.
+An _integer literal_ is a sequence of digits optionally preceded by a minus sign.
 
 If the literal begins with a minus, the number following it shall be negated.
 
@@ -109,7 +109,7 @@ floating_form2 := digit { digit } ('.' | 'F') { digit | '.' | 'F' } ;
 floating := ['-'] (floating_form1 | floating_form2) ;
 ----
 
-A _floating-point literal_ is a nonempty sequence of digits which must contain at least one occurrence of the characters `.` or `F`.
+A _floating-point literal_ is a sequence of digits which must contain at least one occurrence of the characters `.` or `F`.
 
 Once the `F` characters is found, all characters including and following it shall be ignored. The same shall happen when the character `.` is found a second time.
 

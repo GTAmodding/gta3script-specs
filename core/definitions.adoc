@@ -5,79 +5,43 @@ For the purposes of this document, the terms and definitions given in <<itvocabu
 
 Terms that are used only in a small portion of this document are defined where they are used and italicized where they are defined.
 
-*behaviour*
+Because of the lack of information about the original language, some terms in this document are community defined.
 
-external appearance or action.
+behaviour:: external appearance or action.
 
-*behaviour, implementation-defined*
+behaviour, implementation-defined:: behavior specific to an implementation, where that implementation must document that behavior.
 
-behavior specific to an implementation, where that implementation must document that behavior.
+behaviour, undefined:: behavior which is not guaranteed to produce any specific result.
 
-*behaviour, undefined*
+behaviour, unspecified:: behavior for which this specification provides two or more possibilities and imposes no further requirements on which is chosen in any instance.
 
-behavior which is not guaranteed to produce any specific result.
+constraint:: restriction, either syntactic or semantic, on how language elements can be used.
 
-*behaviour, unspecified*
+must:: describes an absolute requirement. synonymous with *shall*.
 
-behavior for which this specification provides two or more possibilities and imposes no further requirements on which is chosen in any instance.
+must not:: describes an absolute prohibition. synonymous with *shall not*.
 
-*constraint*
+should:: describes a recommended but not absolutely necessary requirement.
 
-restriction, either syntactic or semantic, on how language elements can be used.
+should not:: describes an unrecommended but not absolutely prohibited requirement.
 
-*must*
+may:: describes an optional requirement.
 
-describes an absolute requirement of the specification. synonymous with *shall*.
+execution environment:: the software on which the result of translation is executed on.
 
-*must not*
+translation environment:: the software on which the language is translated for use by an execution environment.
 
-describes an absolute prohibition of the specification. synonymous with *shall not*.
+implementation:: particular set of software, running in a particular translation environment under particular control options, that performs translation of programs for, and supports execution of commands in, a particular execution environment.
 
-*should*
+well-formed program:: program constructed according to the synctatic and semantic rules as defined by this specification.
 
-describes a recommended but not absolutely necessary requirement of the specification.
+ill-formed program:: program that is not well-formed.
 
-*should not*
+value:: precise meaning of the contents of a name when interpreted as having a specific type.
 
-describes an unrecommended but not absolutely necessary requirement of the specifcation.
+argument:: a value passed to a command that is intended to map to a corresponding parameter.
 
-*may*
+parameter:: the value to be received in a specific argument of a command.
 
-describes an optional feature or behaviour of the specification.
-
-*execution environment*
-
-the software on which the result of translation is executed on.
-
-*translation environment*
-
-the software on which the language is translated for use by an execution environment.
-
-*implementation*
-
-particular set of software, running in a particular translation environment under particular control options, that performs translation of programs for, and supports execution of commands in, a particular execution environment.
-
-*ill-formed program*
-
-program that is not well-formed.
-
-*well-formed program*
-
-program constructed according to the synctatic and semantic rules as defined by this specification.
-
-*value*
-
-precise meaning of the contents of an name when interpreted as having a specific type.
-
-*argument*
-
-a value passed to a command that is intended to map to a corresponding parameter.
-
-*parameter*
-
-the value to be received in a specific argument position of a command.
-
-*in-house compiler*
-
-the translation environment used by DMA Design. this document refers more specifically to <<references,Official GTA3 Script Compiler V413>>.
+in-house compiler:: the translation environment used by DMA Design. this document refers more specifically to <<references,Official GTA3 Script Compiler V413>>.
 

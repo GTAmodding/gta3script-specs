@@ -4,25 +4,25 @@
 [[concept-scripts]]
 === Scripts
 
-A _script_ is a unit of execution which contains its own _program counter_, _local variables_ and _compare flag_.
+A _script_ is a unit of execution which contains its own program counter, local variables and compare flag.
 
 A _program_ is a collection of scripts running concurrently in a cooperative fashion.
 
 A _variable_ is a named storage location. This location holds a value of specific type.
 
-There are global and local variables. _Global variables_ are stored in a way they are accessible from any script. _Local variables_ pertains to its particular script and is only accessible from it.
+There are global and local variables. _Global variables_ are stored in a way they are accessible from any script. _Local variables_ pertain to its particular script and is only accessible from it.
 
-The lifetime of a _global variable_ is the same as of the execution of all scripts. The lifetime of a _local variable_ is the same as its script and lexical scope.
+The lifetime of a global variable is the same as of the execution of all scripts. The lifetime of a local variable is the same as its script and lexical scope.
 
-A _command_ is an operation to be performed by a script. Commands produces _side-effects_ which are described by each command description.
+A _command_ is an operation to be performed by a script. Commands produce side effects which are described by their command description.
 
-A possible side-effect of executing a command is the updating of the _compare flag_. The _compare flag_ of a command is the boolean result it produces. The _compare flag of a script_ is the _compare flag_ of the its last executed command. The _compare flag_ is useful for conditionally changing the _flow of control_.
+A possible side effect of executing a command is the updating of the compare flag. The _compare flag_ of a command is the boolean result it produces. The _compare flag of a script_ is the compare flag of its last executed command.
 
-The _program counter_ of a script indicates its currently executing command. Unless one of the _side-effects_ of a command is to change the _program counter_, the counter goes from the current command to the next sequentially. An explicit change in the _program counter_ is said to be a change in the _flow of control_.
+The _program counter_ of a script indicates its currently executing command. Unless one of the side effects of a command is to change the program counter, the counter goes from the current command to the next sequentially. An explicit change in the program counter is said to be a change in the flow of control.
 
-A command is said to perform a _jump_ if it changes the _flow of control_ irreversibly.
+A command is said to perform a _jump_ if it changes the flow of control irreversibly.
 
-A command is said to call a _subroutine_ if it changes the _flow of control_ but saves the current _program counter_ in a stack to be restored later.
+A command is said to call a _subroutine_ if it changes the flow of control but saves the current program counter in a stack to be restored later.
 
 A command is said to _terminate_ a script if it halts and reclaims storage of such a script.
 
@@ -35,19 +35,17 @@ The _multi-file_ is a collection of script files. Hereafter being the collection
 
 The _main script file_ is the entry script file. This is where the first script (called the _main script_) starts execution.
 
-Other script files are _required_ to become part of the multi-file by the means of require statements within the main script file. The main script file itself is required from the translation environment.
+Other script files are _required_ to become part of the multi-file by the means of require statements within the main script file or main extension files. The main script file itself is required from the translation environment.
 
-Many kinds of script files can be required.
+A _main extension file_ (or _foreign gosub file_) is a script file required by the means of a GOSUB_FILE statement.
 
-A _main extension file_ (or _foreign gosub file_) is a script file required by the means of a _GOSUB_FILE statement_. Other script files can be required from main extension files.
+A _subscript file_ is a script file required by the means of a LAUNCH_MISSION statement. A _subscript_ is a script started by the same statement.
 
-A _subscript file_ is a script file required by the means of the _LAUNCH_MISSION statement_. A _subscript_ is a script started by the same statement.
-
-A _mission script file_ is a script file required by the means of the _LOAD_AND_LAUNCH_MISSION statement_. A _mission script_ is a script started by the same statement. Only a single mission script can be running at once.
+A _mission script file_ is a script file required by the means of a LOAD_AND_LAUNCH_MISSION statement. A _mission script_ is a script started by the same statement. Only a single mission script can be running at once.
 
 An implementation may contain special features regarding the way subscripts and mission scripts are executed.
 
-The main script file is found in a unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a `.sc` extension. If multiple script files with the same name are found, which script file is chosen is unspecified.
+The main script file is found in an unspecified manner. The other script files are found by recursively searching a directory with the same filename (excluding extension) as the main script file. This directory is in the same path as the main script file. The search for the script files shall be case-insensitive. All script files must have a `.sc` extension. If multiple script files with the same name are found, which script file is chosen is unspecified.
 
 A script type is said to come before another script type under the following total order:
 
@@ -67,7 +65,7 @@ A line of code _A_ in a script file _X_ is said to come before a line _B_ in a s
 [[concept-types]]
 === Types
 
-An _integer_ is a binary signed two's-complement integral number. It represents 32 bits of data and the range of values _-2147483648_ through _2147483647_.
+An _integer_ is a binary signed two's-complement integral number. It represents 32 bits of data and the range of values `-2147483648` through `2147483647`.
 
 A _floating-point_ is a representation of a real number. Its exact representation, precision and range of values is implementation-defined.
 
