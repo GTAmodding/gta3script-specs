@@ -52,7 +52,7 @@ ol>li p, ul>li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .ol
 <div id="header">
 <h1>GTA3script Specification</h1>
 <div class="details">
-<span id="revdate">2018-12-02</span>
+<span id="revdate">2018-12-28</span>
 </div>
 </div>
 <div id="content">
@@ -845,6 +845,9 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="paragraph">
 <p>An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.</p>
 </div>
+<div class="paragraph">
+<p>A variable used for indexing an array must not be an array.</p>
+</div>
 </div>
 </div>
 </div>
@@ -870,16 +873,16 @@ variable := variable_name [ subscript ] ;</pre>
 <p>A <em>string constant</em> is a name associated with an integer value. Such association is known in the translation environment.</p>
 </div>
 <div class="paragraph">
-<p>An <em>enumeration</em> is a collection of string constants.</p>
+<p>An <em>enumeration</em> is a collection of string constants. A parameter definition can have an associated enumeration.</p>
 </div>
 <div class="paragraph">
-<p>A parameter definition can have an associated enumeration. A string constant is said to be a match if an identifier in an argument refers to a name in its parameter&#8217;s enumeration.</p>
+<p>There is a special enumeration called the <em>global string constants enumeration</em>.</p>
 </div>
 <div class="paragraph">
-<p>There is an special enumeration called the <em>global string constants enumeration</em> which semantics are defined along this specification. Other enumerations can be defined by an implementation.</p>
+<p>An identifier is said to match a string constant in certain enumeration if there exists a name in the enumeration with the same name as the identifier.</p>
 </div>
 <div class="paragraph">
-<p>If a parameter definition specifies an enumeration, the global string constants enumeration cannot be matched in the said parameter.</p>
+<p>Further semantics for string constants are defined along this specification.</p>
 </div>
 </div>
 <div class="sect2">
@@ -902,7 +905,7 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="sect3">
 <h4 id="parameter-type-int"><a class="anchor" href="#parameter-type-int"></a>6.3.1. INT</h4>
 <div class="paragraph">
-<p>An <em>INT parameter</em> accepts an argument only if it is an integer literal or an identifier matching a global string constant.</p>
+<p>An <em>INT parameter</em> accepts an argument only if it is an integer literal.</p>
 </div>
 </div>
 <div class="sect3">
@@ -938,13 +941,19 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="sect3">
 <h4 id="parameter-type-input-int"><a class="anchor" href="#parameter-type-input-int"></a>6.3.7. INPUT_INT</h4>
 <div class="paragraph">
-<p>An <em>INPUT_INT parameter</em> accepts an argument only if it is an integer literal or an identifier either matching a string constant, global string constant or referencing a variable of integer type (in this order).</p>
+<p>An <em>INPUT_INT parameter</em> accepts an argument only if it is an integer literal or an identifier either matching a string constant or referencing a variable of integer type (in this order).</p>
+</div>
+<div class="paragraph">
+<p>If the parameter has an associated enumeration, the said enumeration shall be used for matching string constants. Otherwise, the global constant enumeration shall be used.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="parameter-type-input-float"><a class="anchor" href="#parameter-type-input-float"></a>6.3.8. INPUT_FLOAT</h4>
 <div class="paragraph">
 <p>An <em>INPUT_FLOAT parameter</em> accepts an argument only if it is a floating-point literal or an identifier referencing a variable of floating-point type.</p>
+</div>
+<div class="paragraph">
+<p>If the argument matches a global string constant, even if a variable of same name exists, the program is ill-formed.</p>
 </div>
 </div>
 <div class="sect3">
@@ -955,11 +964,17 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="paragraph">
 <p>If an entity type is associated with the parameter, the variable must have the same entity type as the parameter, unless there is no entity type associated with the variable. In the latter case, the parameter&#8217;s entity type is assigned to the variable.</p>
 </div>
+<div class="paragraph">
+<p>If the argument matches a global string constant, even if a variable of same name exists, the program is ill-formed.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="parameter-type-output-float"><a class="anchor" href="#parameter-type-output-float"></a>6.3.10. OUTPUT_FLOAT</h4>
 <div class="paragraph">
 <p>An <em>OUTPUT_FLOAT parameter</em> accepts an argument only if it is a identifier referencing a variable of floating-point type.</p>
+</div>
+<div class="paragraph">
+<p>If the argument matches a global string constant, even if a variable of same name exists, the program is ill-formed.</p>
 </div>
 </div>
 <div class="sect3">
@@ -972,6 +987,9 @@ variable := variable_name [ subscript ] ;</pre>
 <h4 id="parameter-type-text-label"><a class="anchor" href="#parameter-type-text-label"></a>6.3.12. TEXT_LABEL</h4>
 <div class="paragraph">
 <p>A <em>TEXT_LABEL parameter</em> accepts an argument only if it is an identifier. If the identifier begins with a dollar character, its suffix must reference a variable of text label type and such a variable is the actual argument. Otherwise, the identifier is a text label.</p>
+</div>
+<div class="paragraph">
+<p>If the identifier matches a global string constant, the program is ill-formed.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1026,7 +1044,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>Such parameters are always trailing parameters.</p>
 </div>
 <div class="paragraph">
-<p><a id="parameter-type-input-opt"></a> The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier referencing a variable of integer or floating-point type. A variable of text label type may be accepted by an INPUT_OPT parameter.</p>
+<p><a id="parameter-type-input-opt"></a> The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier matching a global string constant or referencing a variable of integer or floating-point type (in this order). A variable of text label type may be accepted by an INPUT_OPT parameter.</p>
 </div>
 </div>
 </div>
@@ -1042,7 +1060,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>A command selector consists of a name and a finite sequence of commands which are alternatives for replacement.</p>
 </div>
 <div class="paragraph">
-<p>A command name which is the name of a selector shall behave as if its command name is rewritten as a matching alternative before any parameter checking takes place.</p>
+<p>An actual command named after a selector shall behave as if its command name is rewritten as a matching alternative before any parameter checking takes place.</p>
 </div>
 <div class="paragraph">
 <p>A <em>matching alternative</em> is the first command in the alternative sequence to have the same amount of parameters as arguments in the actual command, and to obey the following rules for every argument and its corresponding parameter:</p>
@@ -1060,7 +1078,7 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>If the identifier matches a global string constant, the parameter type must be <em>INT</em>.</p>
+<p>If the identifier matches a global string constant, the parameter type must be INT and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.</p>
 </li>
 <li>
 <p>If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) <em>VAR_INT</em>, <em>VAR_FLOAT</em> or <em>VAR_TEXT_LABEL</em>.</p>
@@ -1069,7 +1087,7 @@ variable := variable_name [ subscript ] ;</pre>
 <p>If the identifier references a local variable, the same rule as above applies, except by using <em>LVAR_INT</em>, <em>LVAR_FLOAT</em> and <em>LVAR_TEXT_LABEL</em>.</p>
 </li>
 <li>
-<p>If the identifier matches any string constant in any enumeration, the parameter type must be <em>INPUT_INT</em> and the argument shall behave as if rewritten as an integer literal corresponding to the string constant&#8217;s value.</p>
+<p>If the identifier matches any string constant in any enumeration (except the global enumeration), the parameter type must be <em>INPUT_INT</em> and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.</p>
 </li>
 <li>
 <p>Otherwise, the parameter type must be <em>TEXT_LABEL</em>.</p>
@@ -2054,10 +2072,10 @@ require_statement := command_gosub_file
 <div class="literalblock">
 <div class="content">
 <pre>SET_VAR_INT VAR_INT INT
-SET_VAR_FLOAT VAR_FLOAT INT
+SET_VAR_FLOAT VAR_FLOAT FLOAT
 SET_LVAR_INT LVAR_INT INT
 SET_LVAR_FLOAT LVAR_FLOAT FLOAT
-SET_VAR_INT_TO_VAR_INT VAR_INT TVAR_INT
+SET_VAR_INT_TO_VAR_INT VAR_INT VAR_INT
 SET_LVAR_INT_TO_LVAR_INT LVAR_INT LVAR_INT
 SET_VAR_FLOAT_TO_VAR_FLOAT VAR_FLOAT VAR_FLOAT
 SET_LVAR_FLOAT_TO_LVAR_FLOAT LVAR_FLOAT LVAR_FLOAT
