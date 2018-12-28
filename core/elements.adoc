@@ -204,3 +204,5 @@ The program is ill-formed if the array subscript uses a negative or out of bound
 The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.footnoteref:[miss2]
 
 An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.
+
+A variable used for indexing an array must not be an array.

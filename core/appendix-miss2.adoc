@@ -190,4 +190,3 @@ WAIT non_array[1]     // recognized
 WAIT non_array[2]     // not recognized
 // this specification does not accept this
 ----
-
