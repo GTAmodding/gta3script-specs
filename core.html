@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.7.1">
+<meta name="generator" content="Asciidoctor 2.0.10">
 <title>GTA3script Specification</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
@@ -34,8 +34,8 @@ pre {
   color: #000000;
 }
 :not(pre) > code {
-  background-color: inherit;
-  padding: 0 0;
+  background-color: inherit !important;
+  padding: 0 0 !important;
 }
 code {
   color: #000000;
@@ -52,7 +52,7 @@ ol>li p, ul>li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .ol
 <div id="header">
 <h1>GTA3script Specification</h1>
 <div class="details">
-<span id="revdate">2018-12-28</span>
+<span id="revdate">2020-04-07</span>
 </div>
 </div>
 <div id="content">
@@ -160,7 +160,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <ul class="sectlevel3">
 <li><a href="#statement-while">9.10.1. WHILE Statement</a></li>
 <li><a href="#statement-whilenot">9.10.2. WHILENOT Statement</a></li>
-<li><a href="#statement-repeat">9.10.3. REPEAT Statement</a></li>
+<li><a href="#statement-repeat">9.10.3. REPEAT Statement <sup class="footnote">[1]</sup></a></li>
 </ul>
 </li>
 <li><a href="#statement-require">9.11. Require Statements</a>
@@ -389,7 +389,7 @@ This is a draft. It may be wrong, incomplete and subject to change.
 <p>Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.</p>
 </div>
 <div class="paragraph">
-<p>Some changes demand more details than a footnote permits. These are marked with the footnote <sup class="footnote" id="_footnote_miss2">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> and further details are presented in <a href="#miss2">Appendix E</a>.</p>
+<p>Some changes demand more details than a footnote permits. These are marked with the footnote <sup class="footnote" id="_footnote_miss2">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> and further details are presented in <a href="#miss2">Appendix E</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -562,12 +562,12 @@ repetition  := '{' expression '}' ;</pre>
 <h2 id="elements"><a class="anchor" href="#elements"></a>5. Elements</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
+<p>The lexical grammar of the language is context-sensitive. As such, the lexical elements and the syntactic elements are presented together.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup></p>
 </div>
 <div class="sect2">
 <h3 id="element-source-code"><a class="anchor" href="#element-source-code"></a>5.1. Source Code</h3>
 <div class="paragraph">
-<p><em>Source code</em> is a stream of printable ASCII characters plus the control codes line feed (<code>\n</code>), horizontal tab (<code>\t</code>) and carriage return (<code>\r</code>).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p><em>Source code</em> is a stream of printable ASCII characters plus the control codes line feed (<code>\n</code>), horizontal tab (<code>\t</code>) and carriage return (<code>\r</code>).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -577,7 +577,7 @@ ascii_control := '\n' | '\t' | '\r' ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Carriage returns should appear only before a line feed.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup></p>
+<p>Carriage returns should appear only before a line feed.<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnotedef_4" title="View footnote.">4</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>Lowercase letters in the stream shall be interpreted as its uppercase equivalent.</p>
@@ -599,7 +599,7 @@ ascii_control := '\n' | '\t' | '\r' ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Each line should be interpreted as if there is no whitespaces in either ends of the line.<sup class="footnote" id="_footnote_simplify-whitespace">[<a id="_footnoteref_4" class="footnote" href="#_footnotedef_4" title="View footnote.">4</a>]</sup></p>
+<p>Each line should be interpreted as if there is no whitespaces in either ends of the line.<sup class="footnote" id="_footnote_simplify-whitespace">[<a id="_footnoteref_5" class="footnote" href="#_footnotedef_5" title="View footnote.">5</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>A <em>token character</em> is any character capable of forming a single token.</p>
@@ -646,7 +646,7 @@ block_comment := '/*' {block_comment | ascii_char} '*/' ;</pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>The contents of a comment shall be interpreted as if it is whitespaces in the source code.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_4" title="View footnote.">4</a>]</sup> More specifically:</p>
+<p>The contents of a comment shall be interpreted as if it is whitespaces in the source code.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_5" title="View footnote.">5</a>]</sup> More specifically:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -659,7 +659,7 @@ block_comment := '/*' {block_comment | ascii_char} '*/' ;</pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>Comments cannot start inside string literals.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnotedef_5" title="View footnote.">5</a>]</sup></p>
+<p>Comments cannot start inside string literals.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnotedef_6" title="View footnote.">6</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -693,7 +693,7 @@ integer := ['-'] digit {digit} ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>An <em>integer literal</em> is a sequence of digits optionally preceded by a minus sign.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>An <em>integer literal</em> is a sequence of digits optionally preceded by a minus sign.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>If the literal begins with a minus, the number following it shall be negated.</p>
@@ -712,7 +712,7 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 <p>A <em>floating-point literal</em> is a sequence of digits which must contain at least one occurrence of the characters <code>.</code> or <code>F</code>.</p>
 </div>
 <div class="paragraph">
-<p>Once the <code>F</code> characters is found, all characters including and following it shall be ignored. The same shall happen when the character <code>.</code> is found a second time.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnotedef_6" title="View footnote.">6</a>]</sup></p>
+<p>Once the <code>F</code> characters is found, all characters including and following it shall be ignored. The same shall happen when the character <code>.</code> is found a second time.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnotedef_7" title="View footnote.">7</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>The literal can be preceded by a minus sign, which shall negate the floating-point number.</p>
@@ -809,6 +809,9 @@ floating := ['-'] (floating_form1 | floating_form2) ;</pre>
 <pre>string_literal := '"' { ascii_char - (newline | '"') } '"' ;</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>String literals may not be supported by an implementation. In such case, a program using these literals is ill-formed.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="element-variable-reference"><a class="anchor" href="#element-variable-reference"></a>5.3.5. Variable References</h4>
@@ -822,7 +825,7 @@ variable_name := ('$' | 'A'..'Z') {variable_char} ;</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>A <em>variable reference</em> is a variable name optionally followed by an array subscript.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>A <em>variable reference</em> is a variable name optionally followed by an array subscript.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -834,19 +837,22 @@ variable := variable_name [ subscript ] ;</pre>
 <p>The type of a variable reference is the type of the variable name being referenced.</p>
 </div>
 <div class="paragraph">
-<p>The subscript uses an integer literal or another variable name of integer type for zero-based indexing.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnotedef_7" title="View footnote.">7</a>]</sup></p>
+<p>The subscript uses an integer literal or another variable name of integer type for zero-based indexing.<sup class="footnote">[<a id="_footnoteref_8" class="footnote" href="#_footnotedef_8" title="View footnote.">8</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.</p>
 </div>
 <div class="paragraph">
-<p>The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.</p>
 </div>
 <div class="paragraph">
 <p>A variable used for indexing an array must not be an array.</p>
+</div>
+<div class="paragraph">
+<p>If array variables are not supported, subscripts are ill-formed.</p>
 </div>
 </div>
 </div>
@@ -997,17 +1003,26 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="paragraph">
 <p>A <em>VAR_TEXT_LABEL parameter</em> accepts an argument only if it is an identifier referencing a global variable of text label type.</p>
 </div>
+<div class="paragraph">
+<p>In case text label variables are not supported, this parameter type is not supported.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="parameter-type-lvar-text-label"><a class="anchor" href="#parameter-type-lvar-text-label"></a>6.3.14. LVAR_TEXT_LABEL</h4>
 <div class="paragraph">
 <p>A <em>LVAR_TEXT_LABEL parameter</em> accepts an argument only if it is an identifier referencing a local variable of text label type.</p>
 </div>
+<div class="paragraph">
+<p>In case text label variables are not supported, this parameter type is not supported.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="parameter-type-string"><a class="anchor" href="#parameter-type-string"></a>6.3.15. STRING</h4>
 <div class="paragraph">
 <p>A <em>STRING parameter</em> accepts an argument only if it is a string literal.</p>
+</div>
+<div class="paragraph">
+<p>In case string literals are not supported, this parameter type is not supported.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1046,6 +1061,9 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="paragraph">
 <p><a id="parameter-type-input-opt"></a> The <em>INPUT_OPT parameter</em> accepts an argument only if it is an integer literal, floating-point literal, or identifier matching a global string constant or referencing a variable of integer or floating-point type (in this order). A variable of text label type may be accepted by an INPUT_OPT parameter.</p>
 </div>
+<div class="paragraph">
+<p>In case text label variables are not supported, the VAR_TEXT_LABEL_OPT and LVAR_TEXT_LABEL_OPT parameter types are not supported.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1068,10 +1086,10 @@ variable := variable_name [ subscript ] ;</pre>
 <div class="ulist">
 <ul>
 <li>
-<p>An integer literal argument must have a parameter of type <em>INT</em>.</p>
+<p>An integer literal argument must have a parameter of type INT.</p>
 </li>
 <li>
-<p>A floating-point literal argument must have a parameter of type <em>FLOAT</em>.</p>
+<p>A floating-point literal argument must have a parameter of type FLOAT.</p>
 </li>
 <li>
 <p>For identifiers, the following applies (in the given order):</p>
@@ -1081,16 +1099,16 @@ variable := variable_name [ subscript ] ;</pre>
 <p>If the identifier matches a global string constant, the parameter type must be INT and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.</p>
 </li>
 <li>
-<p>If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) <em>VAR_INT</em>, <em>VAR_FLOAT</em> or <em>VAR_TEXT_LABEL</em>.</p>
+<p>If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) VAR_INT, VAR_FLOAT or VAR_TEXT_LABEL.</p>
 </li>
 <li>
-<p>If the identifier references a local variable, the same rule as above applies, except by using <em>LVAR_INT</em>, <em>LVAR_FLOAT</em> and <em>LVAR_TEXT_LABEL</em>.</p>
+<p>If the identifier references a local variable, the same rule as above applies, except by using LVAR_INT, LVAR_FLOAT and LVAR_TEXT_LABEL.</p>
 </li>
 <li>
-<p>If the identifier matches any string constant in any enumeration (except the global enumeration), the parameter type must be <em>INPUT_INT</em> and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.</p>
+<p>If the identifier matches any string constant in any enumeration (except the global enumeration), the parameter type must be INPUT_INT and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.</p>
 </li>
 <li>
-<p>Otherwise, the parameter type must be <em>TEXT_LABEL</em>.</p>
+<p>Otherwise, the parameter type must be TEXT_LABEL.</p>
 </li>
 </ol>
 </div>
@@ -1227,7 +1245,7 @@ assignment_expression := expr_assign_unary
 <p><code>SUB_THING_FROM_THING a c</code> if the name <code>a</code> is the same as the name <code>b</code>.</p>
 </li>
 <li>
-<p>Implementation-defined if <code>a</code> is the same name as <code>c</code>.<sup class="footnote">[<a id="_footnoteref_8" class="footnote" href="#_footnotedef_8" title="View footnote.">8</a>]</sup></p>
+<p>Implementation-defined if <code>a</code> is the same name as <code>c</code>.<sup class="footnote">[<a id="_footnoteref_9" class="footnote" href="#_footnotedef_9" title="View footnote.">9</a>]</sup></p>
 </li>
 <li>
 <p><code>SET a b</code> followed by <code>SUB_THING_BY_THING a c</code> otherwise.</p>
@@ -1382,7 +1400,7 @@ labeled_statement := label_prefix embedded_statement
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -1462,6 +1480,9 @@ var_statement := command_var_name command_var_param {command_var_param} eol ;</p
 <p>An implementation may not support variables of text label type. In such case, a program declaring a text label variable is ill-formed.</p>
 </div>
 <div class="paragraph">
+<p>An implementation may not support array variables. In such case, a program declaring a variable with dimensions is ill-formed.</p>
+</div>
+<div class="paragraph">
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
@@ -1495,7 +1516,7 @@ var_statement := command_var_name command_var_param {command_var_param} eol ;</p
 <p>Local variable names can be seen by their entire lexical scope.</p>
 </div>
 <div class="paragraph">
-<p>The initial value of variables is unspecified.<sup class="footnote">[<a id="_footnoteref_9" class="footnote" href="#_footnotedef_9" title="View footnote.">9</a>]</sup></p>
+<p>The initial value of variables is unspecified.<sup class="footnote">[<a id="_footnoteref_10" class="footnote" href="#_footnotedef_10" title="View footnote.">10</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -1518,7 +1539,7 @@ conditional_list := conditional_element eol
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>The command it embodies cannot be any of the commands specified by this section (e.g. <code>VAR_INT</code>, <code>ELSE</code>, <code>ENDWHILE</code>, <code>{</code>, <code>GOSUB_FILE</code>, <code>MISSION_START</code>, etc).<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p><strong>Semantics</strong></p>
@@ -1653,7 +1674,7 @@ conditional_list := conditional_element eol
 </div>
 </div>
 <div class="sect3">
-<h4 id="statement-repeat"><a class="anchor" href="#statement-repeat"></a>9.10.3. REPEAT Statement</h4>
+<h4 id="statement-repeat"><a class="anchor" href="#statement-repeat"></a>9.10.3. REPEAT Statement <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></h4>
 <div class="listingblock">
 <div class="content">
 <pre>repeat_statement := 'REPEAT' sep integer sep variable eol
@@ -1665,7 +1686,7 @@ conditional_list := conditional_element eol
 <p><strong>Constraints</strong></p>
 </div>
 <div class="paragraph">
-<p>The associated variable must be of integer type.<sup class="footnote">[<a id="_footnoteref_10" class="footnote" href="#_footnotedef_10" title="View footnote.">10</a>]</sup></p>
+<p>The associated variable must be of integer type.<sup class="footnote">[<a id="_footnoteref_11" class="footnote" href="#_footnotedef_11" title="View footnote.">11</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p><strong>Semantics</strong></p>
@@ -1995,7 +2016,7 @@ require_statement := command_gosub_file
 <p>The name of a script must be unique across the multi-file.</p>
 </div>
 <div class="paragraph">
-<p>It is unspecified whether a name given by a text label variable is accepted.<sup class="footnote">[<a id="_footnoteref_11" class="footnote" href="#_footnotedef_11" title="View footnote.">11</a>]</sup></p>
+<p>It is unspecified whether a name given by a text label variable is accepted.<sup class="footnote">[<a id="_footnoteref_12" class="footnote" href="#_footnotedef_12" title="View footnote.">12</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -2041,7 +2062,7 @@ require_statement := command_gosub_file
 <p>The translation environment must enforce the following constraints.</p>
 </div>
 <div class="paragraph">
-<p>The specified label location must be within a scope. Such scope may begin at the next non-empty embedded statement relative to the label location.<sup class="footnote">[<a id="_footnoteref_12" class="footnote" href="#_footnotedef_12" title="View footnote.">12</a>]</sup></p>
+<p>The specified label location must be within a scope. Such scope may begin at the next non-empty embedded statement relative to the label location.<sup class="footnote">[<a id="_footnoteref_13" class="footnote" href="#_footnotedef_13" title="View footnote.">13</a>]</sup></p>
 </div>
 <div class="paragraph">
 <p>The type of a local variable and its respective input argument must match. For instance, if an input argument is an integer literal or variable of integer type, its corresponding local variable in the target scope must be of integer type.</p>
@@ -3019,40 +3040,43 @@ WAIT non_array[2]     // not recognized
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. For consistency we have simplified this feature. Please refer to <a href="#miss2">Appendix E</a> for details on how the in-house compiler behaves.
+<a href="#_footnoteref_1">1</a>. Despite not being used in GTA III, REPEAT seems to be supported since then given its command id is alongside the command id for the other statements.
 </div>
 <div class="footnote" id="_footnotedef_2">
-<a href="#_footnoteref_2">2</a>. The in-house compiler is an ad-hoc parser, introducing a lot of contextual problems to the language.
+<a href="#_footnoteref_2">2</a>. For consistency we have simplified this feature. Please refer to <a href="#miss2">Appendix E</a> for details on how the in-house compiler behaves.
 </div>
 <div class="footnote" id="_footnotedef_3">
-<a href="#_footnoteref_3">3</a>. The in-house compiler does not have such a restriction. We introduce it for simplicity.
+<a href="#_footnoteref_3">3</a>. The in-house compiler is an ad-hoc parser, introducing a lot of contextual problems to the language.
 </div>
 <div class="footnote" id="_footnotedef_4">
-<a href="#_footnoteref_4">4</a>. This simplifies the syntactic specification.
+<a href="#_footnoteref_4">4</a>. The in-house compiler does not have such a restriction. We introduce it for simplicity.
 </div>
 <div class="footnote" id="_footnotedef_5">
-<a href="#_footnoteref_5">5</a>. i.e. <code>"This // is a string"</code> is a string literal, not an incomplete string.
+<a href="#_footnoteref_5">5</a>. This simplifies the syntactic specification.
 </div>
 <div class="footnote" id="_footnotedef_6">
-<a href="#_footnoteref_6">6</a>. We have not simplified this misfeature because it is used in one of the GTA III 10th Anniversary scripts.
+<a href="#_footnoteref_6">6</a>. i.e. <code>"This // is a string"</code> is a string literal, not an incomplete string.
 </div>
 <div class="footnote" id="_footnotedef_7">
-<a href="#_footnoteref_7">7</a>. The in-house compiler uses one-based indexing. Its array feature is incomplete and produces problematic bytecode when subscripting variables. Additionally, the GTA Vice City runtime (the target of the in-house compiler) does not support arrays. Thus it&#8217;s believed this feature is still incomplete in V413 and was never used. Not until GTA San Andreas, which introduces arrays in the execution environment. Its runtime performs zero-based indexing on variable subscripts, but for literal subscripts we can only guess. The compiled multifile contains debug strings that suggests zero-based indexing for literals.
+<a href="#_footnoteref_7">7</a>. We have not simplified this misfeature because it is used in one of the GTA III 10th Anniversary scripts.
 </div>
 <div class="footnote" id="_footnotedef_8">
-<a href="#_footnoteref_8">8</a>. The in-house compiler uses unsupported command selectors (<code>NEGATE</code> for substraction and <code>ONEOVER</code> for division) to perform this operation.
+<a href="#_footnoteref_8">8</a>. The in-house compiler uses one-based indexing. Its array feature is incomplete and produces problematic bytecode when subscripting variables. Additionally, the GTA Vice City runtime (the target of the in-house compiler) does not support arrays. Thus it&#8217;s believed this feature is still incomplete in V413 and was never used. Not until GTA San Andreas, which introduces arrays in the execution environment. Its runtime performs zero-based indexing on variable subscripts, but for literal subscripts we can only guess. The compiled multifile contains debug strings that suggests zero-based indexing for literals.
 </div>
 <div class="footnote" id="_footnotedef_9">
-<a href="#_footnoteref_9">9</a>. In Grand Theft Auto, the memory storage of local variables is not zeroed after leaving a scope (nor while entering one). This means local variables preserve values from previous scopes. Additionally, the Stories chapters share the storage of global variables between mission scripts, having the very same implications (no in-depth research has been conduced though).
+<a href="#_footnoteref_9">9</a>. The in-house compiler uses unsupported command selectors (<code>NEGATE</code> for substraction and <code>ONEOVER</code> for division) to perform this operation.
 </div>
 <div class="footnote" id="_footnotedef_10">
-<a href="#_footnoteref_10">10</a>. The parameter definition of <code>REPEAT</code> in the in-house compiler disallows local variables. Due to being a complex command, however, the compiler ignores this parametric restriction and ends up permiting local variables (which is likely the intended behaviour).
+<a href="#_footnoteref_10">10</a>. In Grand Theft Auto, the memory storage of local variables is not zeroed after leaving a scope (nor while entering one). This means local variables preserve values from previous scopes. Additionally, the Stories chapters share the storage of global variables between mission scripts, having the very same implications (no in-depth research has been conduced though).
 </div>
 <div class="footnote" id="_footnotedef_11">
-<a href="#_footnoteref_11">11</a>. The in-house compiler does not handle the case of text label variables in <code>SCRIPT_NAME</code>, but this does not tell much because it barely supports any text label variable feature. No compiled multi-file contains script names assigned by a variable. Thus, we refrain from defining any semantics for this case.
+<a href="#_footnoteref_11">11</a>. The parameter definition of <code>REPEAT</code> in the in-house compiler disallows local variables. Due to being a complex command, however, the compiler ignores this parametric restriction and ends up permiting local variables (which is likely the intended behaviour).
 </div>
 <div class="footnote" id="_footnotedef_12">
-<a href="#_footnoteref_12">12</a>. For GTA III 10th Anniversary multi-files, all target scopes are a line after its target label, which would emit an error in the in-house compiler (for GTA Vice City).
+<a href="#_footnoteref_12">12</a>. The in-house compiler does not handle the case of text label variables in <code>SCRIPT_NAME</code>, but this does not tell much because it barely supports any text label variable feature. No compiled multi-file contains script names assigned by a variable. Thus, we refrain from defining any semantics for this case.
+</div>
+<div class="footnote" id="_footnotedef_13">
+<a href="#_footnoteref_13">13</a>. For GTA III 10th Anniversary multi-files, all target scopes are a line after its target label, which would emit an error in the in-house compiler (for GTA Vice City).
 </div>
 </div>
 </body>
