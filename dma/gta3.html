@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<title>GTA3script extensions for GTA III</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<style>
+/* Little customization on the asciidoctor stylesheet */
+#header, #content, #footer, #footnotes {
+  max-width: 51em;
+}
+.sect1 + .sect1 {
+  border-top: none;
+}
+h1, h2, h3, h4, h5, h6 {
+  color: #111;
+  font-weight: normal;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+#content #toc {
+  background: none;
+}
+.literalblock pre, .listingblock pre:not(.highlight),
+.listingblock pre[class="highlight"], .listingblock pre[class^="highlight "],
+.listingblock pre.CodeRay, .listingblock pre.prettyprint {
+  background: none;
+}
+pre {
+  color: #000000;
+}
+:not(pre) > code {
+  background-color: inherit !important;
+  padding: 0 0 !important;
+}
+code {
+  color: #000000;
+}
+p {
+  line-height: 1.7;
+}
+ol>li p, ul>li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist {
+  margin-bottom: 0;
+}
+</style>
+</head>
+<body class="article">
+<div id="header">
+<h1>GTA3script extensions for GTA III</h1>
+<div class="details">
+<span id="revdate">2020-04-07</span>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This is a draft. It may be wrong, incomplete and subject to change.
+</td>
+</tr>
+</table>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle" class="title"></div>
+<ul class="sectlevel1">
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#scope">1. Scope</a></li>
+<li><a href="#definitions">2. Terms and Definitions</a></li>
+<li><a href="#general">3. General Principles</a>
+<ul class="sectlevel2">
+<li><a href="#conformance">3.1. Implementation Conformance</a></li>
+<li><a href="#document-structure">3.2. Structure of this Document</a></li>
+</ul>
+</li>
+<li><a href="#elements">4. Elements</a>
+<ul class="sectlevel2">
+<li><a href="#element-command">4.1. Commands</a>
+<ul class="sectlevel3">
+<li><a href="#element-identifier">4.1.1. Identifiers</a></li>
+<li><a href="#element-string-literal">4.1.2. String Literals</a></li>
+<li><a href="#element-variable-reference">4.1.3. Variable References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#parameters">5. Parameters</a>
+<ul class="sectlevel2">
+<li><a href="#string-constants">5.1. String Constants</a></li>
+<li><a href="#parameter-used-objects">5.2. Used Objects</a></li>
+<li><a href="#parameter-types">5.3. Parameter Types</a>
+<ul class="sectlevel3">
+<li><a href="#parameter-type-input-int">5.3.1. INPUT_INT</a></li>
+<li><a href="#parameter-type-var-text-label">5.3.2. VAR_TEXT_LABEL</a></li>
+<li><a href="#parameter-type-lvar-text-label">5.3.3. LVAR_TEXT_LABEL</a></li>
+<li><a href="#parameter-type-string">5.3.4. STRING</a></li>
+<li><a href="#parameter-type-optional">5.3.5. Optional Parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#expressions">6. Expressions</a>
+<ul class="sectlevel2">
+<li><a href="#assignment-expressions">6.1. Assignment Expressions</a></li>
+</ul>
+</li>
+<li><a href="#statements">7. Statements</a>
+<ul class="sectlevel2">
+<li><a href="#statement-scope">7.1. Scope Statements</a></li>
+<li><a href="#statement-variable-declaration">7.2. Variable Declaration Statements</a></li>
+</ul>
+</li>
+<li><a href="#command-def">8. Supporting Commands</a>
+<ul class="sectlevel2">
+<li><a href="#command-def-start-new-script">8.1. START_NEW_SCRIPT</a></li>
+<li><a href="#command-def-player-made-progress">8.2. PLAYER_MADE_PROGRESS</a></li>
+<li><a href="#command-def-set-progress-total">8.3. SET_PROGRESS_TOTAL</a></li>
+<li><a href="#command-def-register-mission-passed">8.4. REGISTER_MISSION_PASSED</a></li>
+<li><a href="#command-def-set-total-number-of-missions">8.5. SET_TOTAL_NUMBER_OF_MISSIONS</a></li>
+<li><a href="#command-def-create-collectable1">8.6. CREATE_COLLECTABLE1</a></li>
+<li><a href="#command-def-set-collectable1-total">8.7. SET_COLLECTABLE1_TOTAL</a></li>
+</ul>
+</li>
+<li><a href="#alternator-def">9. Supporting Command Selectors</a>
+<ul class="sectlevel2">
+<li><a href="#alternator-def-set">9.1. SET</a></li>
+<li><a href="#alternator-def-is-thing-equal-to-thing">9.2. IS_THING_EQUAL_TO_THING</a></li>
+<li><a href="#alternator-def-is-thing-greater-than-thing">9.3. IS_THING_GREATER_THAN_THING</a></li>
+<li><a href="#alternator-def-is-thing-greater-or-equal-to-thing">9.4. IS_THING_GREATER_OR_EQUAL_TO_THING</a></li>
+</ul>
+</li>
+<li><a href="#string-constant-def">10. Supporting String Constants</a></li>
+<li><a href="#entity-def">11. Supporting Entity Types</a></li>
+<li><a href="#limits">12. Implementation Limits</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Grand Theft Auto III was released in 2001 to great critical acclaim, becoming one of the most important titles of all time and changing the gaming landscape forever with its immersive open world sandbox.</p>
+</div>
+<div class="paragraph">
+<p>To support this open world, a scripting language was created in order to fasten development, reducing the complexities of programming languages for less-skilled personnel.</p>
+</div>
+<div class="paragraph">
+<p>This is an attempt to produce a formal language specification for this language. More specifically, this document is an extension to <a href="#gta3script-core">[GTA3script Specification]</a>, providing details specific to the implementation of the language in GTA III.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scope"><a class="anchor" href="#scope"></a>1. Scope</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document is an extension to the GTA3script language. It provides the necessary changes to the translation (and part of the execution) environment to accomodate the details of the implementation used in 2001&#8217;s GTA III.</p>
+</div>
+<div class="paragraph">
+<p><a href="#gta3script-core">[GTA3script Specification]</a> provides important context and specification for this extension. The sections of this document should be read as if merged to the original sections of <a href="#gta3script-core">[GTA3script Specification]</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="definitions"><a class="anchor" href="#definitions"></a>2. Terms and Definitions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For the purposes of this document, the terms and definitions given in <a href="#gta3script-core">[GTA3script Specification]</a> and the following apply.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">mission</dt>
+<dd>
+<p>TODO</p>
+</dd>
+<dt class="hdlist1">collectable</dt>
+<dd>
+<p>TODO</p>
+</dd>
+<dt class="hdlist1">progress points</dt>
+<dd>
+<p>TODO</p>
+</dd>
+<dt class="hdlist1">timer</dt>
+<dd>
+<p>TODO</p>
+</dd>
+<dt class="hdlist1">model</dt>
+<dd>
+<p>TODO</p>
+</dd>
+<dt class="hdlist1">level model</dt>
+<dd>
+<p>TODO</p>
+</dd>
+<dt class="hdlist1">text key</dt>
+<dd>
+<p>TODO</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="general"><a class="anchor" href="#general"></a>3. General Principles</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="conformance"><a class="anchor" href="#conformance"></a>3.1. Implementation Conformance</h3>
+<div class="paragraph">
+<p>Other extensions may expand and alter this document for the purpose of specifying other implementations, provided they still conform to <a href="#gta3script-core">[GTA3script Specification]</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="document-structure"><a class="anchor" href="#document-structure"></a>3.2. Structure of this Document</h3>
+<div class="paragraph">
+<p>Section <a href="#elements">4</a> through <a href="#alternator-def">9</a> provides changes to the sections of same name in <a href="#gta3script-core">[GTA3script Specification]</a>.</p>
+</div>
+<div class="paragraph">
+<p>Section <a href="#string-constant-def">10</a> and <a href="#entity-def">11</a> describes the set of string constants and entity types necessary to support this implementation.</p>
+</div>
+<div class="paragraph">
+<p>Section <a href="#limits">12</a> provides the limits of this implementation.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="elements"><a class="anchor" href="#elements"></a>4. Elements</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="element-command"><a class="anchor" href="#element-command"></a>4.1. Commands</h3>
+<div class="sect3">
+<h4 id="element-identifier"><a class="anchor" href="#element-identifier"></a>4.1.1. Identifiers</h4>
+<div class="paragraph">
+<p>As text label variables are not supported, the first character of an identifier shall not be a dollar.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="element-string-literal"><a class="anchor" href="#element-string-literal"></a>4.1.2. String Literals</h4>
+<div class="paragraph">
+<p>String literals are not supported.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="element-variable-reference"><a class="anchor" href="#element-variable-reference"></a>4.1.3. Variable References</h4>
+<div class="paragraph">
+<p>As text label variables are not supported, the first character of a variable name shall not be a dollar.</p>
+</div>
+<div class="paragraph">
+<p>As array variables are not supported, subscripts are ill-formed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="parameters"><a class="anchor" href="#parameters"></a>5. Parameters</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="string-constants"><a class="anchor" href="#string-constants"></a>5.1. String Constants</h3>
+<div class="paragraph">
+<p>There exists an enumeration called the <em>default models enumeration</em>.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="parameter-used-objects"><a class="anchor" href="#parameter-used-objects"></a>5.2. Used Objects</h3>
+<div class="paragraph">
+<p>An <em>object string constant</em> is a string constant matching any string constant in the default models enumeration or any level model name (in this order).<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup></p>
+</div>
+<div class="paragraph">
+<p>A parameter definition can be associated with object string constants. Further semantics for this association are defined along this specification.</p>
+</div>
+<div class="paragraph">
+<p>Any object string constant used in the multi-file is called an <em>used object</em>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="parameter-types"><a class="anchor" href="#parameter-types"></a>5.3. Parameter Types</h3>
+<div class="sect3">
+<h4 id="parameter-type-input-int"><a class="anchor" href="#parameter-type-input-int"></a>5.3.1. INPUT_INT</h4>
+<div class="paragraph">
+<p>If the parameter is associated with object string constants, it should behave as if the parameter was associated with an enumeration containing the object string constants.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="parameter-type-var-text-label"><a class="anchor" href="#parameter-type-var-text-label"></a>5.3.2. VAR_TEXT_LABEL</h4>
+<div class="paragraph">
+<p>As text label variables are not supported, this parameter type is not supported.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="parameter-type-lvar-text-label"><a class="anchor" href="#parameter-type-lvar-text-label"></a>5.3.3. LVAR_TEXT_LABEL</h4>
+<div class="paragraph">
+<p>As text label variables are not supported, this parameter type is not supported.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="parameter-type-string"><a class="anchor" href="#parameter-type-string"></a>5.3.4. STRING</h4>
+<div class="paragraph">
+<p>As string literals are not supported, this parameter type is not supported.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="parameter-type-optional"><a class="anchor" href="#parameter-type-optional"></a>5.3.5. Optional Parameters</h4>
+<div class="paragraph">
+<p>As text label variables are not supported, the  VAR_TEXT_LABEL_OPT and LVAR_TEXT_LABEL_OPT parameter types are not supported.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="expressions"><a class="anchor" href="#expressions"></a>6. Expressions</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="assignment-expressions"><a class="anchor" href="#assignment-expressions"></a>6.1. Assignment Expressions</h3>
+<div class="paragraph">
+<p>The ternary assignments <code>a = b - c</code>, <code>a = b / c</code>, <code>a = b +@ c</code> and <code>a = b -@ c</code> where <code>a</code> is the same name as <code>c</code> are not supported.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="statements"><a class="anchor" href="#statements"></a>7. Statements</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="statement-scope"><a class="anchor" href="#statement-scope"></a>7.1. Scope Statements</h3>
+<div class="paragraph">
+<p><strong>Semantics</strong></p>
+</div>
+<div class="paragraph">
+<p>The activation of a lexical scope causes the declaration of two local variables of integer type named <code>TIMERA</code> and <code>TIMERB</code> which are timers counting up.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="statement-variable-declaration"><a class="anchor" href="#statement-variable-declaration"></a>7.2. Variable Declaration Statements</h3>
+<div class="paragraph">
+<p>Text label variables are not supported.</p>
+</div>
+<div class="paragraph">
+<p>Array variables are not supported.</p>
+</div>
+<div class="paragraph">
+<p><strong>Constraints</strong></p>
+</div>
+<div class="paragraph">
+<p>The name of a variable shall not be <code>TIMERA</code> nor <code>TIMERB</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="command-def"><a class="anchor" href="#command-def"></a>8. Supporting Commands</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The GTA III implementation of the language provides an extensive list of commands to interact with the game engine. It is not of the intent of this specification to document these commands. This is left as a task for other projects in the modding community. Please see <a href="#gtamodswiki-opcodes">[GTAMods Wiki]</a>, <a href="#gtag-opcodes">[GTAG Opcode Database]</a> and <a href="#gta3script-config">[GTA3script Configuration]</a> for some of these efforts.</p>
+</div>
+<div class="paragraph">
+<p>Nevertheless, there are commands that require additional support from the translation environment. These commands are specified below.</p>
+</div>
+<div class="sect2">
+<h3 id="command-def-start-new-script"><a class="anchor" href="#command-def-start-new-script"></a>8.1. START_NEW_SCRIPT</h3>
+<div class="paragraph">
+<p>The definition present in <a href="#gta3script-core">[GTA3script Specification]</a> remains with the following rectification in the constraints of the command.</p>
+</div>
+<div class="paragraph">
+<p><strong>Constraints</strong></p>
+</div>
+<div class="paragraph">
+<p>The specified label location must be within a scope. Such scope can begin at the next non-empty embedded statement relative to the label location.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="command-def-player-made-progress"><a class="anchor" href="#command-def-player-made-progress"></a>8.2. PLAYER_MADE_PROGRESS</h3>
+<div class="paragraph">
+<p><strong>Parameters</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>PLAYER_MADE_PROGRESS INT</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Side effects</strong></p>
+</div>
+<div class="paragraph">
+<p>Adds the given amount of progress points to the game.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="command-def-set-progress-total"><a class="anchor" href="#command-def-set-progress-total"></a>8.3. SET_PROGRESS_TOTAL</h3>
+<div class="paragraph">
+<p><strong>Parameters</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SET_PROGRESS_TOTAL INT</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Side effects</strong></p>
+</div>
+<div class="paragraph">
+<p>Sets the total amount of progress points that can be archieved in the game.</p>
+</div>
+<div class="paragraph">
+<p><strong>Constraints</strong></p>
+</div>
+<div class="paragraph">
+<p>The translation environment must enforce the following constraints.</p>
+</div>
+<div class="paragraph">
+<p>There shall be only a single occurrence of this command in the multi-file.</p>
+</div>
+<div class="paragraph">
+<p>The given integer value shall be equal zero. The argument must be rewritten to correspond to the sum of the arguments to all instances of <a href="#command-def-player-made-progress">PLAYER_MADE_PROGRESS</a> in the multi-file.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="command-def-register-mission-passed"><a class="anchor" href="#command-def-register-mission-passed"></a>8.4. REGISTER_MISSION_PASSED</h3>
+<div class="paragraph">
+<p><strong>Parameters</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>REGISTER_MISSION_PASSED TEXT_LABEL</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Side effects</strong></p>
+</div>
+<div class="paragraph">
+<p>Registers that the mission associated with the given text key has been passed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="command-def-set-total-number-of-missions"><a class="anchor" href="#command-def-set-total-number-of-missions"></a>8.5. SET_TOTAL_NUMBER_OF_MISSIONS</h3>
+<div class="paragraph">
+<p><strong>Parameters</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SET_TOTAL_NUMBER_OF_MISSIONS INPUT_INT</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Side effects</strong></p>
+</div>
+<div class="paragraph">
+<p>Sets the total number of missions present in the game.</p>
+</div>
+<div class="paragraph">
+<p><strong>Constraints</strong></p>
+</div>
+<div class="paragraph">
+<p>The translation environment must enforce the following constraints.</p>
+</div>
+<div class="paragraph">
+<p>There shall be only a single occurrence of this command in the multi-file.</p>
+</div>
+<div class="paragraph">
+<p>The argument must not be a variable and shall evaluate to an interger value equal zero. The argument must be rewritten to correspond to the number of times the command <a href="#command-def-register-mission-passed">REGISTER_MISSION_PASSED</a> occurs in the multi-file.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="command-def-create-collectable1"><a class="anchor" href="#command-def-create-collectable1"></a>8.6. CREATE_COLLECTABLE1</h3>
+<div class="paragraph">
+<p><strong>Parameters</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>CREATE_COLLECTABLE1 INPUT_FLOAT INPUT_FLOAT INPUT_FLOAT</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Side effects</strong></p>
+</div>
+<div class="paragraph">
+<p>Creates a collectable at the specified X, Y and Z coordinates respectively.</p>
+</div>
+<div class="paragraph">
+<p>If the given Z coordinate is equal <code>-100.0</code>, the collectable is created at the ground of the given X, Y coordinates.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="command-def-set-collectable1-total"><a class="anchor" href="#command-def-set-collectable1-total"></a>8.7. SET_COLLECTABLE1_TOTAL</h3>
+<div class="paragraph">
+<p><strong>Parameters</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>SET_COLLECTABLE1_TOTAL INPUT_INT</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Side effects</strong></p>
+</div>
+<div class="paragraph">
+<p>Sets the total number of collectables in the game.</p>
+</div>
+<div class="paragraph">
+<p><strong>Constraints</strong></p>
+</div>
+<div class="paragraph">
+<p>The translation environment must enforce the following constraints.</p>
+</div>
+<div class="paragraph">
+<p>There shall be only a single occurrence of this command in the multi-file.</p>
+</div>
+<div class="paragraph">
+<p>The argument must not be a variable and shall evaluate to an interger value equal zero. The argument must be rewritten to correspond to the number of times the command <a href="#command-def-create-collectable1">CREATE_COLLECTABLE1</a> occurs in the multi-file.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="alternator-def"><a class="anchor" href="#alternator-def"></a>9. Supporting Command Selectors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following rectifies a few command selectors specified in <a href="#gta3script-core">[GTA3script Specification]</a> to eliminate unsupported alternatives from the selection set.</p>
+</div>
+<div class="sect2">
+<h3 id="alternator-def-set"><a class="anchor" href="#alternator-def-set"></a>9.1. SET</h3>
+<div class="paragraph">
+<p>The following alternatives are not supported and thus removed:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>SET_VAR_INT_TO_CONSTANT VAR_INT INPUT_INT
+SET_LVAR_INT_TO_CONSTANT VAR_INT INPUT_INT
+SET_VAR_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+SET_LVAR_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternator-def-is-thing-equal-to-thing"><a class="anchor" href="#alternator-def-is-thing-equal-to-thing"></a>9.2. IS_THING_EQUAL_TO_THING</h3>
+<div class="paragraph">
+<p>The following alternatives are not supported and thus removed<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>IS_INT_VAR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+IS_INT_LVAR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
+IS_VAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+IS_LVAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
+IS_INT_LVAR_EQUAL_TO_INT_VAR LVAR_INT VAR_INT
+IS_FLOAT_LVAR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternator-def-is-thing-greater-than-thing"><a class="anchor" href="#alternator-def-is-thing-greater-than-thing"></a>9.3. IS_THING_GREATER_THAN_THING</h3>
+<div class="paragraph">
+<p>The following alternatives are not supported and thus removed:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>IS_INT_VAR_GREATER_THAN_CONSTANT VAR_INT INPUT_INT
+IS_INT_LVAR_GREATER_THAN_CONSTANT LVAR_INT INPUT_INT
+IS_CONSTANT_GREATER_THAN_INT_VAR INPUT_INT VAR_INT
+IS_CONSTANT_GREATER_THAN_INT_LVAR INPUT_INT LVAR_INT</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternator-def-is-thing-greater-or-equal-to-thing"><a class="anchor" href="#alternator-def-is-thing-greater-or-equal-to-thing"></a>9.4. IS_THING_GREATER_OR_EQUAL_TO_THING</h3>
+<div class="paragraph">
+<p>The following alternatives are not supported and thus removed:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>IS_INT_VAR_GREATER_OR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+IS_INT_LVAR_GREATER_OR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
+IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_VAR INPUT_INT VAR_INT
+IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR INPUT_INT LVAR_INT</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="string-constant-def"><a class="anchor" href="#string-constant-def"></a>10. Supporting String Constants</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="entity-def"><a class="anchor" href="#entity-def"></a>11. Supporting Entity Types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="limits"><a class="anchor" href="#limits"></a>12. Implementation Limits</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="references"><a class="anchor" href="#references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist bibliography">
+<ul class="bibliography">
+<li>
+<p><a id="gta3script-core"></a>[GTA3script Specification] <a href="../core.html">GTA3script Core Specification</a>.</p>
+</li>
+<li>
+<p><a id="gta3script-config"></a>[GTA3script Configuration] <a href="https://github.com/GTAmodding/gta3script-config">GTA3script Configuration Files for Compilers and Disassemblers</a>.</p>
+</li>
+<li>
+<p><a id="gtamodswiki-opcodes"></a>[GTAMods Wiki] <a href="https://gtamods.com/wiki/List_of_opcodes">GTAMods Wiki&#8201;&#8212;&#8201;List of opcodes</a>.</p>
+</li>
+<li>
+<p><a id="gtag-opcodes"></a>[GTAG Opcode Database] <a href="http://gtagmodding.com/opcode-database/">GTAG Modding&#8201;&#8212;&#8201;Opcode Database</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. This enumeration behaves like any other enumeration. It is defined here such that section <a href="#parameter-used-objects">5.2</a> can refer to it.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. Although it may seem like object string constants form an enumeration, they don&#8217;t. Semantics are sighly different. Two examples come to mind: Variables can have the same name as level models and alternators do not take object string constants into account. All of this is unlike the in-house compiler we have, but is in accordance to what is seen in the GTA III 10th Anniversary scripts (e.g. variable and used object named <code>playersdoor</code>) as well as what is seen in GTA San Andreas to support assignment of level models to variables (i.e. not through <code>SET_VAR_INT_TO_CONSTANT</code> but <code>SET_VAR_INT</code>&#8201;&#8212;&#8201;but this is an history for the GTA3script extensions for GTA San Andreas).
+</div>
+<div class="footnote" id="_footnotedef_3">
+<a href="#_footnoteref_3">3</a>. This list is not wrong. Commands to compare local variables (left-hand side) to global variables (right-hand side) are not available in GTA III nor Vice City.
+</div>
+</div>
+</body>
+</html>
