@@ -134,6 +134,8 @@ The commands with the `VAR_` prefix declares global variables. The ones with `LV
 
 An implementation may not support variables of text label type. In such case, a program declaring a text label variable is ill-formed.
 
+An implementation may not support array variables. In such case, a program declaring a variable with dimensions is ill-formed.
+
 *Constraints*
 
 Global variable names must be unique across the multi-file.
@@ -282,7 +284,7 @@ whilenot_statement := 'WHILENOT' sep conditional_list
 The behaviour of this is the same as of the WHILE statement, except the complement of the compare flag is used to test whether to continue executing the set of statements.
 
 [[statement-repeat]]
-==== REPEAT Statement
+==== REPEAT Statement footnote:[Despite not being used in GTA III, REPEAT seems to be supported since then given its command id is alongside the command id for the other statements.]
 
 ----
 repeat_statement := 'REPEAT' sep integer sep variable eol

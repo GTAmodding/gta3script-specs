@@ -1,0 +1,16 @@
+[[general]]
+== General Principles
+
+[[conformance]]
+=== Implementation Conformance
+
+Other extensions may expand and alter this document for the purpose of specifying other implementations, provided they still conform to <<gta3script-core>>.
+
+[[document-structure]]
+=== Structure of this Document
+
+Section <<elements>> through <<alternator-def>> provides changes to the sections of same name in <<gta3script-core>>.
+
+Section <<string-constant-def>> and <<entity-def>> describes the set of string constants and entity types necessary to support this implementation.
+
+Section <<limits>> provides the limits of this implementation.

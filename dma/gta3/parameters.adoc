@@ -1,0 +1,44 @@
+[[parameters]]
+== Parameters
+
+[[string-constants]]
+=== String Constants
+
+There exists an enumeration called the _default models enumeration_.footnote:[This enumeration behaves like any other enumeration. It is defined here such that section <<parameter-used-objects>> can refer to it.]
+
+[[parameter-used-objects]]
+=== Used Objects
+
+An _object string constant_ is a string constant matching any string constant in the default models enumeration or any level model name (in this order).footnote:[Although it may seem like object string constants form an enumeration, they don't. Semantics are sighly different. Two examples come to mind: Variables can have the same name as level models and alternators do not take object string constants into account. All of this is unlike the in-house compiler we have, but is in accordance to what is seen in the GTA III 10th Anniversary scripts (e.g. variable and used object named `playersdoor`) as well as what is seen in GTA San Andreas to support assignment of level models to variables (i.e. not through `SET_VAR_INT_TO_CONSTANT` but `SET_VAR_INT` -- but this is an history for the GTA3script extensions for GTA San Andreas).]
+
+A parameter definition can be associated with object string constants. Further semantics for this association are defined along this specification.
+
+Any object string constant used in the multi-file is called an _used object_.
+
+[[parameter-types]]
+=== Parameter Types
+
+[[parameter-type-input-int]]
+==== INPUT_INT
+
+If the parameter is associated with object string constants, it should behave as if the parameter was associated with an enumeration containing the object string constants.
+
+[[parameter-type-var-text-label]]
+==== VAR_TEXT_LABEL
+
+As text label variables are not supported, this parameter type is not supported.
+
+[[parameter-type-lvar-text-label]]
+==== LVAR_TEXT_LABEL
+
+As text label variables are not supported, this parameter type is not supported.
+
+[[parameter-type-string]]
+==== STRING
+
+As string literals are not supported, this parameter type is not supported.
+
+[[parameter-type-optional]]
+==== Optional Parameters
+
+As text label variables are not supported, the  VAR_TEXT_LABEL_OPT and LVAR_TEXT_LABEL_OPT parameter types are not supported.

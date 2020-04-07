@@ -9,4 +9,4 @@ build_html()
 }
 
 build_html "$BASEDIR/core/index.adoc" "$BASEDIR/core.html"
-build_html "$BASEDIR/dma/index.adoc" "$BASEDIR/dma.html"
+build_html "$BASEDIR/dma/gta3/index.adoc" "$BASEDIR/dma/gta3.html"

@@ -9,13 +9,13 @@ An actual command named after a selector shall behave as if its command name is 
 
 A _matching alternative_ is the first command in the alternative sequence to have the same amount of parameters as arguments in the actual command, and to obey the following rules for every argument and its corresponding parameter:
 
-* An integer literal argument must have a parameter of type _INT_.
-* A floating-point literal argument must have a parameter of type _FLOAT_.
+* An integer literal argument must have a parameter of type INT.
+* A floating-point literal argument must have a parameter of type FLOAT.
 * For identifiers, the following applies (in the given order):
  .. If the identifier matches a global string constant, the parameter type must be INT and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.
- .. If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) _VAR_INT_, _VAR_FLOAT_ or _VAR_TEXT_LABEL_.
- .. If the identifier references a local variable, the same rule as above applies, except by using _LVAR_INT_, _LVAR_FLOAT_ and _LVAR_TEXT_LABEL_.
- .. If the identifier matches any string constant in any enumeration (except the global enumeration), the parameter type must be _INPUT_INT_ and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.
- .. Otherwise, the parameter type must be _TEXT_LABEL_.
+ .. If the identifier references a global variable, the parameter type must be either (depending on the type of the said variable) VAR_INT, VAR_FLOAT or VAR_TEXT_LABEL.
+ .. If the identifier references a local variable, the same rule as above applies, except by using LVAR_INT, LVAR_FLOAT and LVAR_TEXT_LABEL.
+ .. If the identifier matches any string constant in any enumeration (except the global enumeration), the parameter type must be INPUT_INT and the argument shall behave as if rewritten as an integer literal corresponding to the string constant value.
+ .. Otherwise, the parameter type must be TEXT_LABEL.
 
 If no matching alternative is found, the program is ill-formed.

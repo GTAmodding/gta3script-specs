@@ -1,0 +1,120 @@
+[[command-def]]
+== Supporting Commands
+
+The GTA III implementation of the language provides an extensive list of commands to interact with the game engine. It is not of the intent of this specification to document these commands. This is left as a task for other projects in the modding community. Please see <<gtamodswiki-opcodes>>, <<gtag-opcodes>> and <<gta3script-config>> for some of these efforts.
+
+Nevertheless, there are commands that require additional support from the translation environment. These commands are specified below.
+
+[[command-def-start-new-script]]
+=== START_NEW_SCRIPT
+
+The definition present in <<gta3script-core>> remains with the following rectification in the constraints of the command.
+
+*Constraints*
+
+The specified label location must be within a scope. Such scope can begin at the next non-empty embedded statement relative to the label location.
+
+[[command-def-player-made-progress]]
+=== PLAYER_MADE_PROGRESS
+
+*Parameters*
+
+----
+PLAYER_MADE_PROGRESS INT
+----
+
+*Side effects*
+
+Adds the given amount of progress points to the game.
+
+[[command-def-set-progress-total]]
+=== SET_PROGRESS_TOTAL
+
+*Parameters*
+
+----
+SET_PROGRESS_TOTAL INT
+----
+
+*Side effects*
+
+Sets the total amount of progress points that can be archieved in the game.
+
+*Constraints*
+
+The translation environment must enforce the following constraints.
+
+There shall be only a single occurrence of this command in the multi-file. 
+
+The given integer value shall be equal zero. The argument must be rewritten to correspond to the sum of the arguments to all instances of <<command-def-player-made-progress,PLAYER_MADE_PROGRESS>> in the multi-file.
+
+[[command-def-register-mission-passed]]
+=== REGISTER_MISSION_PASSED
+
+*Parameters*
+
+----
+REGISTER_MISSION_PASSED TEXT_LABEL
+----
+
+*Side effects*
+
+Registers that the mission associated with the given text key has been passed.
+
+[[command-def-set-total-number-of-missions]]
+=== SET_TOTAL_NUMBER_OF_MISSIONS
+
+*Parameters*
+
+----
+SET_TOTAL_NUMBER_OF_MISSIONS INPUT_INT
+----
+
+*Side effects*
+
+Sets the total number of missions present in the game.
+
+*Constraints*
+
+The translation environment must enforce the following constraints.
+
+There shall be only a single occurrence of this command in the multi-file. 
+
+The argument must not be a variable and shall evaluate to an interger value equal zero. The argument must be rewritten to correspond to the number of times the command <<command-def-register-mission-passed,REGISTER_MISSION_PASSED>> occurs in the multi-file.
+
+[[command-def-create-collectable1]]
+=== CREATE_COLLECTABLE1
+
+*Parameters*
+
+----
+CREATE_COLLECTABLE1 INPUT_FLOAT INPUT_FLOAT INPUT_FLOAT
+----
+
+*Side effects*
+
+Creates a collectable at the specified X, Y and Z coordinates respectively.
+
+If the given Z coordinate is equal `-100.0`, the collectable is created at the ground of the given X, Y coordinates.
+
+[[command-def-set-collectable1-total]]
+=== SET_COLLECTABLE1_TOTAL
+
+*Parameters*
+
+----
+SET_COLLECTABLE1_TOTAL INPUT_INT
+----
+
+*Side effects*
+
+Sets the total number of collectables in the game.
+
+*Constraints*
+
+The translation environment must enforce the following constraints.
+
+There shall be only a single occurrence of this command in the multi-file. 
+
+The argument must not be a variable and shall evaluate to an interger value equal zero. The argument must be rewritten to correspond to the number of times the command <<command-def-create-collectable1,CREATE_COLLECTABLE1>> occurs in the multi-file.
+

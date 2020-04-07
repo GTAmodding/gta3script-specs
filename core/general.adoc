@@ -1,6 +1,8 @@
 [[general]]
 == General Principles
 
+// TODO provide the syntax for defining commands, alternators, string constants and entity types.
+
 [[conformance]]
 === Implementation Conformance
 

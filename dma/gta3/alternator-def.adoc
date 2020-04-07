@@ -1,0 +1,47 @@
+[[alternator-def]]
+== Supporting Command Selectors
+
+The following rectifies a few command selectors specified in <<gta3script-core>> to eliminate unsupported alternatives from the selection set.
+
+[[alternator-def-set]]
+=== SET
+
+The following alternatives are not supported and thus removed:
+
+ SET_VAR_INT_TO_CONSTANT VAR_INT INPUT_INT
+ SET_LVAR_INT_TO_CONSTANT VAR_INT INPUT_INT
+ SET_VAR_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+ SET_LVAR_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
+
+[[alternator-def-is-thing-equal-to-thing]]
+=== IS_THING_EQUAL_TO_THING
+
+The following alternatives are not supported and thus removed{blank}footnote:[This list is not wrong. Commands to compare local variables (left-hand side) to global variables (right-hand side) are not available in GTA III nor Vice City.]:
+
+ IS_INT_VAR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+ IS_INT_LVAR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
+ IS_VAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL VAR_TEXT_LABEL TEXT_LABEL
+ IS_LVAR_TEXT_LABEL_EQUAL_TO_TEXT_LABEL LVAR_TEXT_LABEL TEXT_LABEL
+ IS_INT_LVAR_EQUAL_TO_INT_VAR LVAR_INT VAR_INT
+ IS_FLOAT_LVAR_EQUAL_TO_FLOAT_VAR LVAR_FLOAT VAR_FLOAT
+
+[[alternator-def-is-thing-greater-than-thing]]
+=== IS_THING_GREATER_THAN_THING
+
+The following alternatives are not supported and thus removed:
+
+ IS_INT_VAR_GREATER_THAN_CONSTANT VAR_INT INPUT_INT
+ IS_INT_LVAR_GREATER_THAN_CONSTANT LVAR_INT INPUT_INT
+ IS_CONSTANT_GREATER_THAN_INT_VAR INPUT_INT VAR_INT
+ IS_CONSTANT_GREATER_THAN_INT_LVAR INPUT_INT LVAR_INT
+
+[[alternator-def-is-thing-greater-or-equal-to-thing]]
+=== IS_THING_GREATER_OR_EQUAL_TO_THING
+
+The following alternatives are not supported and thus removed:
+
+ IS_INT_VAR_GREATER_OR_EQUAL_TO_CONSTANT VAR_INT INPUT_INT
+ IS_INT_LVAR_GREATER_OR_EQUAL_TO_CONSTANT LVAR_INT INPUT_INT
+ IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_VAR INPUT_INT VAR_INT
+ IS_CONSTANT_GREATER_OR_EQUAL_TO_INT_LVAR INPUT_INT LVAR_INT
+

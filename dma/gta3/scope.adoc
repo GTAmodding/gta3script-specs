@@ -1,0 +1,6 @@
+[[scope]]
+== Scope
+
+This document is an extension to the GTA3script language. It provides the necessary changes to the translation (and part of the execution) environment to accomodate the details of the implementation used in 2001's GTA III.
+
+<<gta3script-core>> provides important context and specification for this extension. The sections of this document should be read as if merged to the original sections of <<gta3script-core>>.

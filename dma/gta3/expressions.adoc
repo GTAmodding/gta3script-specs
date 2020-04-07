@@ -1,0 +1,8 @@
+[[expressions]]
+== Expressions
+
+[[assignment-expressions]]
+=== Assignment Expressions
+
+The ternary assignments `a = b - c`, `a = b / c`, `a = b +@ c` and `a = b -@ c` where `a` is the same name as `c` are not supported.
+

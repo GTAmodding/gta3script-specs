@@ -1,0 +1,21 @@
+[[statements]]
+== Statements
+
+[[statement-scope]]
+=== Scope Statements
+
+*Semantics*
+
+The activation of a lexical scope causes the declaration of two local variables of integer type named `TIMERA` and `TIMERB` which are timers counting up.
+
+[[statement-variable-declaration]]
+=== Variable Declaration Statements
+
+Text label variables are not supported.
+
+Array variables are not supported.
+
+*Constraints*
+
+The name of a variable shall not be `TIMERA` nor `TIMERB`.
+

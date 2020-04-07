@@ -113,15 +113,21 @@ If the identifier matches a global string constant, the program is ill-formed.
 
 A _VAR_TEXT_LABEL parameter_ accepts an argument only if it is an identifier referencing a global variable of text label type.
 
+In case text label variables are not supported, this parameter type is not supported.
+
 [[parameter-type-lvar-text-label]]
 ==== LVAR_TEXT_LABEL
 
 A _LVAR_TEXT_LABEL parameter_ accepts an argument only if it is an identifier referencing a local variable of text label type.
 
+In case text label variables are not supported, this parameter type is not supported.
+
 [[parameter-type-string]]
 ==== STRING
 
 A _STRING parameter_ accepts an argument only if it is a string literal.
+
+In case string literals are not supported, this parameter type is not supported.
 
 [[parameter-type-optional]]
 ==== Optional Parameters
@@ -139,3 +145,5 @@ Additionally, the following parameters are defined as behaving equivalently to t
 Such parameters are always trailing parameters.
 
 [[parameter-type-input-opt]] The _INPUT_OPT parameter_ accepts an argument only if it is an integer literal, floating-point literal, or identifier matching a global string constant or referencing a variable of integer or floating-point type (in this order). A variable of text label type may be accepted by an INPUT_OPT parameter.
+
+In case text label variables are not supported, the VAR_TEXT_LABEL_OPT and LVAR_TEXT_LABEL_OPT parameter types are not supported.

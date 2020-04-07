@@ -1,0 +1,21 @@
+[[definitions]]
+== Terms and Definitions
+
+For the purposes of this document, the terms and definitions given in <<gta3script-core>> and the following apply.
+
+mission:: TODO
+
+collectable:: TODO
+//_Collectables_ are pickups that provide the player a reward once certain amounts of them are picked up.
+
+progress points:: TODO
+
+timer:: TODO
+//These variables are automatically updated each time the script resumes execution by adding the time elapsed in seconds since the last automatic update.
+
+model:: TODO
+
+level model:: TODO
+
+text key:: TODO
+

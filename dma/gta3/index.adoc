@@ -1,4 +1,4 @@
-= GTA3script Specification
+= GTA3script extensions for GTA III
 :toc: macro
 :toc-title:
 :toclevels: 9
@@ -33,19 +33,13 @@ include::general.adoc[]
 
 // Language
 
-include::concepts.adoc[]
-
 include::elements.adoc[]
 
 include::parameters.adoc[]
 
-include::alternators.adoc[]
-
 include::expressions.adoc[]
 
 include::statements.adoc[]
-
-include::structure.adoc[]
 
 // Supporting Commands
 
@@ -53,17 +47,15 @@ include::command-def.adoc[]
 
 include::alternator-def.adoc[]
 
+include::string-constant-def.adoc[]
+
+include::entity-def.adoc[]
+
+// Implementation Limits
+
+include::limits.adoc[]
+
 // Appendix
-
-include::appendix-grammar.adoc[]
-
-include::appendix-grammar-lex.adoc[]
-
-include::appendix-ambiguity.adoc[]
-
-include::appendix-complex-commands.adoc[]
-
-include::appendix-miss2.adoc[]
 
 // References
 

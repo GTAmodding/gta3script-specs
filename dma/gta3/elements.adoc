@@ -1,0 +1,23 @@
+[[elements]]
+== Elements
+
+[[element-command]]
+=== Commands
+
+[[element-identifier]]
+==== Identifiers
+
+As text label variables are not supported, the first character of an identifier shall not be a dollar.
+
+[[element-string-literal]]
+==== String Literals
+
+String literals are not supported.
+
+[[element-variable-reference]]
+==== Variable References
+
+As text label variables are not supported, the first character of a variable name shall not be a dollar.
+
+As array variables are not supported, subscripts are ill-formed.
+

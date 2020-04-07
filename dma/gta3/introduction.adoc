@@ -1,0 +1,9 @@
+[[introduction]]
+== Introduction
+
+Grand Theft Auto III was released in 2001 to great critical acclaim, becoming one of the most important titles of all time and changing the gaming landscape forever with its immersive open world sandbox.
+
+To support this open world, a scripting language was created in order to fasten development, reducing the complexities of programming languages for less-skilled personnel.
+
+This is an attempt to produce a formal language specification for this language. More specifically, this document is an extension to <<gta3script-core>>, providing details specific to the implementation of the language in GTA III.
+

@@ -178,6 +178,8 @@ A _string literal_ holds a string delimited by quotation marks.
 string_literal := '"' { ascii_char - (newline | '"') } '"' ;
 ----
 
+String literals may not be supported by an implementation. In such case, a program using these literals is ill-formed.
+
 [[element-variable-reference]]
 ==== Variable References
 
@@ -206,3 +208,5 @@ The program is ill-formed if a variable name is followed by a subscript but the 
 An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.
 
 A variable used for indexing an array must not be an array.
+
+If array variables are not supported, subscripts are ill-formed.
