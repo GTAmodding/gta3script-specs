@@ -1,0 +1,23 @@
+= GTA3script Language Specifications
+:!sectnums:
+:nofooter:
+:idprefix:
+:idseparator: -
+
+Welcome to the home of specifications for the GTA3script scripting language.
+
+GTA3script is an imperative, strong and statically typed scripting language built by DMA Design (now Rockstar North) to design the mission scripts in Grand Theft Auto.
+
+This is a community effort to formalize the original language as well as document community extensions to it.
+
+[[language-specs]]
+== Language Specification
+
+* link:./core.html[GTA3script Core Specification] -- Defines the core language for all implementations.
+* link:./dma/gta3.html[GTA3script extensions for GTA III] -- Extensions for the core language to support GTA III.
+
+[[community-specs]]
+== Community Extensions
+
+None.
+
