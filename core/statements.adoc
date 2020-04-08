@@ -72,7 +72,7 @@ command_statement := command eol ;
 
 *Constraints*
 
-The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).footnoteref:[miss2]
+The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).footnote:miss2[]
 
 [[statement-expression]]
 === Expression Statements
@@ -177,7 +177,7 @@ conditional_list := conditional_element eol
 
 *Constraints*
 
-The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).footnoteref:[miss2]
+The command it embodies cannot be any of the commands specified by this section (e.g. `VAR_INT`, `ELSE`, `ENDWHILE`, `{`, `GOSUB_FILE`, `MISSION_START`, etc).footnote:miss2[]
 
 *Semantics*
 

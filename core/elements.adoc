@@ -6,7 +6,7 @@ The lexical grammar of the language is context-sensitive. As such, the lexical e
 [[element-source-code]]
 === Source Code
 
-_Source code_ is a stream of printable ASCII characters plus the control codes line feed (`\n`), horizontal tab (`\t`) and carriage return (`\r`).footnoteref:[miss2]
+_Source code_ is a stream of printable ASCII characters plus the control codes line feed (`\n`), horizontal tab (`\t`) and carriage return (`\r`).footnote:miss2[]
 
 ----
 ascii_char := ascii_printable | ascii_control ;
@@ -30,7 +30,7 @@ A _line_ is a sequence of characters delimited by a newline. The start of the st
 newline := ['\r'] `\n` ;
 ----
 
-Each line should be interpreted as if there is no whitespaces in either ends of the line.footnoteref:[simplify-whitespace,This simplifies the syntactic specification.]
+Each line should be interpreted as if there is no whitespaces in either ends of the line.footnote:simplify-whitespace[This simplifies the syntactic specification.]
 
 A _token character_ is any character capable of forming a single token.
 
@@ -62,7 +62,7 @@ There are two forms:
 * _Line comments_ starts with the character sequence `//` and stop at the end of the line.
 * _Block comments_ starts with the character sequence `/\*` and stop with its matching `*/`. Block comments can be nested inside each other.
 
-The contents of a comment shall be interpreted as if it is whitespaces in the source code.footnoteref:[simplify-whitespace] More specifically:
+The contents of a comment shall be interpreted as if it is whitespaces in the source code.footnote:simplify-whitespace[] More specifically:
 
 * A line comment should be interpreted as an `eol`.
 * A single, nested, block comment should be interpreted as an `eol` on each line boundary it crosses. On its last line (i.e. the one it does not cross), it should be interpreted as one or more whitespace characters.
@@ -96,7 +96,7 @@ digit := '0'..'9' ;
 integer := ['-'] digit {digit} ;
 ----
 
-An _integer literal_ is a sequence of digits optionally preceded by a minus sign.footnoteref:[miss2]
+An _integer literal_ is a sequence of digits optionally preceded by a minus sign.footnote:miss2[]
 
 If the literal begins with a minus, the number following it shall be negated.
 
@@ -190,7 +190,7 @@ variable_char := token_char - ('[' | ']') ;
 variable_name := ('$' | 'A'..'Z') {variable_char} ;
 ----
 
-A _variable reference_ is a variable name optionally followed by an array subscript.footnoteref:[miss2]
+A _variable reference_ is a variable name optionally followed by an array subscript.footnote:miss2[]
 
 ----
 subscript := '[' (variable_name | integer) ']' ;
@@ -203,10 +203,10 @@ The subscript uses an integer literal or another variable name of integer type f
 
 The program is ill-formed if the array subscript uses a negative or out of bounds value for indexing.
 
-The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.footnoteref:[miss2]
+The program is ill-formed if a variable name is followed by a subscript but the variable is not an array.footnote:miss2[]
 
 An array variable name which is not followed by a subscript behaves as if its zero-indexed element is referenced.
 
-A variable used for indexing an array must not be an array.footnoteref:[miss2]
+A variable used for indexing an array must not be an array.footnote:miss2[]
 
 If array variables are not supported, subscripts are ill-formed.

@@ -33,7 +33,7 @@ Sections <<command-def>> and <<alternator-def>> describes a minimal set of comma
 
 Along this document there are several footnotes explaining or clarifying some decisions. Often these footnotes exposes the reason for changes in the language compared to the in-house compiler. These footnotes are purely informative and are not an integral part of this document.
 
-Some changes demand more details than a footnote permits. These are marked with the footnote footnoteref:[miss2,For consistency we have simplified this feature. Please refer to <<miss2>> for details on how the in-house compiler behaves.] and further details are presented in <<miss2>>.
+Some changes demand more details than a footnote permits. These are marked with the footnote footnote:miss2[For consistency we have simplified this feature. Please refer to <<miss2>> for details on how the in-house compiler behaves.] and further details are presented in <<miss2>>.
 
 [[syntax-notation]]
 === Syntax Notation
