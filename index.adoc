@@ -14,7 +14,7 @@ This is a community effort to formalize the original language as well as documen
 == Language Specification
 
 * link:./core.html[GTA3script Core Specification] -- Defines the core language for all implementations.
-* link:./dma/gta3.html[GTA3script extensions for GTA III] -- Extensions for the core language to support GTA III.
+* link:./gta3.html[GTA3script extensions for GTA III] -- Extensions for the core language to support GTA III.
 
 [[community-specs]]
 == Community Extensions

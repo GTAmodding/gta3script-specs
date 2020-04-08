@@ -2,7 +2,7 @@
 [[references]]
 == References
 
-- [[[gta3script-core,GTA3script Specification]]] link:../core.html[GTA3script Core Specification].
+- [[[gta3script-core,GTA3script Specification]]] link:./core.html[GTA3script Core Specification].
 - [[[gta3script-config,GTA3script Configuration]]] https://github.com/GTAmodding/gta3script-config[GTA3script Configuration Files for Compilers and Disassemblers].
 - [[[gtamodswiki-opcodes,GTAMods Wiki]]] https://gtamods.com/wiki/List_of_opcodes[GTAMods Wiki -- List of opcodes].
 - [[[gtag-opcodes,GTAG Opcode Database]]] http://gtagmodding.com/opcode-database/[GTAG Modding -- Opcode Database].
