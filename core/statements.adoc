@@ -146,7 +146,7 @@ Local variables can have identical names as long as they are in different lexica
 
 Local variables shall not have the same name as any global variable.
 
-A variable shall not have the same name as any string constant in any enumeration (except for the global enumeration).
+A variable shall not have the same name as any string constant in any enumeration (except for the global constants enumeration).
 
 The array dimensions of the variable (if any) must be specified by an integer literal greater than zero.
 
@@ -294,7 +294,7 @@ repeat_statement := 'REPEAT' sep integer sep variable eol
 
 *Constraints*
 
-The associated variable must be of integer type.footnote:[The parameter definition of `REPEAT` in the in-house compiler disallows local variables. Due to being a complex command, however, the compiler ignores this parametric restriction and ends up permiting local variables (which is likely the intended behaviour).]
+The associated variable must be of integer type.footnote:[The parameter definition of `REPEAT` in the in-house compiler disallows local variables. Due to being a hardcoded command, however, the compiler ignores this parametric restriction and ends up permiting local variables (which is likely the intended behaviour).]
 
 *Semantics*
 

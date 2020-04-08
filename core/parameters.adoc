@@ -33,6 +33,8 @@ An entity can be assigned to a variable. In such case, the variable is said to b
 
 If an entity type is associated with an parameter and a variable is used as argument, the variable must have the same entity type as the formal parameter.
 
+Further semantics for entities are defined along this specification.
+
 [[parameter-types]]
 === Parameter Types
 

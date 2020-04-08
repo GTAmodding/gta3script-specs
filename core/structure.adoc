@@ -10,13 +10,13 @@ main_script_file := {statement} ;
 
 A main script file is a sequence of zero or more statements.
 
-*Semantics*
-
-The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is undefined.
-
 *Constraints*
 
 Commands in the main script file shall not refer to labels in mission script files.
+
+*Semantics*
+
+The main script starts execution at the first statement of the main script file. If there is no statement to be executed, behaviour is undefined.
 
 [[structure-main-extension]]
 === Main Extension Files
